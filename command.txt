@@ -1,0 +1,4 @@
+Compile cotton
+
+  spvmcc -I lib -o cotton Cotton
+
