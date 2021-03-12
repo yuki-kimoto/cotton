@@ -18,12 +18,12 @@ int WINAPI WinMain(
   winc.hCursor    = LoadCursor(NULL , IDC_ARROW);
   winc.hbrBackground  = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
-  winc.lpszClassName  = TEXT("KITTY");
+  winc.lpszClassName  = TEXT("Cotton");
 
   if (!RegisterClass(&winc)) return 0;
 
   hwnd = CreateWindow(
-      TEXT("KITTY") , TEXT("Kitty on your lap") ,
+      TEXT("Cotton") , TEXT("Cotton") ,
       WS_OVERLAPPEDWINDOW ,
       100 , 100 , 200 , 200 , NULL , NULL ,
       hInstance , NULL
@@ -32,8 +32,8 @@ int WINAPI WinMain(
   if (hwnd == NULL) return 0;
 
   ShowWindow(hwnd , SW_SHOW);
-  MessageBox(NULL , TEXT("Kitty on your lap") ,
-      TEXT("Kitty") , MB_ICONINFORMATION);
+  MessageBox(NULL , TEXT("Cotton") ,
+      TEXT("Cotton") , MB_ICONINFORMATION);
 
   return 0;
 }
