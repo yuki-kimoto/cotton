@@ -1,0 +1,7 @@
+package CottonHelloWorld {
+  sub main : int ($args : string[]) {
+    call_win_main();
+  }
+
+  native sub call_win_main : void ();
+}
