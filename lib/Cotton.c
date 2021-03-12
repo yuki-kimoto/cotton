@@ -2,11 +2,40 @@
 
 #include <windows.h>
 
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR pCmdLine, int showCmd)
-{
-    MessageBox(NULL, "Hello world.", "メッセージ", MB_OK);
+int WINAPI WinMain(
+    HINSTANCE hInstance ,
+    HINSTANCE hPrevInstance ,
+    PSTR lpCmdLine ,
+    int nCmdShow ) {
+  HWND hwnd;
+  WNDCLASS winc;
 
-    return 0;
+  winc.style    = CS_HREDRAW | CS_VREDRAW;
+  winc.lpfnWndProc  = DefWindowProc;
+  winc.cbClsExtra = winc.cbWndExtra = 0;
+  winc.hInstance    = hInstance;
+  winc.hIcon    = LoadIcon(NULL , IDI_APPLICATION);
+  winc.hCursor    = LoadCursor(NULL , IDC_ARROW);
+  winc.hbrBackground  = (HBRUSH)GetStockObject(WHITE_BRUSH);
+  winc.lpszMenuName = NULL;
+  winc.lpszClassName  = TEXT("KITTY");
+
+  if (!RegisterClass(&winc)) return 0;
+
+  hwnd = CreateWindow(
+      TEXT("KITTY") , TEXT("Kitty on your lap") ,
+      WS_OVERLAPPEDWINDOW ,
+      100 , 100 , 200 , 200 , NULL , NULL ,
+      hInstance , NULL
+  );
+
+  if (hwnd == NULL) return 0;
+
+  ShowWindow(hwnd , SW_SHOW);
+  MessageBox(NULL , TEXT("Kitty on your lap") ,
+      TEXT("Kitty") , MB_ICONINFORMATION);
+
+  return 0;
 }
 
 int32_t SPNATIVE__Cotton__call_win_main(SPVM_ENV* env, SPVM_VALUE* args) {
