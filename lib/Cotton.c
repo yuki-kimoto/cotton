@@ -8,33 +8,22 @@ int WINAPI WinMain(
     PSTR lpCmdLine ,
     int nCmdShow ) {
   HWND hwnd;
-  WNDCLASS winc;
-
-  winc.style    = CS_HREDRAW | CS_VREDRAW;
-  winc.lpfnWndProc  = DefWindowProc;
-  winc.cbClsExtra = winc.cbWndExtra = 0;
-  winc.hInstance    = hInstance;
-  winc.hIcon    = LoadIcon(NULL , IDI_APPLICATION);
-  winc.hCursor    = LoadCursor(NULL , IDC_ARROW);
-  winc.hbrBackground  = (HBRUSH)GetStockObject(WHITE_BRUSH);
-  winc.lpszMenuName = NULL;
-  winc.lpszClassName  = TEXT("Cotton");
-
-  if (!RegisterClass(&winc)) return 0;
+  MSG msg;
 
   hwnd = CreateWindow(
-      TEXT("Cotton") , TEXT("Cotton") ,
-      WS_OVERLAPPEDWINDOW ,
+      TEXT("BUTTON") , TEXT("Kitty on your lap") ,
+      WS_CAPTION | WS_VISIBLE ,
       100 , 100 , 200 , 200 , NULL , NULL ,
       hInstance , NULL
   );
 
   if (hwnd == NULL) return 0;
 
-  ShowWindow(hwnd , SW_SHOW);
-  MessageBox(NULL , TEXT("Cotton") ,
-      TEXT("Cotton") , MB_ICONINFORMATION);
-
+  while (TRUE) {
+    GetMessage(&msg , NULL , 0 , 0);
+    if (msg.message == WM_LBUTTONUP) break;
+    DispatchMessage(&msg);
+  }
   return 0;
 }
 
