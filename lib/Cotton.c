@@ -39,12 +39,12 @@ int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
 	winc.hCursor		= LoadCursor(NULL , IDC_ARROW);
 	winc.hbrBackground	= (HBRUSH)GetStockObject(WHITE_BRUSH);
 	winc.lpszMenuName	= NULL;
-	winc.lpszClassName	= TEXT("KITTY");
+	winc.lpszClassName	= TEXT("Cotton");
 
 	if (!RegisterClass(&winc)) return -1;
 
 	hwnd = CreateWindow(
-			TEXT("KITTY") , TEXT("Kitty on your lap") ,
+			TEXT("Cotton") , TEXT("Cotton") ,
 			WS_OVERLAPPEDWINDOW | WS_VISIBLE ,
 			CW_USEDEFAULT , CW_USEDEFAULT ,
 			CW_USEDEFAULT , CW_USEDEFAULT ,
