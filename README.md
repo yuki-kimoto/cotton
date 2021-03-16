@@ -2,5 +2,5 @@
 Cotton Game and Application Browser
   
   # Compile Cotton Web Brwoer
-  spvmcc --lddlflags '-lgdi32' -I lib -o Cotton Cotton
+  spvmcc --lddlflags '-lgdi32 -Wl,-subsystem,windows' -I lib -o Cotton Cotton
 
