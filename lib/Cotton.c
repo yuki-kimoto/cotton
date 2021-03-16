@@ -2,6 +2,11 @@
 
 #include <windows.h>
 
+enum {
+  COTTON_C_SIZE_UNIT_PIXEL,
+  COTTON_C_SIZE_UNIT_PERCENT,
+};
+
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 	HDC hdc;
 	HPEN hpen;
@@ -56,6 +61,7 @@ int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
 	while(GetMessage(&msg , NULL , 0 , 0)) DispatchMessage(&msg);
 	return msg.wParam;
 }
+
 int32_t SPNATIVE__Cotton__call_win_main(SPVM_ENV* env, SPVM_VALUE* args) {
   (void)env;
   (void)args;
