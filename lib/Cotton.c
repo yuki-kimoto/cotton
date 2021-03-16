@@ -17,7 +17,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     return 0;
   case WM_PAINT:
     hdc = BeginPaint(hwnd , &ps);
-    
+
     RECT client_rect;
     GetClientRect(hwnd , &client_rect);
     {
@@ -38,6 +38,30 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       DeleteObject(hpen);
       DeleteObject(brash);
     }
+    
+    {
+      LOGFONT lfFont;
+      lfFont.lfHeight     = 40;
+      lfFont.lfWidth = lfFont.lfEscapement =
+      lfFont.lfOrientation    = 0;
+      lfFont.lfWeight     = FW_BOLD;
+      lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+      lfFont.lfStrikeOut    = FALSE; 
+      lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+      lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+      lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+      lfFont.lfQuality    = DEFAULT_QUALITY;
+      lfFont.lfPitchAndFamily = 0;
+      lfFont.lfFaceName[0]    = '\0';
+      HFONT hFont = CreateFontIndirect(&lfFont);
+      
+      SelectObject(hdc, hFont);
+      SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+      SetBkMode(hdc , TRANSPARENT);
+      TextOut(hdc , 0 , 0 , "Cotton" , lstrlen("Cotton"));
+      DeleteObject(hFont);
+    }
+
     EndPaint(hwnd , &ps);
     
     return 0;
