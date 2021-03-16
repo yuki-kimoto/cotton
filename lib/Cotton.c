@@ -8,26 +8,41 @@ enum {
 };
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
-	HDC hdc;
-	HPEN hpen;
-	PAINTSTRUCT ps;
+  HDC hdc;
+  PAINTSTRUCT ps;
 
-	switch (msg) {
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	case WM_PAINT:
-		hdc = BeginPaint(hwnd , &ps);
-		hpen = CreatePen(PS_SOLID , 0 , 0x00AA77);
-		SelectObject(hdc, hpen);
-    SelectObject(hdc, CreateSolidBrush(0x00AA77));
-		Rectangle(hdc , 10 , 10 , 200 , 50);
-
-		EndPaint(hwnd , &ps);
-		DeleteObject(hpen);
-		return 0;
-	}
-	return DefWindowProc(hwnd , msg , wp , lp);
+  switch (msg) {
+  case WM_DESTROY:
+    PostQuitMessage(0);
+    return 0;
+  case WM_PAINT:
+    hdc = BeginPaint(hwnd , &ps);
+    
+    RECT client_rect;
+    GetClientRect(hwnd , &client_rect);
+    {
+      HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+      SelectObject(hdc, hpen);
+      HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+      SelectObject(hdc, brash);
+      Rectangle(hdc, 0, 0, client_rect.right, 100);
+      DeleteObject(hpen);
+      DeleteObject(brash);
+    }
+    {
+      HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xEE, 0x00, 0x7F));
+      SelectObject(hdc, hpen);
+      HBRUSH brash = CreateSolidBrush(RGB(0xEE, 0x00, 0x7F));
+      SelectObject(hdc, brash);
+      Rectangle(hdc, 0, 100, client_rect.right, 200);
+      DeleteObject(hpen);
+      DeleteObject(brash);
+    }
+    EndPaint(hwnd , &ps);
+    
+    return 0;
+  }
+  return DefWindowProc(hwnd , msg , wp , lp);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
