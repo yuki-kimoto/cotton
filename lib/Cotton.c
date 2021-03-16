@@ -72,10 +72,8 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 
 int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
       PSTR lpCmdLine , int nCmdShow ) {
-  HWND hwnd;
-  MSG msg;
+  
   WNDCLASS winc;
-
   winc.style    = CS_HREDRAW | CS_VREDRAW;
   winc.lpfnWndProc  = WndProc;
   winc.cbClsExtra = winc.cbWndExtra = 0;
@@ -88,7 +86,7 @@ int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
 
   if (!RegisterClass(&winc)) return -1;
 
-  hwnd = CreateWindow(
+  HWND hwnd = CreateWindow(
       TEXT("Cotton") , TEXT("Cotton") ,
       WS_OVERLAPPEDWINDOW | WS_VISIBLE ,
       CW_USEDEFAULT , CW_USEDEFAULT ,
@@ -98,6 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
 
   if (hwnd == NULL) return -1;
 
+  MSG msg;
   while(GetMessage(&msg , NULL , 0 , 0)) DispatchMessage(&msg);
   return msg.wParam;
 }
