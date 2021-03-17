@@ -23,10 +23,22 @@ int freeBitmapData(BITMAPDATA_t *);
 #define SIGNATURE_NUM 8
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
-
+  BITMAP bitmap = {0};
   switch (msg) {
     case WM_DESTROY: {
       PostQuitMessage(0);
+      return 0;
+    }
+    case WM_CREATE: {
+      BITMAPDATA_t bitmap_data;
+      const char* png_file = "kaeru_w_01.png";
+      pngFileReadDecode(&bitmap_data, png_file);
+      
+      bitmap.bmWidth = bitmap_data.width;
+      bitmap.bmHeight = bitmap_data.height;
+      bitmap.bmBits = bitmap_data.data;
+      
+      fprintf(stderr, "%d %d\n", bitmap_data.width, bitmap_data.height);
       return 0;
     }
     case WM_PAINT: {
@@ -35,6 +47,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 
       RECT client_rect;
       GetClientRect(hwnd , &client_rect);
+
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc, hpen);
@@ -77,8 +90,12 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         DeleteObject(hFont);
       }
 
+      for (int32_t x = 0 ; x < 100 ; x += 10) {
+        MoveToEx(hdc , x , 0 , NULL);
+        LineTo(hdc , x , 100);
+      }
+      BitBlt(hdc , 300 , 0 , 100 , 100 , hdc , 0 , 0 , SRCCOPY);
       EndPaint(hwnd , &ps);
-      
       return 0;
     }
   }
@@ -88,10 +105,8 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
       PSTR lpCmdLine , int nCmdShow ) {
 
-  BITMAPDATA_t bitmap;
-  const char* png_file = "kaeru_w_01.png";
-  pngFileReadDecode(&bitmap, png_file);
   
+
   WNDCLASS winc;
   winc.style    = CS_HREDRAW | CS_VREDRAW;
   winc.lpfnWndProc  = WndProc;
