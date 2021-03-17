@@ -90,11 +90,25 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         DeleteObject(hFont);
       }
 
-      for (int32_t x = 0 ; x < 100 ; x += 10) {
-        MoveToEx(hdc , x , 0 , NULL);
-        LineTo(hdc , x , 100);
+      // Render Bitmap
+      {
+        // HBITMAP bitmap_handle = CreateCompatibleBitmap(hdc, bitmap.bmWidth, bitmap.bmHeight);
+        HBITMAP bitmap_handle = CreateBitmapIndirect(&bitmap);
+        
+        HDC hBuffer = CreateCompatibleDC(hdc);
+        SelectObject(hBuffer, bitmap_handle);
+        BitBlt(hdc, 500, 500, bitmap.bmWidth, bitmap.bmHeight, hBuffer, 0, 0, SRCCOPY);
+        DeleteDC(hBuffer);
       }
-      BitBlt(hdc , 300 , 0 , 100 , 100 , hdc , 0 , 0 , SRCCOPY);
+      
+      {
+        for (int32_t x = 0 ; x < 100 ; x += 10) {
+          MoveToEx(hdc , x , 0 , NULL);
+          LineTo(hdc , x , 100);
+        }
+        BitBlt(hdc , 300 , 0 , 100 , 100 , hdc , 0 , 0 , SRCCOPY);
+      }
+      
       EndPaint(hwnd , &ps);
       return 0;
     }
@@ -131,7 +145,10 @@ int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
   if (hwnd == NULL) return -1;
 
   MSG msg;
-  while(GetMessage(&msg , NULL , 0 , 0)) DispatchMessage(&msg);
+  while(GetMessage(&msg , NULL , 0 , 0)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
   return msg.wParam;
 }
 
