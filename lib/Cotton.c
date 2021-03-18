@@ -3,6 +3,11 @@
 #include <windows.h>
 #include <png.h>
 
+//ビットマップバイト幅の算出マクロ
+#ifndef WIDTHBYTES
+#define WIDTHBYTES(bits) (((bits)+31)/32*4)
+#endif//WIDTHBYTES
+
 typedef struct{
   unsigned char *data;
   unsigned int width;
@@ -116,11 +121,9 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   return DefWindowProc(hwnd , msg , wp , lp);
 }
 
-int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
-      PSTR lpCmdLine , int nCmdShow ) {
-
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
   
-
+  // Window Class
   WNDCLASS winc;
   winc.style    = CS_HREDRAW | CS_VREDRAW;
   winc.lpfnWndProc  = WndProc;
@@ -130,12 +133,14 @@ int WINAPI WinMain(HINSTANCE hInstance , HINSTANCE hPrevInstance ,
   winc.hCursor    = LoadCursor(NULL , IDC_ARROW);
   winc.hbrBackground  = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
-  winc.lpszClassName  = TEXT("Cotton");
+  winc.lpszClassName  = TEXT("main_window");
 
+  // Register Window Class
   if (!RegisterClass(&winc)) return -1;
-
+  
+  // Create Main Window
   HWND hwnd = CreateWindow(
-      TEXT("Cotton") , TEXT("Cotton") ,
+      TEXT("main_window") , TEXT("Cotton") ,
       WS_OVERLAPPEDWINDOW | WS_VISIBLE ,
       CW_USEDEFAULT , CW_USEDEFAULT ,
       CW_USEDEFAULT , CW_USEDEFAULT ,
