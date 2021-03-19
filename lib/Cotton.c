@@ -48,19 +48,41 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       
       fprintf(stderr, "%d %d\n", bitmap_data.width, bitmap_data.height);
 
-      div = CreateWindow(
-        TEXT("STATIC") , TEXT("Foo") ,
-        WS_CHILD | WS_VISIBLE | SS_CENTER ,
-        500 , 500 , 200 , 45 ,
-        hwnd , (HMENU)1 ,
-        ((LPCREATESTRUCT)(lp))->hInstance , NULL
-      );
-      
-      return 0;
+  		div = CreateWindow(
+  			TEXT("STATIC") , NULL ,
+  			WS_CHILD | WS_VISIBLE | SS_CENTER ,
+  			500 , 500 , 200 , 45 ,
+  			hwnd , (HMENU)1 ,
+  			((LPCREATESTRUCT)(lp))->hInstance , NULL
+  		);
+  		
+  		
+
+		  return 0;
     }
 
     case WM_CTLCOLORSTATIC: {
+/*
+      printf("AAAAAAA");
       
+      // ウィンドウハンドルのチェック
+      if ((HWND)lp == div) {
+      printf("BBBBB");
+        // テキストカラーの変更（白）
+        SetTextColor((HDC)wp, RGB(0xaa, 0xff, 0xff));
+
+        // 背景モードを透明に設定
+        SetBkMode((HDC)wp, TRANSPARENT);
+
+        // 新しいブラシの作成（赤）
+        HBRUSH hbrStatic = CreateSolidBrush(RGB(0xff, 0x00, 0x00));
+
+        // 取得した色を背景色として返す
+        return (LRESULT)hbrStatic;
+      }
+*/
+
+/*
       // ウィンドウハンドルのチェック
       if ((HWND)lp == div) {
         // テキストカラーの変更（黒）
@@ -75,6 +97,8 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         // 取得した色を背景色として返す
         return (LRESULT)hbrStatic;
       }
+*/
+
     }
 
     case WM_PAINT: {
@@ -144,6 +168,67 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         }
         BitBlt(hdc , 300 , 0 , 100 , 100 , hdc , 0 , 0 , SRCCOPY);
       }
+
+      {
+        RECT main_window_rect;
+    		GetWindowRect(hwnd, &main_window_rect);
+        int cxSizeFrame = GetSystemMetrics(SM_CXSIZEFRAME); // 境界線幅X方向
+        int cySizeFrame = GetSystemMetrics(SM_CYSIZEFRAME); // 境界線幅Y方向
+        int cyCaption = GetSystemMetrics(SM_CYCAPTION);     // タイトルバーの高さ
+
+        printf("AAAAAA %d %d %d %d\n", main_window_rect.left, main_window_rect.top, main_window_rect.right, main_window_rect.bottom);
+        printf("BBBBBB %d %d %d\n", cxSizeFrame, cySizeFrame, cyCaption);
+        
+        int32_t abs_client_origin_left = main_window_rect.left + cxSizeFrame;
+        int32_t abs_client_origin_top = main_window_rect.top + cySizeFrame + cyCaption;
+
+        printf("CCCCCC %d %d\n", abs_client_origin_left, abs_client_origin_top);
+        
+        RECT div_window_rect;
+    		GetWindowRect(div, &div_window_rect);
+
+        printf("DDDDDD %d %d %d %d\n", div_window_rect.left, div_window_rect.top, div_window_rect.right, div_window_rect.bottom);
+        
+        RECT div_window_rect_rel;
+        div_window_rect_rel.left = div_window_rect.left - abs_client_origin_left;
+        div_window_rect_rel.top = div_window_rect.top - abs_client_origin_top;
+        div_window_rect_rel.right = div_window_rect.right - abs_client_origin_left;
+        div_window_rect_rel.bottom = div_window_rect.bottom - abs_client_origin_top;
+        
+        printf("%d %d %d %d\n", div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
+
+/*
+    		RECT main_rw;
+    		GetClientRect(hwnd, &main_rw);
+
+    		RECT div_rw;
+    		GetClientRect(div, &div_rw);
+
+    		RECT main_rw2;
+    		GetWindowRect(hwnd, &main_rw2);
+
+
+    		RECT div_rw2;
+    		GetWindowRect(div, &div_rw2);
+    		
+    		printf("%d %d %d %d\n", main_rw.left, main_rw.top, main_rw.right, main_rw.bottom);
+    		printf("%d %d %d %d\n", div_rw.left, div_rw.top, div_rw.right, div_rw.bottom);
+    		
+    		printf("%d %d %d %d\n", main_rw2.left, main_rw2.top, main_rw2.right, main_rw2.bottom);
+    		printf("%d %d %d %d\n", div_rw2.left, div_rw2.top, div_rw2.right, div_rw2.bottom);
+*/
+
+        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        SelectObject(hdc, brash);
+        Rectangle(hdc, div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
+        DeleteObject(brash);
+
+        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xFF, 0xFF, 0xFF));
+        SelectObject(hdc, hpen);
+        TextOut(hdc, div_window_rect_rel.left, div_window_rect_rel.top, "Hello", lstrlen("Hello"));
+        DeleteObject(hpen);
+      }
+
       
       EndPaint(hwnd , &ps);
       return 0;
