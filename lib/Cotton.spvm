@@ -4,4 +4,9 @@ package Cotton {
   }
 
   native sub call_win_main : void ();
+  
+  # 画面が最初に読み込まれたときに実行する処理
+  sub load : void () {
+    
+  }
 }

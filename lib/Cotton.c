@@ -28,6 +28,9 @@ int freeBitmapData(BITMAPDATA_t *);
 #define SIGNATURE_NUM 8
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
+  
+  static HWND div = NULL;
+  
   BITMAP bitmap = {0};
   switch (msg) {
     case WM_DESTROY: {
@@ -44,8 +47,36 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       bitmap.bmBits = bitmap_data.data;
       
       fprintf(stderr, "%d %d\n", bitmap_data.width, bitmap_data.height);
+
+      div = CreateWindow(
+        TEXT("STATIC") , TEXT("Foo") ,
+        WS_CHILD | WS_VISIBLE | SS_CENTER ,
+        500 , 500 , 200 , 45 ,
+        hwnd , (HMENU)1 ,
+        ((LPCREATESTRUCT)(lp))->hInstance , NULL
+      );
+      
       return 0;
     }
+
+    case WM_CTLCOLORSTATIC: {
+      
+      // ウィンドウハンドルのチェック
+      if ((HWND)lp == div) {
+        // テキストカラーの変更（黒）
+        SetTextColor((HDC)wp, RGB(0x00, 0x00, 0x00));
+
+        // 背景モードを透明に設定
+        SetBkMode((HDC)wp, TRANSPARENT);
+
+        // 新しいブラシの作成（赤）
+        HBRUSH hbrStatic = GetStockObject(NULL_BRUSH);
+
+        // 取得した色を背景色として返す
+        return (LRESULT)hbrStatic;
+      }
+    }
+
     case WM_PAINT: {
       PAINTSTRUCT ps;
       HDC hdc = BeginPaint(hwnd , &ps);
