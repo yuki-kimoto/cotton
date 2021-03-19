@@ -50,7 +50,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 
   		div = CreateWindow(
   			TEXT("STATIC") , NULL ,
-  			WS_CHILD | WS_VISIBLE | SS_CENTER ,
+  			WS_CHILD | WS_VISIBLE | SS_CENTER | BS_OWNERDRAW,
   			500 , 500 , 200 , 45 ,
   			hwnd , (HMENU)1 ,
   			((LPCREATESTRUCT)(lp))->hInstance , NULL
