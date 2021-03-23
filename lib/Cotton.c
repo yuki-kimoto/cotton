@@ -34,7 +34,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     case WM_CREATE: {
 
   		div = CreateWindow(
-  			TEXT("STATIC") , NULL ,
+  			TEXT("BUTTON") , NULL ,
   			WS_CHILD | WS_VISIBLE | SS_CENTER | BS_OWNERDRAW,
   			500 , 500 , 200 , 45 ,
   			hwnd , (HMENU)1 ,
@@ -45,7 +45,17 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 
 		  return 0;
     }
+    case WM_DRAWITEM: {
+      
+      LPDRAWITEMSTRUCT draw_item = (LPDRAWITEMSTRUCT)lp;
+      HDC hdc = draw_item->hDC;
+      
+      SelectObject(hdc , CreateHatchBrush(HS_DIAGCROSS , RGB(0xFF , 0 , 0)));
+      Rectangle(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom);
+  		DeleteObject(SelectObject(hdc , GetStockObject(WHITE_BRUSH)));      
 
+      return TRUE;
+    }
     case WM_PAINT: {
       PAINTSTRUCT ps;
       HDC hdc = BeginPaint(hwnd , &ps);
