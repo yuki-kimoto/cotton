@@ -142,47 +142,17 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         int cySizeFrame = GetSystemMetrics(SM_CYSIZEFRAME); // 境界線幅Y方向
         int cyCaption = GetSystemMetrics(SM_CYCAPTION);     // タイトルバーの高さ
 
-        printf("AAAAAA %d %d %d %d\n", main_window_rect.left, main_window_rect.top, main_window_rect.right, main_window_rect.bottom);
-        printf("BBBBBB %d %d %d\n", cxSizeFrame, cySizeFrame, cyCaption);
-        
         int32_t abs_client_origin_left = main_window_rect.left + cxSizeFrame;
         int32_t abs_client_origin_top = main_window_rect.top + cySizeFrame + cyCaption;
-
-        printf("CCCCCC %d %d\n", abs_client_origin_left, abs_client_origin_top);
         
         RECT div_window_rect;
     		GetWindowRect(div, &div_window_rect);
-
-        printf("DDDDDD %d %d %d %d\n", div_window_rect.left, div_window_rect.top, div_window_rect.right, div_window_rect.bottom);
         
         RECT div_window_rect_rel;
         div_window_rect_rel.left = div_window_rect.left - abs_client_origin_left;
         div_window_rect_rel.top = div_window_rect.top - abs_client_origin_top;
         div_window_rect_rel.right = div_window_rect.right - abs_client_origin_left;
         div_window_rect_rel.bottom = div_window_rect.bottom - abs_client_origin_top;
-        
-        printf("%d %d %d %d\n", div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
-
-/*
-    		RECT main_rw;
-    		GetClientRect(hwnd, &main_rw);
-
-    		RECT div_rw;
-    		GetClientRect(div, &div_rw);
-
-    		RECT main_rw2;
-    		GetWindowRect(hwnd, &main_rw2);
-
-
-    		RECT div_rw2;
-    		GetWindowRect(div, &div_rw2);
-    		
-    		printf("%d %d %d %d\n", main_rw.left, main_rw.top, main_rw.right, main_rw.bottom);
-    		printf("%d %d %d %d\n", div_rw.left, div_rw.top, div_rw.right, div_rw.bottom);
-    		
-    		printf("%d %d %d %d\n", main_rw2.left, main_rw2.top, main_rw2.right, main_rw2.bottom);
-    		printf("%d %d %d %d\n", div_rw2.left, div_rw2.top, div_rw2.right, div_rw2.bottom);
-*/
 
         HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc, brash);
