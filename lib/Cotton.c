@@ -54,7 +54,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc , brash);
         Rectangle(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom);
-        DeleteObject(SelectObject(hdc , GetStockObject(WHITE_BRUSH)));
+        DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
       }
       
       {
@@ -148,7 +148,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   winc.hInstance    = hInstance;
   winc.hIcon    = LoadIcon(NULL , IDI_APPLICATION);
   winc.hCursor    = LoadCursor(NULL , IDC_ARROW);
-  winc.hbrBackground  = (HBRUSH)GetStockObject(WHITE_BRUSH);
+  winc.hbrBackground  = (HBRUSH)GetStockObject(NULL_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName  = TEXT("main_window");
 
