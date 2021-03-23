@@ -40,10 +40,12 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   			hwnd , (HMENU)1 ,
   			((LPCREATESTRUCT)(lp))->hInstance , NULL
   		);
-  		
-  		
 
 		  return 0;
+    }
+    case WM_CTLCOLORBTN: {
+      
+      return (LRESULT)GetStockObject(NULL_BRUSH);
     }
     case WM_DRAWITEM: {
       
@@ -53,6 +55,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc, GetStockObject(NULL_PEN));
+
         HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc , brash);
         RoundRect(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom, 10, 10);
@@ -82,7 +85,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         DeleteObject(hFont);
       }
 
-      return TRUE;
+      break;
     }
     case WM_PAINT: {
       PAINTSTRUCT ps;
