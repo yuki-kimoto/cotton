@@ -104,16 +104,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         DeleteObject(brash);
       }
       {
-        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xEE, 0x00, 0x7F));
-        SelectObject(hdc, hpen);
-        HBRUSH brash = CreateSolidBrush(RGB(0xEE, 0x00, 0x7F));
-        SelectObject(hdc, brash);
-        Rectangle(hdc, 0, 100, client_rect.right, 200);
-        DeleteObject(hpen);
-        DeleteObject(brash);
-      }
-      
-      {
         LOGFONT lfFont;
         lfFont.lfHeight     = 40;
         lfFont.lfWidth = lfFont.lfEscapement =
