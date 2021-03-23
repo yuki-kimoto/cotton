@@ -104,37 +104,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         TextOut(hdc , 0 , 0 , "Cotton" , lstrlen("Cotton"));
         DeleteObject(hFont);
       }
-
-      {
-        RECT main_window_rect;
-    		GetWindowRect(hwnd, &main_window_rect);
-        int cxSizeFrame = GetSystemMetrics(SM_CXSIZEFRAME); // 境界線幅X方向
-        int cySizeFrame = GetSystemMetrics(SM_CYSIZEFRAME); // 境界線幅Y方向
-        int cyCaption = GetSystemMetrics(SM_CYCAPTION);     // タイトルバーの高さ
-
-        int32_t abs_client_origin_left = main_window_rect.left + cxSizeFrame;
-        int32_t abs_client_origin_top = main_window_rect.top + cySizeFrame + cyCaption;
-        
-        RECT div_window_rect;
-    		GetWindowRect(div, &div_window_rect);
-        
-        RECT div_window_rect_rel;
-        div_window_rect_rel.left = div_window_rect.left - abs_client_origin_left;
-        div_window_rect_rel.top = div_window_rect.top - abs_client_origin_top;
-        div_window_rect_rel.right = div_window_rect.right - abs_client_origin_left;
-        div_window_rect_rel.bottom = div_window_rect.bottom - abs_client_origin_top;
-
-        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
-        SelectObject(hdc, brash);
-        Rectangle(hdc, div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
-        DeleteObject(brash);
-
-        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xFF, 0xFF, 0xFF));
-        SelectObject(hdc, hpen);
-        TextOut(hdc, div_window_rect_rel.left, div_window_rect_rel.top, "Hello", lstrlen("Hello"));
-        DeleteObject(hpen);
-      }
-
       
       EndPaint(hwnd , &ps);
       return 0;
