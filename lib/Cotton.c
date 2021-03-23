@@ -46,46 +46,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 		  return 0;
     }
 
-    case WM_CTLCOLORSTATIC: {
-/*
-      printf("AAAAAAA");
-      
-      // ウィンドウハンドルのチェック
-      if ((HWND)lp == div) {
-      printf("BBBBB");
-        // テキストカラーの変更（白）
-        SetTextColor((HDC)wp, RGB(0xaa, 0xff, 0xff));
-
-        // 背景モードを透明に設定
-        SetBkMode((HDC)wp, TRANSPARENT);
-
-        // 新しいブラシの作成（赤）
-        HBRUSH hbrStatic = CreateSolidBrush(RGB(0xff, 0x00, 0x00));
-
-        // 取得した色を背景色として返す
-        return (LRESULT)hbrStatic;
-      }
-*/
-
-/*
-      // ウィンドウハンドルのチェック
-      if ((HWND)lp == div) {
-        // テキストカラーの変更（黒）
-        SetTextColor((HDC)wp, RGB(0x00, 0x00, 0x00));
-
-        // 背景モードを透明に設定
-        SetBkMode((HDC)wp, TRANSPARENT);
-
-        // 新しいブラシの作成（赤）
-        HBRUSH hbrStatic = GetStockObject(NULL_BRUSH);
-
-        // 取得した色を背景色として返す
-        return (LRESULT)hbrStatic;
-      }
-*/
-
-    }
-
     case WM_PAINT: {
       PAINTSTRUCT ps;
       HDC hdc = BeginPaint(hwnd , &ps);
