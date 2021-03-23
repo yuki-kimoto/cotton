@@ -51,6 +51,8 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       HDC hdc = draw_item->hDC;
       
       {
+        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+        SelectObject(hdc, GetStockObject(NULL_PEN));
         HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc , brash);
         Rectangle(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom);
