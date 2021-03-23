@@ -55,7 +55,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         SelectObject(hdc, GetStockObject(NULL_PEN));
         HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc , brash);
-        Rectangle(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom);
+        RoundRect(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom, 10, 10);
         DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
       }
       
