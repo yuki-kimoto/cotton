@@ -50,9 +50,35 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       LPDRAWITEMSTRUCT draw_item = (LPDRAWITEMSTRUCT)lp;
       HDC hdc = draw_item->hDC;
       
-      SelectObject(hdc , CreateHatchBrush(HS_DIAGCROSS , RGB(0xFF , 0 , 0)));
-      Rectangle(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom);
-  		DeleteObject(SelectObject(hdc , GetStockObject(WHITE_BRUSH)));      
+      {
+        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        SelectObject(hdc , brash);
+        Rectangle(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom);
+        DeleteObject(SelectObject(hdc , GetStockObject(WHITE_BRUSH)));
+      }
+      
+      {
+        LOGFONT lfFont;
+        lfFont.lfHeight     = 40;
+        lfFont.lfWidth = lfFont.lfEscapement =
+        lfFont.lfOrientation    = 0;
+        lfFont.lfWeight     = FW_BOLD;
+        lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+        lfFont.lfStrikeOut    = FALSE; 
+        lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+        lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+        lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+        lfFont.lfQuality    = DEFAULT_QUALITY;
+        lfFont.lfPitchAndFamily = 0;
+        lfFont.lfFaceName[0]    = '\0';
+        HFONT hFont = CreateFontIndirect(&lfFont);
+        
+        SelectObject(hdc, hFont);
+        SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+        SetBkMode(hdc , TRANSPARENT);
+        TextOut(hdc , 0 , 0 , "Cotton" , lstrlen("Cotton"));
+        DeleteObject(hFont);
+      }
 
       return TRUE;
     }
