@@ -4,13 +4,11 @@
 
 typedef struct cotton_win_create_main_window_args COTTON_WIN_CREATE_MAIN_WINDOW_ARGS;
 struct cotton_win_create_main_window_args {
-  HINSTANCE instance_handle;
   LPCTSTR title;
 };
 
 typedef struct cotton_win_create_block_args COTTON_WIN_CREATE_BLOCK_ARGS;
 struct cotton_win_create_block_args {
-  HINSTANCE instance_handle;
   HWND parent_window_handle;
   int left;
   int top;
@@ -23,8 +21,6 @@ HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args);
 
 HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args) {
 
-  HINSTANCE instance_handle = args->instance_handle;
-  
   // Create block. Now block is implemented as owner draw button
   LPCTSTR window_class_name = TEXT("BUTTON");
   LPCTSTR window_title = NULL;
@@ -35,6 +31,7 @@ HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args) {
   int window_heigth = args->height;
   HWND window_parent_window_handle = args->parent_window_handle;
   HMENU window_id = (HMENU)1;
+  HINSTANCE instance_handle = GetModuleHandle(NULL);
   LPVOID window_create_lparam = NULL;
   HWND block = CreateWindow(
     window_class_name, window_title,
@@ -64,7 +61,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         width : 200,
         height : 45,
         parent_window_handle : hwnd,
-        instance_handle : ((LPCREATESTRUCT)(lp))->hInstance,
       };
       
       button = COTTON_WIN_create_block(&create_block_args);
@@ -167,7 +163,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   
   // Create main window
   COTTON_WIN_CREATE_MAIN_WINDOW_ARGS create_main_window_args = {
-    instance_handle : hInstance,
     title : TEXT("Cotton")
   };
   HWND main_window = COTTON_WIN_create_main_window(&create_main_window_args);
@@ -185,7 +180,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
 
 HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args) {
   
-  HINSTANCE instance_handle = args->instance_handle;
+  HINSTANCE instance_handle = GetModuleHandle(NULL);
   
   // Register Window Class
   WNDCLASS winc;
@@ -226,7 +221,7 @@ int32_t SPNATIVE__Cotton__call_win_main(SPVM_ENV* env, SPVM_VALUE* args) {
   (void)env;
   (void)args;
   
-  HINSTANCE hInst = GetModuleHandle(NULL) ;
+  HINSTANCE hInst = GetModuleHandle(NULL);
   
   WinMain(hInst, NULL, NULL, SW_SHOWNORMAL);
 
