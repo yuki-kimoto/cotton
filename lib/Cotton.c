@@ -58,16 +58,18 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       return 0;
     }
     case WM_CREATE: {
+      COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
+        left : 500,
+        top : 500,
+        width : 200,
+        height : 45,
+        parent_window_handle : hwnd,
+        instance_handle : ((LPCREATESTRUCT)(lp))->hInstance,
+      };
+      
+      button = COTTON_WIN_create_block(&create_block_args);
 
-  		button = CreateWindow(
-  			TEXT("BUTTON") , NULL ,
-  			WS_CHILD | WS_VISIBLE | SS_CENTER | BS_OWNERDRAW,
-  			500 , 500 , 200 , 45 ,
-  			hwnd , (HMENU)1 ,
-  			((LPCREATESTRUCT)(lp))->hInstance , NULL
-  		);
-
-		  return 0;
+      return 0;
     }
     case WM_CTLCOLORBTN: {
       
