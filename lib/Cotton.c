@@ -135,7 +135,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   return DefWindowProc(hwnd , msg , wp , lp);
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
+HWND COTTON_WIN_create_main_window(HINSTANCE hInstance) {
   
   // Register Window Class
   WNDCLASS winc;
@@ -148,7 +148,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   winc.hbrBackground  = (HBRUSH)GetStockObject(NULL_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName  = TEXT("main_window");
-  if (!RegisterClass(&winc)) return -1;
+  if (!RegisterClass(&winc)) return NULL;
 
   // Create Main Window
   LPCTSTR window_class_name = TEXT("main_window");
@@ -166,9 +166,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
       window_style,
       window_x, window_y,
       window_width, window_heigth,
-      window_parent_window_handle , window_id , hInstance , window_create_lparam
+      window_parent_window_handle, window_id, hInstance, window_create_lparam
   );
-  if (hwnd == NULL) return -1;
+
+  return hwnd;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
+  
+  // Create main window
+  HWND main_window = COTTON_WIN_create_main_window(hInstance);
+  if (main_window == NULL) return -1;
   
   // Get and dispatch message
   MSG msg;
