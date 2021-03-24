@@ -51,6 +51,8 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       
       LPDRAWITEMSTRUCT draw_item = (LPDRAWITEMSTRUCT)lp;
       HDC hdc = draw_item->hDC;
+      HWND hwnd = draw_item->hwndItem;
+      
       
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
@@ -135,7 +137,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
   
-  // Window Class
+  // Register Window Class
   WNDCLASS winc;
   winc.style    = CS_HREDRAW | CS_VREDRAW;
   winc.lpfnWndProc  = WndProc;
@@ -146,26 +148,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   winc.hbrBackground  = (HBRUSH)GetStockObject(NULL_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName  = TEXT("main_window");
-
-  // Register Window Class
   if (!RegisterClass(&winc)) return -1;
-  
+
   // Create Main Window
+  LPCTSTR window_class_name = TEXT("main_window");
+  LPCTSTR window_title = TEXT("Cotton");
+  DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+  int window_x = CW_USEDEFAULT;
+  int window_y = CW_USEDEFAULT;
+  int window_width = CW_USEDEFAULT;
+  int window_heigth = CW_USEDEFAULT;
+  HWND window_parent_window_handle = NULL;
+  HMENU window_id = NULL;
+  LPVOID window_create_lparam = NULL;
   HWND hwnd = CreateWindow(
-      TEXT("main_window") , TEXT("Cotton") ,
-      WS_OVERLAPPEDWINDOW | WS_VISIBLE ,
-      CW_USEDEFAULT , CW_USEDEFAULT ,
-      CW_USEDEFAULT , CW_USEDEFAULT ,
-      NULL , NULL , hInstance , NULL
+      window_class_name, window_title,
+      window_style,
+      window_x, window_y,
+      window_width, window_heigth,
+      window_parent_window_handle , window_id , hInstance , window_create_lparam
   );
-
   if (hwnd == NULL) return -1;
-
+  
+  // Get and dispatch message
   MSG msg;
   while(GetMessage(&msg , NULL , 0 , 0)) {
     TranslateMessage(&msg);
     DispatchMessage(&msg);
   }
+  
   return msg.wParam;
 }
 
