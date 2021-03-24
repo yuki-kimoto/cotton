@@ -7,6 +7,11 @@
 #define WIDTHBYTES(bits) (((bits)+31)/32*4)
 #endif//WIDTHBYTES
 
+typedef struct cotton_win_create_main_window_args COTTON_WIN_CREATE_MAIN_WINDOW_ARGS;
+struct cotton_win_create_main_window_args {
+  HINSTANCE instance_handle;
+};
+
 typedef struct{
   unsigned char *data;
   unsigned int width;
@@ -20,6 +25,8 @@ enum {
 };
 
 #define SIGNATURE_NUM 8
+
+HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args);
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   
@@ -135,19 +142,40 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   return DefWindowProc(hwnd , msg , wp , lp);
 }
 
-HWND COTTON_WIN_create_main_window(HINSTANCE hInstance) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
+  
+  // Create main window
+  COTTON_WIN_CREATE_MAIN_WINDOW_ARGS create_main_window_args = {
+    instance_handle : hInstance
+  };
+  HWND main_window = COTTON_WIN_create_main_window(&create_main_window_args);
+  if (main_window == NULL) return -1;
+  
+  // Get and dispatch message
+  MSG msg;
+  while(GetMessage(&msg , NULL , 0 , 0)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+  
+  return msg.wParam;
+}
+
+HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args) {
+  
+  HINSTANCE instance_handle = args->instance_handle;
   
   // Register Window Class
   WNDCLASS winc;
-  winc.style    = CS_HREDRAW | CS_VREDRAW;
-  winc.lpfnWndProc  = WndProc;
+  winc.style = CS_HREDRAW | CS_VREDRAW;
+  winc.lpfnWndProc = WndProc;
   winc.cbClsExtra = winc.cbWndExtra = 0;
-  winc.hInstance    = hInstance;
-  winc.hIcon    = LoadIcon(NULL , IDI_APPLICATION);
-  winc.hCursor    = LoadCursor(NULL , IDC_ARROW);
-  winc.hbrBackground  = (HBRUSH)GetStockObject(NULL_BRUSH);
+  winc.hInstance = instance_handle;
+  winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
+  winc.hCursor = LoadCursor(NULL , IDC_ARROW);
+  winc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
   winc.lpszMenuName = NULL;
-  winc.lpszClassName  = TEXT("main_window");
+  winc.lpszClassName = TEXT("main_window");
   if (!RegisterClass(&winc)) return NULL;
 
   // Create Main Window
@@ -166,26 +194,10 @@ HWND COTTON_WIN_create_main_window(HINSTANCE hInstance) {
       window_style,
       window_x, window_y,
       window_width, window_heigth,
-      window_parent_window_handle, window_id, hInstance, window_create_lparam
+      window_parent_window_handle, window_id, instance_handle, window_create_lparam
   );
 
   return hwnd;
-}
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
-  
-  // Create main window
-  HWND main_window = COTTON_WIN_create_main_window(hInstance);
-  if (main_window == NULL) return -1;
-  
-  // Get and dispatch message
-  MSG msg;
-  while(GetMessage(&msg , NULL , 0 , 0)) {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
-  
-  return msg.wParam;
 }
 
 int32_t SPNATIVE__Cotton__call_win_main(SPVM_ENV* env, SPVM_VALUE* args) {
