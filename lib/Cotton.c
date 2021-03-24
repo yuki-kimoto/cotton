@@ -10,6 +10,7 @@
 typedef struct cotton_win_create_main_window_args COTTON_WIN_CREATE_MAIN_WINDOW_ARGS;
 struct cotton_win_create_main_window_args {
   HINSTANCE instance_handle;
+  LPCTSTR title;
 };
 
 typedef struct{
@@ -146,7 +147,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   
   // Create main window
   COTTON_WIN_CREATE_MAIN_WINDOW_ARGS create_main_window_args = {
-    instance_handle : hInstance
+    instance_handle : hInstance,
+    title : TEXT("Cotton")
   };
   HWND main_window = COTTON_WIN_create_main_window(&create_main_window_args);
   if (main_window == NULL) return -1;
@@ -180,7 +182,7 @@ HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args) {
 
   // Create Main Window
   LPCTSTR window_class_name = TEXT("main_window");
-  LPCTSTR window_title = TEXT("Cotton");
+  LPCTSTR window_title = args->title;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
   int window_y = CW_USEDEFAULT;
