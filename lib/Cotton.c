@@ -48,7 +48,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   
   static HWND button = NULL;
   
-  BITMAP bitmap = {0};
   switch (msg) {
     case WM_DESTROY: {
       PostQuitMessage(0);
