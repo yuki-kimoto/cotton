@@ -10,10 +10,11 @@ struct cotton_win_create_main_window_args {
 typedef struct cotton_win_create_block_args COTTON_WIN_CREATE_BLOCK_ARGS;
 struct cotton_win_create_block_args {
   HWND parent_window_handle;
-  int left;
-  int top;
-  int width;
-  int height;
+  int32_t left;
+  int32_t top;
+  int32_t width;
+  int32_t height;
+  int32_t window_id;
 };
 
 HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args);
@@ -30,7 +31,7 @@ HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args) {
   int window_width = args->width;
   int window_heigth = args->height;
   HWND window_parent_window_handle = args->parent_window_handle;
-  HMENU window_id = (HMENU)1;
+  HMENU window_id = (HMENU)(intptr_t)args->window_id;
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   LPVOID window_create_lparam = NULL;
   HWND block = CreateWindow(
@@ -46,7 +47,8 @@ HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args) {
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   
-  static HWND button = NULL;
+  static HWND block1 = NULL;
+  static HWND block2 = NULL;
   
   switch (msg) {
     case WM_DESTROY: {
@@ -54,15 +56,29 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       return 0;
     }
     case WM_CREATE: {
-      COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
-        left : 500,
-        top : 500,
-        width : 200,
-        height : 45,
-        parent_window_handle : hwnd,
-      };
+      {
+        COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
+          left : 500,
+          top : 500,
+          width : 200,
+          height : 45,
+          parent_window_handle : hwnd,
+          window_id : 1,
+        };
+        block1 = COTTON_WIN_create_block(&create_block_args);
+      }
       
-      button = COTTON_WIN_create_block(&create_block_args);
+      {
+        COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
+          left : 300,
+          top : 300,
+          width : 200,
+          height : 45,
+          parent_window_handle : hwnd,
+          window_id : 2,
+        };
+        block2 = COTTON_WIN_create_block(&create_block_args);
+      }
 
       return 0;
     }
@@ -75,7 +91,8 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       LPDRAWITEMSTRUCT draw_item = (LPDRAWITEMSTRUCT)lp;
       HDC hdc = draw_item->hDC;
       HWND hwnd = draw_item->hwndItem;
-      
+      int32_t window_id = (int32_t)GetWindowLongPtr(hwnd, GWLP_ID);
+      printf("%d\n", window_id);
       
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
