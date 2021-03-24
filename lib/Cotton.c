@@ -23,7 +23,7 @@ enum {
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   
-  static HWND div = NULL;
+  static HWND button = NULL;
   
   BITMAP bitmap = {0};
   switch (msg) {
@@ -33,7 +33,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     }
     case WM_CREATE: {
 
-  		div = CreateWindow(
+  		button = CreateWindow(
   			TEXT("BUTTON") , NULL ,
   			WS_CHILD | WS_VISIBLE | SS_CENTER | BS_OWNERDRAW,
   			500 , 500 , 200 , 45 ,
