@@ -107,7 +107,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         SelectObject(hdc, hFont);
         SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
         SetBkMode(hdc , TRANSPARENT);
-        TextOut(hdc , 0 , 0 , TEXT("Cotton") , lstrlen(TEXT("Cotton")));
+        TextOut(hdc , 0 , 0 , TEXT("あいう😀") , lstrlen(TEXT("あいう😀")));
         DeleteObject(hFont);
       }
 
