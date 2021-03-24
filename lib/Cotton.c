@@ -8,7 +8,44 @@ struct cotton_win_create_main_window_args {
   LPCTSTR title;
 };
 
+typedef struct cotton_win_create_block_args COTTON_WIN_CREATE_BLOCK_ARGS;
+struct cotton_win_create_block_args {
+  HINSTANCE instance_handle;
+  HWND parent_window_handle;
+  int left;
+  int top;
+  int width;
+  int height;
+};
+
 HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args);
+HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args);
+
+HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args) {
+
+  HINSTANCE instance_handle = args->instance_handle;
+  
+  // Create block. Now block is implemented as owner draw button
+  LPCTSTR window_class_name = TEXT("BUTTON");
+  LPCTSTR window_title = NULL;
+  DWORD window_style = WS_CHILD | WS_VISIBLE | BS_OWNERDRAW;
+  int window_x = args->left;
+  int window_y = args->top;
+  int window_width = args->width;
+  int window_heigth = args->height;
+  HWND window_parent_window_handle = args->parent_window_handle;
+  HMENU window_id = (HMENU)1;
+  LPVOID window_create_lparam = NULL;
+  HWND block = CreateWindow(
+    window_class_name, window_title,
+    window_style,
+    window_x, window_y, window_width, window_heigth,
+    window_parent_window_handle, window_id,
+    instance_handle, window_create_lparam
+  );
+  
+  return block;
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   
