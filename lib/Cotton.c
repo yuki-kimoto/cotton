@@ -2,30 +2,11 @@
 
 #include <windows.h>
 
-//ビットマップバイト幅の算出マクロ
-#ifndef WIDTHBYTES
-#define WIDTHBYTES(bits) (((bits)+31)/32*4)
-#endif//WIDTHBYTES
-
 typedef struct cotton_win_create_main_window_args COTTON_WIN_CREATE_MAIN_WINDOW_ARGS;
 struct cotton_win_create_main_window_args {
   HINSTANCE instance_handle;
   LPCTSTR title;
 };
-
-typedef struct{
-  unsigned char *data;
-  unsigned int width;
-  unsigned int height;
-  unsigned int ch;
-} BITMAPDATA_t;
-
-enum {
-  COTTON_C_SIZE_UNIT_PIXEL,
-  COTTON_C_SIZE_UNIT_PERCENT,
-};
-
-#define SIGNATURE_NUM 8
 
 HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args);
 
