@@ -58,8 +58,8 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     case WM_CREATE: {
       {
         COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
-          left : 500,
-          top : 500,
+          left : 300,
+          top : 200,
           width : 200,
           height : 45,
           parent_window_handle : hwnd,
@@ -71,7 +71,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       {
         COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
           left : 300,
-          top : 300,
+          top : 250,
           width : 200,
           height : 45,
           parent_window_handle : hwnd,
@@ -92,7 +92,6 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       HDC hdc = draw_item->hDC;
       HWND hwnd = draw_item->hwndItem;
       int32_t window_id = (int32_t)GetWindowLongPtr(hwnd, GWLP_ID);
-      printf("%d\n", window_id);
       
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
@@ -123,7 +122,12 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         SelectObject(hdc, hFont);
         SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
         SetBkMode(hdc , TRANSPARENT);
-        TextOut(hdc , 0 , 0 , TEXT("あいう😀") , lstrlen(TEXT("あいう😀")));
+        
+        TCHAR buffer[200];
+        wsprintf(buffer, TEXT("%s%d%s"), TEXT("ボタン"), window_id , TEXT("😀"));
+        LPCTSTR button_text = buffer;
+        
+        TextOut(hdc , 0 , 0 , button_text , lstrlen(button_text));
         DeleteObject(hFont);
       }
 
