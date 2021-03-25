@@ -2,6 +2,11 @@
 
 #include <windows.h>
 
+typedef struct cotton COTTON;
+struct cotton {
+  HINSTANCE instance_handle;
+};
+
 typedef struct cotton_win_create_main_window_args COTTON_WIN_CREATE_MAIN_WINDOW_ARGS;
 struct cotton_win_create_main_window_args {
   LPCTSTR title;
