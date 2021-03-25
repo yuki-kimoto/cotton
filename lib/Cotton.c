@@ -197,6 +197,47 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         TextOut(hdc , 0 , 0 , TEXT("Cotton"), lstrlen(TEXT("Cotton")));
         DeleteObject(hFont);
       }
+
+/*
+      {
+        RECT main_window_rect;
+    		GetWindowRect(hwnd, &main_window_rect);
+        int cxSizeFrame = GetSystemMetrics(SM_CXSIZEFRAME); // 境界線幅X方向
+        int cySizeFrame = GetSystemMetrics(SM_CYSIZEFRAME); // 境界線幅Y方向
+        int cyCaption = GetSystemMetrics(SM_CYCAPTION);     // タイトルバーの高さ
+
+        printf("AAAAAA %d %d %d %d\n", main_window_rect.left, main_window_rect.top, main_window_rect.right, main_window_rect.bottom);
+        printf("BBBBBB %d %d %d\n", cxSizeFrame, cySizeFrame, cyCaption);
+        
+        int32_t abs_client_origin_left = main_window_rect.left + cxSizeFrame;
+        int32_t abs_client_origin_top = main_window_rect.top + cySizeFrame + cyCaption;
+
+        printf("CCCCCC %d %d\n", abs_client_origin_left, abs_client_origin_top);
+        
+        RECT div_window_rect;
+    		GetWindowRect(div, &div_window_rect);
+
+        printf("DDDDDD %d %d %d %d\n", div_window_rect.left, div_window_rect.top, div_window_rect.right, div_window_rect.bottom);
+        
+        RECT div_window_rect_rel;
+        div_window_rect_rel.left = div_window_rect.left - abs_client_origin_left;
+        div_window_rect_rel.top = div_window_rect.top - abs_client_origin_top;
+        div_window_rect_rel.right = div_window_rect.right - abs_client_origin_left;
+        div_window_rect_rel.bottom = div_window_rect.bottom - abs_client_origin_top;
+        
+        printf("%d %d %d %d\n", div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
+
+        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        SelectObject(hdc, brash);
+        Rectangle(hdc, div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
+        DeleteObject(brash);
+
+        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xFF, 0xFF, 0xFF));
+        SelectObject(hdc, hpen);
+        TextOut(hdc, div_window_rect_rel.left, div_window_rect_rel.top, "Hello", lstrlen("Hello"));
+        DeleteObject(hpen);
+      }
+*/
       
       EndPaint(window_handle , &ps);
       return 0;
