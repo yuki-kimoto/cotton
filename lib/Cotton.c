@@ -92,47 +92,51 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       HDC hdc = draw_item->hDC;
       HWND hwnd = draw_item->hwndItem;
       int32_t window_id = (int32_t)GetWindowLongPtr(hwnd, GWLP_ID);
+
+      LOGFONT lfFont;
+      lfFont.lfHeight     = 40;
+      lfFont.lfWidth = lfFont.lfEscapement =
+      lfFont.lfOrientation    = 0;
+      lfFont.lfWeight     = FW_BOLD;
+      lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+      lfFont.lfStrikeOut    = FALSE; 
+      lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+      lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+      lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+      lfFont.lfQuality    = DEFAULT_QUALITY;
+      lfFont.lfPitchAndFamily = 0;
+      lfFont.lfFaceName[0]    = '\0';
+      HFONT hFont = CreateFontIndirect(&lfFont);
+      
+      SelectObject(hdc, hFont);
+      SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+      SetBkMode(hdc , TRANSPARENT);
+
+      TCHAR buffer[200];
+      wsprintf(buffer, TEXT("%s%d%s"), TEXT("ボタン"), window_id , TEXT("😀"));
+      LPCTSTR button_text = buffer;
+      SIZE text_size;
+      GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &text_size);
       
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc, GetStockObject(NULL_PEN));
-
-        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        
+        HBRUSH brash;
+        if (window_id == 1) {
+          brash = CreateSolidBrush(RGB(0xee, 0x00, 0x00));
+        }
+        else {
+          brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        }
         SelectObject(hdc , brash);
-        RoundRect(hdc , 0 , 0 , draw_item->rcItem.right, draw_item->rcItem.bottom, 10, 10);
+        RoundRect(hdc , 0 , 0 , text_size.cx, text_size.cy, 10, 10);
         DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
       }
       
       {
-        LOGFONT lfFont;
-        lfFont.lfHeight     = 40;
-        lfFont.lfWidth = lfFont.lfEscapement =
-        lfFont.lfOrientation    = 0;
-        lfFont.lfWeight     = FW_BOLD;
-        lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-        lfFont.lfStrikeOut    = FALSE; 
-        lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-        lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-        lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-        lfFont.lfQuality    = DEFAULT_QUALITY;
-        lfFont.lfPitchAndFamily = 0;
-        lfFont.lfFaceName[0]    = '\0';
-        HFONT hFont = CreateFontIndirect(&lfFont);
-        
-        SelectObject(hdc, hFont);
-        SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
-        SetBkMode(hdc , TRANSPARENT);
-        
-        TCHAR buffer[200];
-        wsprintf(buffer, TEXT("%s%d%s"), TEXT("ボタン"), window_id , TEXT("😀"));
-        LPCTSTR button_text = buffer;
         
         TextOut(hdc , 0 , 0 , button_text , lstrlen(button_text));
-        
-        SIZE size;
-        GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &size);
-        
-        printf("BBBBBB %d %d\n", size.cx, size.cy);
         
         DeleteObject(hFont);
       }
