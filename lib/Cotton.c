@@ -2,14 +2,29 @@
 
 #include <windows.h>
 
-typedef struct cotton COTTON_WIN;
+typedef struct cotton_win COTTON_WIN;
 struct cotton_win {
-  HINSTANCE instance_handle;
+  int32_t dummy;
 };
+
+typedef struct cotton_win_new_args COTTON_WIN_NEW_ARGS;
+struct cotton_win_new_args {
+};
+
+COTTON_WIN* COTTON_WIN_new() {
+  COTTON_WIN* cotton = calloc(1, sizeof(COTTON_WIN));
+  
+  return cotton;
+}
+
+COTTON_WIN COTTON_WIN_free(COTTON_WIN* cotton) {
+  free(cotton);
+}
 
 typedef struct cotton_win_new_main_window_args COTTON_WIN_NEW_MAIN_WINDOW_ARGS;
 struct cotton_win_new_main_window_args {
   LPCTSTR title;
+  COTTON_WIN* cotton;
 };
 
 typedef struct cotton_win_new_block_args COTTON_WIN_NEW_BLOCK_ARGS;
@@ -18,10 +33,10 @@ struct cotton_win_new_block_args {
   int32_t window_id;
 };
 
-HWND COTTON_WIN_new_main_window(COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args);
-HWND COTTON_WIN_new_block(COTTON_WIN_NEW_BLOCK_ARGS* args);
+HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args);
+HWND COTTON_WIN_new_block(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_ARGS* args);
 
-HWND COTTON_WIN_new_block(COTTON_WIN_NEW_BLOCK_ARGS* args) {
+HWND COTTON_WIN_new_block(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_ARGS* args) {
 
   // Create block. Now block is implemented as owner draw button
   LPCTSTR window_class_name = TEXT("BUTTON");
@@ -48,8 +63,10 @@ HWND COTTON_WIN_new_block(COTTON_WIN_NEW_BLOCK_ARGS* args) {
 
 LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
   
-  static HWND block1 = NULL;
-  static HWND block2 = NULL;
+  static COTTON_WIN* cotton;
+  
+  static HWND block1;
+  static HWND block2;
   
   switch (msg) {
     case WM_DESTROY: {
@@ -57,12 +74,16 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       return 0;
     }
     case WM_CREATE: {
+      CREATESTRUCT* create_struct = (CREATESTRUCT*)lp;
+      
+      cotton = (COTTON_WIN*)create_struct->lpCreateParams;
+      
       {
         COTTON_WIN_NEW_BLOCK_ARGS new_block_args = {
           parent_window_handle : hwnd,
           window_id : 1,
         };
-        block1 = COTTON_WIN_new_block(&new_block_args);
+        block1 = COTTON_WIN_new_block(cotton, &new_block_args);
         MoveWindow(block1, 300, 200, 200, 45, 1);
       }
       
@@ -71,7 +92,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
           parent_window_handle : hwnd,
           window_id : 2,
         };
-        block2 = COTTON_WIN_new_block(&new_block_args);
+        block2 = COTTON_WIN_new_block(cotton, &new_block_args);
         MoveWindow(block2, 300, 250, 200, 45, 1);
       }
 
@@ -186,11 +207,16 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
   
+  // Cotton Application for Windows
+  COTTON_WIN* cotton = COTTON_WIN_new(NULL);
+  cotton->dummy = 5;
+  
   // Create main window
   COTTON_WIN_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
-    title : TEXT("Cotton")
+    title : TEXT("Cotton"),
+    cotton : cotton,
   };
-  HWND main_window = COTTON_WIN_new_main_window(&new_main_window_args);
+  HWND main_window = COTTON_WIN_new_main_window(cotton, &new_main_window_args);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
@@ -203,7 +229,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   return msg.wParam;
 }
 
-HWND COTTON_WIN_new_main_window(COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args) {
+HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args) {
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   
@@ -230,13 +256,13 @@ HWND COTTON_WIN_new_main_window(COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args) {
   int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
-  LPVOID window_create_lparam = NULL;
+  LPVOID window_wm_create_lparam = (LPVOID)args->cotton;
   HWND hwnd = CreateWindow(
       window_class_name, window_title,
       window_style,
       window_x, window_y,
       window_width, window_heigth,
-      window_parent_window_handle, window_id, instance_handle, window_create_lparam
+      window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
 
   return hwnd;
