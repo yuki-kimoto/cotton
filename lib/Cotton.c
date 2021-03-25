@@ -128,6 +128,12 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         LPCTSTR button_text = buffer;
         
         TextOut(hdc , 0 , 0 , button_text , lstrlen(button_text));
+        
+        SIZE size;
+        GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &size);
+        
+        printf("BBBBBB %d %d\n", size.cx, size.cy);
+        
         DeleteObject(hFont);
       }
 
@@ -210,7 +216,7 @@ HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args) {
   winc.hInstance = instance_handle;
   winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
   winc.hCursor = LoadCursor(NULL , IDC_ARROW);
-  winc.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+  winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName = TEXT("main_window");
   if (!RegisterClass(&winc)) return NULL;
