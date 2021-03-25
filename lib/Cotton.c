@@ -61,26 +61,26 @@ HWND COTTON_WIN_new_block(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_ARGS* args) {
   return block;
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
+LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static COTTON_WIN* cotton;
   
   static HWND block1;
   static HWND block2;
   
-  switch (msg) {
+  switch (message) {
     case WM_DESTROY: {
       PostQuitMessage(0);
       return 0;
     }
     case WM_CREATE: {
-      CREATESTRUCT* create_struct = (CREATESTRUCT*)lp;
+      CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
       
       {
         COTTON_WIN_NEW_BLOCK_ARGS new_block_args = {
-          parent_window_handle : hwnd,
+          parent_window_handle : window_handle,
           window_id : 1,
         };
         block1 = COTTON_WIN_new_block(cotton, &new_block_args);
@@ -89,7 +89,7 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
       
       {
         COTTON_WIN_NEW_BLOCK_ARGS new_block_args = {
-          parent_window_handle : hwnd,
+          parent_window_handle : window_handle,
           window_id : 2,
         };
         block2 = COTTON_WIN_new_block(cotton, &new_block_args);
@@ -104,10 +104,10 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     }
     case WM_DRAWITEM: {
       
-      LPDRAWITEMSTRUCT draw_item = (LPDRAWITEMSTRUCT)lp;
+      LPDRAWITEMSTRUCT draw_item = (LPDRAWITEMSTRUCT)lparam;
       HDC hdc = draw_item->hDC;
-      HWND hwnd = draw_item->hwndItem;
-      int32_t window_id = (int32_t)GetWindowLongPtr(hwnd, GWLP_ID);
+      HWND window_handle = draw_item->hwndItem;
+      int32_t window_id = (int32_t)GetWindowLongPtr(window_handle, GWLP_ID);
 
       LOGFONT lfFont;
       lfFont.lfHeight     = 40;
@@ -161,10 +161,10 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     }
     case WM_PAINT: {
       PAINTSTRUCT ps;
-      HDC hdc = BeginPaint(hwnd , &ps);
+      HDC hdc = BeginPaint(window_handle , &ps);
 
       RECT client_rect;
-      GetClientRect(hwnd , &client_rect);
+      GetClientRect(window_handle , &client_rect);
 
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
@@ -198,11 +198,11 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
         DeleteObject(hFont);
       }
       
-      EndPaint(hwnd , &ps);
+      EndPaint(window_handle , &ps);
       return 0;
     }
   }
-  return DefWindowProc(hwnd , msg , wp , lp);
+  return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
@@ -220,13 +220,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
-  MSG msg;
-  while(GetMessage(&msg , NULL , 0 , 0)) {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
+  MSG message;
+  while(GetMessage(&message , NULL , 0 , 0)) {
+    TranslateMessage(&message);
+    DispatchMessage(&message);
   }
   
-  return msg.wParam;
+  return message.wParam;
 }
 
 HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args) {
@@ -257,7 +257,7 @@ HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_A
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
   LPVOID window_wm_create_lparam = (LPVOID)args->cotton;
-  HWND hwnd = CreateWindow(
+  HWND window_handle = CreateWindow(
       window_class_name, window_title,
       window_style,
       window_x, window_y,
@@ -265,7 +265,7 @@ HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_A
       window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
 
-  return hwnd;
+  return window_handle;
 }
 
 int32_t SPNATIVE__Cotton__call_win_main(SPVM_ENV* env, SPVM_VALUE* args) {
