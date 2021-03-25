@@ -104,7 +104,7 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
     }
     case WM_DRAWITEM: {
       
-      LPDRAWITEMSTRUCT draw_item = (LPDRAWITEMSTRUCT)lparam;
+      DRAWITEMSTRUCT* draw_item = (DRAWITEMSTRUCT*)lparam;
       HDC hdc = draw_item->hDC;
       HWND window_handle = draw_item->hwndItem;
       int32_t window_id = (int32_t)GetWindowLongPtr(window_handle, GWLP_ID);
@@ -247,8 +247,8 @@ HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_A
   if (!RegisterClass(&winc)) return NULL;
 
   // Create Main Window
-  LPCTSTR window_class_name = TEXT("main_window");
-  LPCTSTR window_title = args->title;
+  const TCHAR* window_class_name = TEXT("main_window");
+  const TCHAR* window_title = args->title;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
   int window_y = CW_USEDEFAULT;
@@ -256,7 +256,7 @@ HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_A
   int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
-  LPVOID window_wm_create_lparam = (LPVOID)args->cotton;
+  void* window_wm_create_lparam = (void*)args->cotton;
   HWND window_handle = CreateWindow(
       window_class_name, window_title,
       window_style,
