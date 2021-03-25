@@ -2,8 +2,8 @@
 
 #include <windows.h>
 
-typedef struct cotton COTTON;
-struct cotton {
+typedef struct cotton COTTON_WIN;
+struct cotton_win {
   HINSTANCE instance_handle;
 };
 
