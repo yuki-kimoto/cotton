@@ -7,21 +7,21 @@ struct cotton {
   HINSTANCE instance_handle;
 };
 
-typedef struct cotton_win_create_main_window_args COTTON_WIN_CREATE_MAIN_WINDOW_ARGS;
-struct cotton_win_create_main_window_args {
+typedef struct cotton_win_new_main_window_args COTTON_WIN_NEW_MAIN_WINDOW_ARGS;
+struct cotton_win_new_main_window_args {
   LPCTSTR title;
 };
 
-typedef struct cotton_win_create_block_args COTTON_WIN_CREATE_BLOCK_ARGS;
-struct cotton_win_create_block_args {
+typedef struct cotton_win_new_block_args COTTON_WIN_NEW_BLOCK_ARGS;
+struct cotton_win_new_block_args {
   HWND parent_window_handle;
   int32_t window_id;
 };
 
-HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args);
-HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args);
+HWND COTTON_WIN_new_main_window(COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args);
+HWND COTTON_WIN_new_block(COTTON_WIN_NEW_BLOCK_ARGS* args);
 
-HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args) {
+HWND COTTON_WIN_new_block(COTTON_WIN_NEW_BLOCK_ARGS* args) {
 
   // Create block. Now block is implemented as owner draw button
   LPCTSTR window_class_name = TEXT("BUTTON");
@@ -58,20 +58,20 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     }
     case WM_CREATE: {
       {
-        COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
+        COTTON_WIN_NEW_BLOCK_ARGS new_block_args = {
           parent_window_handle : hwnd,
           window_id : 1,
         };
-        block1 = COTTON_WIN_create_block(&create_block_args);
+        block1 = COTTON_WIN_new_block(&new_block_args);
         MoveWindow(block1, 300, 200, 200, 45, 1);
       }
       
       {
-        COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
+        COTTON_WIN_NEW_BLOCK_ARGS new_block_args = {
           parent_window_handle : hwnd,
           window_id : 2,
         };
-        block2 = COTTON_WIN_create_block(&create_block_args);
+        block2 = COTTON_WIN_new_block(&new_block_args);
         MoveWindow(block2, 300, 250, 200, 45, 1);
       }
 
@@ -187,10 +187,10 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
   
   // Create main window
-  COTTON_WIN_CREATE_MAIN_WINDOW_ARGS create_main_window_args = {
+  COTTON_WIN_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
     title : TEXT("Cotton")
   };
-  HWND main_window = COTTON_WIN_create_main_window(&create_main_window_args);
+  HWND main_window = COTTON_WIN_new_main_window(&new_main_window_args);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
@@ -203,7 +203,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine 
   return msg.wParam;
 }
 
-HWND COTTON_WIN_create_main_window(COTTON_WIN_CREATE_MAIN_WINDOW_ARGS* args) {
+HWND COTTON_WIN_new_main_window(COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args) {
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   
