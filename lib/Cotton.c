@@ -10,10 +10,6 @@ struct cotton_win_create_main_window_args {
 typedef struct cotton_win_create_block_args COTTON_WIN_CREATE_BLOCK_ARGS;
 struct cotton_win_create_block_args {
   HWND parent_window_handle;
-  int32_t left;
-  int32_t top;
-  int32_t width;
-  int32_t height;
   int32_t window_id;
 };
 
@@ -26,10 +22,10 @@ HWND COTTON_WIN_create_block(COTTON_WIN_CREATE_BLOCK_ARGS* args) {
   LPCTSTR window_class_name = TEXT("BUTTON");
   LPCTSTR window_title = NULL;
   DWORD window_style = WS_CHILD | WS_VISIBLE | BS_OWNERDRAW;
-  int window_x = args->left;
-  int window_y = args->top;
-  int window_width = args->width;
-  int window_heigth = args->height;
+  int window_x = 0;
+  int window_y = 0;
+  int window_width = 0;
+  int window_heigth = 0;
   HWND window_parent_window_handle = args->parent_window_handle;
   HMENU window_id = (HMENU)(intptr_t)args->window_id;
   HINSTANCE instance_handle = GetModuleHandle(NULL);
@@ -58,26 +54,20 @@ LRESULT CALLBACK WndProc(HWND hwnd , UINT msg , WPARAM wp , LPARAM lp) {
     case WM_CREATE: {
       {
         COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
-          left : 300,
-          top : 200,
-          width : 200,
-          height : 45,
           parent_window_handle : hwnd,
           window_id : 1,
         };
         block1 = COTTON_WIN_create_block(&create_block_args);
+        MoveWindow(block1, 300, 200, 200, 45, 1);
       }
       
       {
         COTTON_WIN_CREATE_BLOCK_ARGS create_block_args = {
-          left : 300,
-          top : 250,
-          width : 200,
-          height : 45,
           parent_window_handle : hwnd,
           window_id : 2,
         };
         block2 = COTTON_WIN_create_block(&create_block_args);
+        MoveWindow(block2, 300, 250, 200, 45, 1);
       }
 
       return 0;
