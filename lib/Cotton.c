@@ -61,6 +61,19 @@ HWND COTTON_WIN_new_block_window(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_WINDOW
   return block;
 }
 
+typedef struct cotton_win_block COTTON_WIN_BLOCK;
+struct cotton_win_block {
+  int32_t font_size;
+  int32_t color;
+  int32_t font_weight;
+};
+
+COTTON_WIN_BLOCK* COTTON_WIN_new_block(COTTON_WIN* cotton) {
+  COTTON_WIN_BLOCK* block = calloc(1, sizeof(COTTON_WIN_BLOCK));
+  
+  return block;
+}
+
 LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static COTTON_WIN* cotton;
@@ -99,7 +112,7 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
       return 0;
     }
     case WM_CTLCOLORBTN: {
-      
+      // デフォルトでコントールの背景は透過させる
       return (LRESULT)GetStockObject(NULL_BRUSH);
     }
     case WM_DRAWITEM: {
