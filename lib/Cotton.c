@@ -108,53 +108,55 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
       HDC hdc = draw_item->hDC;
       HWND window_handle = draw_item->hwndItem;
       int32_t window_id = (int32_t)GetWindowLongPtr(window_handle, GWLP_ID);
+      
+      if (window_id == 2) {
+        LOGFONT lfFont;
+        lfFont.lfHeight     = 40;
+        lfFont.lfWidth = lfFont.lfEscapement =
+        lfFont.lfOrientation    = 0;
+        lfFont.lfWeight     = FW_BOLD;
+        lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+        lfFont.lfStrikeOut    = FALSE; 
+        lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+        lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+        lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+        lfFont.lfQuality    = DEFAULT_QUALITY;
+        lfFont.lfPitchAndFamily = 0;
+        lfFont.lfFaceName[0]    = '\0';
+        HFONT hFont = CreateFontIndirect(&lfFont);
+        
+        SelectObject(hdc, hFont);
+        SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+        SetBkMode(hdc , TRANSPARENT);
 
-      LOGFONT lfFont;
-      lfFont.lfHeight     = 40;
-      lfFont.lfWidth = lfFont.lfEscapement =
-      lfFont.lfOrientation    = 0;
-      lfFont.lfWeight     = FW_BOLD;
-      lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-      lfFont.lfStrikeOut    = FALSE; 
-      lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-      lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-      lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-      lfFont.lfQuality    = DEFAULT_QUALITY;
-      lfFont.lfPitchAndFamily = 0;
-      lfFont.lfFaceName[0]    = '\0';
-      HFONT hFont = CreateFontIndirect(&lfFont);
-      
-      SelectObject(hdc, hFont);
-      SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
-      SetBkMode(hdc , TRANSPARENT);
-
-      TCHAR buffer[200];
-      wsprintf(buffer, TEXT("%s%d%s"), TEXT("ボタン"), window_id , TEXT("😀"));
-      LPCTSTR button_text = buffer;
-      SIZE text_size;
-      GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &text_size);
-      
-      {
-        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
-        SelectObject(hdc, GetStockObject(NULL_PEN));
+        TCHAR buffer[200];
+        wsprintf(buffer, TEXT("%s%d%s"), TEXT("ボタン"), window_id , TEXT("😀"));
+        LPCTSTR button_text = buffer;
+        SIZE text_size;
+        GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &text_size);
         
-        HBRUSH brash;
-        if (window_id == 1) {
-          brash = CreateSolidBrush(RGB(0xee, 0x00, 0x00));
+        {
+          HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+          SelectObject(hdc, GetStockObject(NULL_PEN));
+          
+          HBRUSH brash;
+          if (window_id == 1) {
+            brash = CreateSolidBrush(RGB(0xee, 0x00, 0x00));
+          }
+          else {
+            brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+          }
+          SelectObject(hdc , brash);
+          RoundRect(hdc , 0 , 0 , text_size.cx, text_size.cy, 10, 10);
+          DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
         }
-        else {
-          brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        
+        {
+          
+          TextOut(hdc , 0 , 0 , button_text , lstrlen(button_text));
+          
+          DeleteObject(hFont);
         }
-        SelectObject(hdc , brash);
-        RoundRect(hdc , 0 , 0 , text_size.cx, text_size.cy, 10, 10);
-        DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
-      }
-      
-      {
-        
-        TextOut(hdc , 0 , 0 , button_text , lstrlen(button_text));
-        
-        DeleteObject(hFont);
       }
 
       break;
@@ -198,10 +200,9 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         DeleteObject(hFont);
       }
 
-/*
       {
         RECT main_window_rect;
-    		GetWindowRect(hwnd, &main_window_rect);
+    		GetWindowRect(window_handle, &main_window_rect);
         int cxSizeFrame = GetSystemMetrics(SM_CXSIZEFRAME); // 境界線幅X方向
         int cySizeFrame = GetSystemMetrics(SM_CYSIZEFRAME); // 境界線幅Y方向
         int cyCaption = GetSystemMetrics(SM_CYCAPTION);     // タイトルバーの高さ
@@ -214,30 +215,68 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
 
         printf("CCCCCC %d %d\n", abs_client_origin_left, abs_client_origin_top);
         
-        RECT div_window_rect;
-    		GetWindowRect(div, &div_window_rect);
+        RECT block1_window_rect;
+    		GetWindowRect(block1, &block1_window_rect);
 
-        printf("DDDDDD %d %d %d %d\n", div_window_rect.left, div_window_rect.top, div_window_rect.right, div_window_rect.bottom);
+        printf("DDDDDD %d %d %d %d\n", block1_window_rect.left, block1_window_rect.top, block1_window_rect.right, block1_window_rect.bottom);
         
-        RECT div_window_rect_rel;
-        div_window_rect_rel.left = div_window_rect.left - abs_client_origin_left;
-        div_window_rect_rel.top = div_window_rect.top - abs_client_origin_top;
-        div_window_rect_rel.right = div_window_rect.right - abs_client_origin_left;
-        div_window_rect_rel.bottom = div_window_rect.bottom - abs_client_origin_top;
+        RECT block1_window_rect_rel;
+        block1_window_rect_rel.left = block1_window_rect.left - abs_client_origin_left;
+        block1_window_rect_rel.top = block1_window_rect.top - abs_client_origin_top;
+        block1_window_rect_rel.right = block1_window_rect.right - abs_client_origin_left;
+        block1_window_rect_rel.bottom = block1_window_rect.bottom - abs_client_origin_top;
         
-        printf("%d %d %d %d\n", div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
+        printf("%d %d %d %d\n", block1_window_rect_rel.left, block1_window_rect_rel.top, block1_window_rect_rel.right, block1_window_rect_rel.bottom);
 
-        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
-        SelectObject(hdc, brash);
-        Rectangle(hdc, div_window_rect_rel.left, div_window_rect_rel.top, div_window_rect_rel.right, div_window_rect_rel.bottom);
-        DeleteObject(brash);
+        int32_t window_id = 1;
 
-        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xFF, 0xFF, 0xFF));
-        SelectObject(hdc, hpen);
-        TextOut(hdc, div_window_rect_rel.left, div_window_rect_rel.top, "Hello", lstrlen("Hello"));
-        DeleteObject(hpen);
+        LOGFONT lfFont;
+        lfFont.lfHeight     = 40;
+        lfFont.lfWidth = lfFont.lfEscapement =
+        lfFont.lfOrientation    = 0;
+        lfFont.lfWeight     = FW_BOLD;
+        lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+        lfFont.lfStrikeOut    = FALSE; 
+        lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+        lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+        lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+        lfFont.lfQuality    = DEFAULT_QUALITY;
+        lfFont.lfPitchAndFamily = 0;
+        lfFont.lfFaceName[0]    = '\0';
+        HFONT hFont = CreateFontIndirect(&lfFont);
+        
+        SelectObject(hdc, hFont);
+        SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+        SetBkMode(hdc , TRANSPARENT);
+
+        TCHAR buffer[200];
+        wsprintf(buffer, TEXT("%s%d%s"), TEXT("ボタン"), window_id , TEXT("😀"));
+        LPCTSTR button_text = buffer;
+        SIZE text_size;
+        GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &text_size);
+        
+        printf("EEEEEEEE %d %d", text_size.cx, text_size.cy);
+
+        HBRUSH brash;
+        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xee, 0x00, 0x00));
+        if (window_id == 1) {
+          brash = CreateSolidBrush(RGB(0xee, 0x00, 0x00));
+        }
+        else {
+          brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        }
+        SelectObject(hdc , hpen);
+        SelectObject(hdc , brash);
+        RoundRect(hdc , block1_window_rect_rel.left, block1_window_rect_rel.top, block1_window_rect_rel.left + text_size.cx, block1_window_rect_rel.top + text_size.cy, 10, 10);
+        DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
+        
+        {
+          HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+          SelectObject(hdc, GetStockObject(NULL_PEN));
+          TextOut(hdc, block1_window_rect_rel.left, block1_window_rect_rel.top, button_text, lstrlen(button_text));
+          DeleteObject(hpen);
+        }
       }
-*/
       
       EndPaint(window_handle , &ps);
       return 0;
