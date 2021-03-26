@@ -159,7 +159,7 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
       elem_node1->padding_right = 5;
       elem_node1->padding_bottom = 5;
       
-      text_node1 = COTTON_WIN_new_text_node(cotton, TEXT("あいうえお"));
+      text_node1 = COTTON_WIN_new_text_node(cotton, TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"));
       elem_node1->first = text_node1;
       elem_node1->last = text_node1;
       text_node1->sibparent = elem_node1;
@@ -204,24 +204,30 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         SIZE text_size;
         GetTextExtentPoint32(hdc, text, lstrlen(text), &text_size);
 
+        RECT client_rect;
+        GetClientRect(window_handle , &client_rect);
+        int32_t width = elem_node1->padding_left + client_rect.right + elem_node1->padding_right;
+        int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
+        
+        RECT text_rect = {right : width, bottom:50};
+        DrawText(hdc, text, -1, &text_rect, DT_WORDBREAK | DT_CALCRECT);
+        
+        printf("RRRRRR %d %d %d %d %d\n", text_rect.left, text_rect.top, text_rect.right, text_rect.bottom);
+        
         // Draw block
         {
-          RECT client_rect;
-          GetClientRect(window_handle , &client_rect);
           HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
           SelectObject(hdc, hpen);
           HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
           SelectObject(hdc, brash);
-          int32_t width = elem_node1->padding_left + client_rect.right + elem_node1->padding_right;
-          int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
-          Rectangle(hdc, 0, 0, width, height);
+          Rectangle(hdc, 0, 0, text_rect.right, text_rect.bottom);
           DeleteObject(hpen);
           DeleteObject(brash);
         }
         
         // Draw text
         {
-          TextOut(hdc, elem_node1->padding_left, elem_node1->padding_top, text_node->text, lstrlen(text_node->text));
+          DrawText(hdc, text, -1, &text_rect, DT_WORDBREAK);
           DeleteObject(hFont);
         }
       }
@@ -233,27 +239,17 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         int cySizeFrame = GetSystemMetrics(SM_CYSIZEFRAME); // 境界線幅Y方向
         int cyCaption = GetSystemMetrics(SM_CYCAPTION);     // タイトルバーの高さ
 
-        printf("AAAAAA %d %d %d %d\n", main_window_rect.left, main_window_rect.top, main_window_rect.right, main_window_rect.bottom);
-        printf("BBBBBB %d %d %d\n", cxSizeFrame, cySizeFrame, cyCaption);
-        
         int32_t abs_client_origin_left = main_window_rect.left + cxSizeFrame;
         int32_t abs_client_origin_top = main_window_rect.top + cySizeFrame + cyCaption;
 
-        printf("CCCCCC %d %d\n", abs_client_origin_left, abs_client_origin_top);
-        
         RECT node_window1_window_rect;
     		GetWindowRect(node_window1, &node_window1_window_rect);
-
-        printf("DDDDDD %d %d %d %d\n", node_window1_window_rect.left, node_window1_window_rect.top, node_window1_window_rect.right, node_window1_window_rect.bottom);
-        
         RECT node_window1_window_rect_rel;
         node_window1_window_rect_rel.left = node_window1_window_rect.left - abs_client_origin_left;
         node_window1_window_rect_rel.top = node_window1_window_rect.top - abs_client_origin_top;
         node_window1_window_rect_rel.right = node_window1_window_rect.right - abs_client_origin_left;
         node_window1_window_rect_rel.bottom = node_window1_window_rect.bottom - abs_client_origin_top;
         
-        printf("%d %d %d %d\n", node_window1_window_rect_rel.left, node_window1_window_rect_rel.top, node_window1_window_rect_rel.right, node_window1_window_rect_rel.bottom);
-
         int32_t window_id = 1;
 
         LOGFONT lfFont;
@@ -281,8 +277,6 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         SIZE text_size;
         GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &text_size);
         
-        printf("EEEEEEEE %d %d", text_size.cx, text_size.cy);
-
         HBRUSH brash;
         HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xee, 0x00, 0x00));
         if (window_id == 1) {
