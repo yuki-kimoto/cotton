@@ -61,11 +61,27 @@ HWND COTTON_WIN_new_node_window(COTTON_WIN* cotton, COTTON_WIN_NEW_NODE_WINDOW_A
   return node;
 }
 
+enum {
+  COTTON_NODE_TYPE_ELEMENT,
+  COTTON_NODE_TYPE_TEXT,
+};
+
+enum {
+  COTTON_NODE_TEXT_CHARSET_UTF8,
+  COTTON_NODE_TEXT_CHARSET_UTF16LT,
+};
+
 typedef struct cotton_win_node COTTON_WIN_NODE;
 struct cotton_win_node {
+  int8_t type;
   int32_t font_size;
   int32_t color;
-  int32_t font_weight;
+  int8_t font_weight;
+  int8_t text_charset;
+  union {
+    int16_t* text_u16;
+    char* text;
+  } tv;
 };
 
 COTTON_WIN_NODE* COTTON_WIN_new_node(COTTON_WIN* cotton) {
