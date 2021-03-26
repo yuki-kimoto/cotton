@@ -27,18 +27,18 @@ struct cotton_win_new_main_window_args {
   COTTON_WIN* cotton;
 };
 
-typedef struct cotton_win_new_block_window_args COTTON_WIN_NEW_BLOCK_WINDOW_ARGS;
-struct cotton_win_new_block_window_args {
+typedef struct cotton_win_new_node_window_args COTTON_WIN_NEW_NODE_WINDOW_ARGS;
+struct cotton_win_new_node_window_args {
   HWND parent_window_handle;
   int32_t window_id;
 };
 
 HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args);
-HWND COTTON_WIN_new_block_window(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_WINDOW_ARGS* args);
+HWND COTTON_WIN_new_node_window(COTTON_WIN* cotton, COTTON_WIN_NEW_NODE_WINDOW_ARGS* args);
 
-HWND COTTON_WIN_new_block_window(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_WINDOW_ARGS* args) {
+HWND COTTON_WIN_new_node_window(COTTON_WIN* cotton, COTTON_WIN_NEW_NODE_WINDOW_ARGS* args) {
 
-  // Create block. Now block is implemented as owner draw button
+  // Create node. Now node is implemented as owner draw button
   LPCTSTR window_class_name = TEXT("BUTTON");
   LPCTSTR window_title = NULL;
   DWORD window_style = WS_CHILD | WS_VISIBLE | BS_OWNERDRAW;
@@ -50,7 +50,7 @@ HWND COTTON_WIN_new_block_window(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_WINDOW
   HMENU window_id = (HMENU)(intptr_t)args->window_id;
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   LPVOID window_create_lparam = NULL;
-  HWND block = CreateWindow(
+  HWND node = CreateWindow(
     window_class_name, window_title,
     window_style,
     window_x, window_y, window_width, window_heigth,
@@ -58,32 +58,32 @@ HWND COTTON_WIN_new_block_window(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_WINDOW
     instance_handle, window_create_lparam
   );
   
-  return block;
+  return node;
 }
 
-typedef struct cotton_win_block COTTON_WIN_BLOCK;
-struct cotton_win_block {
+typedef struct cotton_win_node COTTON_WIN_NODE;
+struct cotton_win_node {
   int32_t font_size;
   int32_t color;
   int32_t font_weight;
 };
 
-COTTON_WIN_BLOCK* COTTON_WIN_new_block(COTTON_WIN* cotton) {
-  COTTON_WIN_BLOCK* block = calloc(1, sizeof(COTTON_WIN_BLOCK));
+COTTON_WIN_NODE* COTTON_WIN_new_node(COTTON_WIN* cotton) {
+  COTTON_WIN_NODE* node = calloc(1, sizeof(COTTON_WIN_NODE));
   
-  return block;
+  return node;
 }
 
 LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static COTTON_WIN* cotton;
   
-  static HWND block_window1;
-  static HWND block_window2;
+  static HWND node_window1;
+  static HWND node_window2;
   
-  static COTTON_WIN_BLOCK* block1;
-  static COTTON_WIN_BLOCK* block2;
-  static COTTON_WIN_BLOCK* block3;
+  static COTTON_WIN_NODE* node1;
+  static COTTON_WIN_NODE* node2;
+  static COTTON_WIN_NODE* node3;
   
   switch (message) {
     case WM_DESTROY: {
@@ -96,26 +96,26 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
       
       {
-        COTTON_WIN_NEW_BLOCK_WINDOW_ARGS new_block_args = {
+        COTTON_WIN_NEW_NODE_WINDOW_ARGS new_node_args = {
           parent_window_handle : window_handle,
           window_id : 1,
         };
-        block_window1 = COTTON_WIN_new_block_window(cotton, &new_block_args);
-        MoveWindow(block_window1, 300, 200, 200, 45, 1);
+        node_window1 = COTTON_WIN_new_node_window(cotton, &new_node_args);
+        MoveWindow(node_window1, 300, 200, 200, 45, 1);
       }
       
       {
-        COTTON_WIN_NEW_BLOCK_WINDOW_ARGS new_block_args = {
+        COTTON_WIN_NEW_NODE_WINDOW_ARGS new_node_args = {
           parent_window_handle : window_handle,
           window_id : 2,
         };
-        block_window2 = COTTON_WIN_new_block_window(cotton, &new_block_args);
-        MoveWindow(block_window2, 300, 250, 200, 45, 1);
+        node_window2 = COTTON_WIN_new_node_window(cotton, &new_node_args);
+        MoveWindow(node_window2, 300, 250, 200, 45, 1);
       }
 
-      block1 = COTTON_WIN_new_block(cotton);
-      block2 = COTTON_WIN_new_block(cotton);
-      block3 = COTTON_WIN_new_block(cotton);
+      node1 = COTTON_WIN_new_node(cotton);
+      node2 = COTTON_WIN_new_node(cotton);
+      node3 = COTTON_WIN_new_node(cotton);
 
       return 0;
     }
@@ -177,18 +177,18 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
 
         printf("CCCCCC %d %d\n", abs_client_origin_left, abs_client_origin_top);
         
-        RECT block_window1_window_rect;
-    		GetWindowRect(block_window1, &block_window1_window_rect);
+        RECT node_window1_window_rect;
+    		GetWindowRect(node_window1, &node_window1_window_rect);
 
-        printf("DDDDDD %d %d %d %d\n", block_window1_window_rect.left, block_window1_window_rect.top, block_window1_window_rect.right, block_window1_window_rect.bottom);
+        printf("DDDDDD %d %d %d %d\n", node_window1_window_rect.left, node_window1_window_rect.top, node_window1_window_rect.right, node_window1_window_rect.bottom);
         
-        RECT block_window1_window_rect_rel;
-        block_window1_window_rect_rel.left = block_window1_window_rect.left - abs_client_origin_left;
-        block_window1_window_rect_rel.top = block_window1_window_rect.top - abs_client_origin_top;
-        block_window1_window_rect_rel.right = block_window1_window_rect.right - abs_client_origin_left;
-        block_window1_window_rect_rel.bottom = block_window1_window_rect.bottom - abs_client_origin_top;
+        RECT node_window1_window_rect_rel;
+        node_window1_window_rect_rel.left = node_window1_window_rect.left - abs_client_origin_left;
+        node_window1_window_rect_rel.top = node_window1_window_rect.top - abs_client_origin_top;
+        node_window1_window_rect_rel.right = node_window1_window_rect.right - abs_client_origin_left;
+        node_window1_window_rect_rel.bottom = node_window1_window_rect.bottom - abs_client_origin_top;
         
-        printf("%d %d %d %d\n", block_window1_window_rect_rel.left, block_window1_window_rect_rel.top, block_window1_window_rect_rel.right, block_window1_window_rect_rel.bottom);
+        printf("%d %d %d %d\n", node_window1_window_rect_rel.left, node_window1_window_rect_rel.top, node_window1_window_rect_rel.right, node_window1_window_rect_rel.bottom);
 
         int32_t window_id = 1;
 
@@ -229,13 +229,13 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         }
         SelectObject(hdc , hpen);
         SelectObject(hdc , brash);
-        RoundRect(hdc , block_window1_window_rect_rel.left, block_window1_window_rect_rel.top, block_window1_window_rect_rel.left + text_size.cx, block_window1_window_rect_rel.top + text_size.cy, 10, 10);
+        RoundRect(hdc , node_window1_window_rect_rel.left, node_window1_window_rect_rel.top, node_window1_window_rect_rel.left + text_size.cx, node_window1_window_rect_rel.top + text_size.cy, 10, 10);
         DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
         
         {
           HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
           SelectObject(hdc, GetStockObject(NULL_PEN));
-          TextOut(hdc, block_window1_window_rect_rel.left, block_window1_window_rect_rel.top, button_text, lstrlen(button_text));
+          TextOut(hdc, node_window1_window_rect_rel.left, node_window1_window_rect_rel.top, button_text, lstrlen(button_text));
           DeleteObject(hpen);
         }
       }
