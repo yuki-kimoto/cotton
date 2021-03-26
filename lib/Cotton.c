@@ -62,13 +62,8 @@ HWND COTTON_WIN_new_node_window(COTTON_WIN* cotton, COTTON_WIN_NEW_NODE_WINDOW_A
 }
 
 enum {
-  COTTON_NODE_TYPE_ELEMENT,
-  COTTON_NODE_TYPE_TEXT,
-};
-
-enum {
-  COTTON_NODE_TEXT_CHARSET_UTF8,
-  COTTON_NODE_TEXT_CHARSET_UTF16LT,
+  COTTON_WIN_NODE_TYPE_ELEMENT,
+  COTTON_WIN_NODE_TYPE_TEXT,
 };
 
 typedef struct cotton_win_node COTTON_WIN_NODE;
@@ -77,15 +72,31 @@ struct cotton_win_node {
   int32_t font_size;
   int32_t color;
   int8_t font_weight;
-  int8_t text_charset;
-  union {
-    int16_t* text_u16;
-    char* text;
-  } tv;
+  const TCHAR* text;
+  COTTON_WIN_NODE* first;
+  COTTON_WIN_NODE* last;
+  COTTON_WIN_NODE* sibparent;
+  int8_t has_sibling;
 };
 
 COTTON_WIN_NODE* COTTON_WIN_new_node(COTTON_WIN* cotton) {
   COTTON_WIN_NODE* node = calloc(1, sizeof(COTTON_WIN_NODE));
+  
+  return node;
+}
+
+COTTON_WIN_NODE* COTTON_WIN_new_element_node(COTTON_WIN* cotton) {
+  COTTON_WIN_NODE* node = calloc(1, sizeof(COTTON_WIN_NODE));
+  
+  node->type = COTTON_WIN_NODE_TYPE_ELEMENT;
+  
+  return node;
+}
+
+COTTON_WIN_NODE* COTTON_WIN_new_text_node(COTTON_WIN* cotton) {
+  COTTON_WIN_NODE* node = calloc(1, sizeof(COTTON_WIN_NODE));
+  
+  node->type = COTTON_WIN_NODE_TYPE_TEXT;
   
   return node;
 }
