@@ -66,6 +66,11 @@ enum {
   COTTON_WIN_NODE_TYPE_TEXT,
 };
 
+enum {
+  COTTON_WIN_NODE_DISPLAY_BLOCK,
+  COTTON_WIN_NODE_DISPLAY_INLINE,
+};
+
 typedef struct cotton_win_node COTTON_WIN_NODE;
 struct cotton_win_node {
   int8_t type;
@@ -77,6 +82,7 @@ struct cotton_win_node {
   COTTON_WIN_NODE* last;
   COTTON_WIN_NODE* sibparent;
   int8_t has_sibling;
+  int8_t display;
 };
 
 COTTON_WIN_NODE* COTTON_WIN_new_node(COTTON_WIN* cotton) {
@@ -93,10 +99,11 @@ COTTON_WIN_NODE* COTTON_WIN_new_element_node(COTTON_WIN* cotton) {
   return node;
 }
 
-COTTON_WIN_NODE* COTTON_WIN_new_text_node(COTTON_WIN* cotton) {
+COTTON_WIN_NODE* COTTON_WIN_new_text_node(COTTON_WIN* cotton, const TCHAR* text) {
   COTTON_WIN_NODE* node = calloc(1, sizeof(COTTON_WIN_NODE));
   
   node->type = COTTON_WIN_NODE_TYPE_TEXT;
+  node->text = text;
   
   return node;
 }
@@ -108,7 +115,9 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
   static HWND node_window1;
   static HWND node_window2;
   
-  static COTTON_WIN_NODE* node1;
+  static COTTON_WIN_NODE* elem_node1;
+  static COTTON_WIN_NODE* text_node1;
+  
   static COTTON_WIN_NODE* node2;
   static COTTON_WIN_NODE* node3;
   
@@ -140,7 +149,12 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         MoveWindow(node_window2, 300, 250, 200, 45, 1);
       }
 
-      node1 = COTTON_WIN_new_node(cotton);
+      elem_node1 = COTTON_WIN_new_element_node(cotton);
+      text_node1 = COTTON_WIN_new_text_node(cotton, TEXT("あいうえお"));
+      elem_node1->first = text_node1;
+      elem_node1->last = text_node1;
+      text_node1->sibparent = elem_node1;
+      
       node2 = COTTON_WIN_new_node(cotton);
       node3 = COTTON_WIN_new_node(cotton);
 
@@ -153,19 +167,8 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
     case WM_PAINT: {
       PAINTSTRUCT ps;
       HDC hdc = BeginPaint(window_handle , &ps);
-
-      RECT client_rect;
-      GetClientRect(window_handle , &client_rect);
-
-      {
-        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
-        SelectObject(hdc, hpen);
-        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
-        SelectObject(hdc, brash);
-        Rectangle(hdc, 0, 0, client_rect.right, 100);
-        DeleteObject(hpen);
-        DeleteObject(brash);
-      }
+      
+      // Render block which has text
       {
         LOGFONT lfFont;
         lfFont.lfHeight     = 40;
@@ -182,13 +185,36 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         lfFont.lfFaceName[0]    = '\0';
         HFONT hFont = CreateFontIndirect(&lfFont);
         
+        COTTON_WIN_NODE* text_node = elem_node1->first;
+        const TCHAR* text = text_node->text;
+
         SelectObject(hdc, hFont);
         SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
         SetBkMode(hdc , TRANSPARENT);
-        TextOut(hdc , 0 , 0 , TEXT("Cotton"), lstrlen(TEXT("Cotton")));
-        DeleteObject(hFont);
-      }
 
+        SIZE text_size;
+        GetTextExtentPoint32(hdc, text, lstrlen(text), &text_size);
+
+        // Draw block
+        {
+          RECT client_rect;
+          GetClientRect(window_handle , &client_rect);
+          HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+          SelectObject(hdc, hpen);
+          HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+          SelectObject(hdc, brash);
+          Rectangle(hdc, 0, 0, client_rect.right, text_size.cy);
+          DeleteObject(hpen);
+          DeleteObject(brash);
+        }
+        
+        // Draw text
+        {
+          TextOut(hdc , 0 , 0 , text_node->text, lstrlen(text_node->text));
+          DeleteObject(hFont);
+        }
+      }
+      
       {
         RECT main_window_rect;
     		GetWindowRect(window_handle, &main_window_rect);
