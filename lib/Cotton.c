@@ -231,15 +231,13 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         RECT text_rect = {right : width, bottom:50};
         DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
         
-        printf("RRRRRR %d %d %d %d %d\n", text_rect.left, text_rect.top, text_rect.right, text_rect.bottom);
-        
         // Draw block
         {
           HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
           SelectObject(hdc, hpen);
           HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
           SelectObject(hdc, brash);
-          Rectangle(hdc, 0, 0, text_rect.right, text_rect.bottom);
+          Rectangle(hdc, 0, 0, width, text_rect.bottom);
           DeleteObject(hpen);
           DeleteObject(brash);
         }
