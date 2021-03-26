@@ -78,8 +78,8 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
   
   static COTTON_WIN* cotton;
   
-  static HWND block1;
-  static HWND block2;
+  static HWND block_window1;
+  static HWND block_window2;
   
   switch (message) {
     case WM_DESTROY: {
@@ -96,8 +96,8 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
           parent_window_handle : window_handle,
           window_id : 1,
         };
-        block1 = COTTON_WIN_new_block_window(cotton, &new_block_args);
-        MoveWindow(block1, 300, 200, 200, 45, 1);
+        block_window1 = COTTON_WIN_new_block_window(cotton, &new_block_args);
+        MoveWindow(block_window1, 300, 200, 200, 45, 1);
       }
       
       {
@@ -105,8 +105,8 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
           parent_window_handle : window_handle,
           window_id : 2,
         };
-        block2 = COTTON_WIN_new_block_window(cotton, &new_block_args);
-        MoveWindow(block2, 300, 250, 200, 45, 1);
+        block_window2 = COTTON_WIN_new_block_window(cotton, &new_block_args);
+        MoveWindow(block_window2, 300, 250, 200, 45, 1);
       }
 
       return 0;
@@ -228,18 +228,18 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
 
         printf("CCCCCC %d %d\n", abs_client_origin_left, abs_client_origin_top);
         
-        RECT block1_window_rect;
-    		GetWindowRect(block1, &block1_window_rect);
+        RECT block_window1_window_rect;
+    		GetWindowRect(block_window1, &block_window1_window_rect);
 
-        printf("DDDDDD %d %d %d %d\n", block1_window_rect.left, block1_window_rect.top, block1_window_rect.right, block1_window_rect.bottom);
+        printf("DDDDDD %d %d %d %d\n", block_window1_window_rect.left, block_window1_window_rect.top, block_window1_window_rect.right, block_window1_window_rect.bottom);
         
-        RECT block1_window_rect_rel;
-        block1_window_rect_rel.left = block1_window_rect.left - abs_client_origin_left;
-        block1_window_rect_rel.top = block1_window_rect.top - abs_client_origin_top;
-        block1_window_rect_rel.right = block1_window_rect.right - abs_client_origin_left;
-        block1_window_rect_rel.bottom = block1_window_rect.bottom - abs_client_origin_top;
+        RECT block_window1_window_rect_rel;
+        block_window1_window_rect_rel.left = block_window1_window_rect.left - abs_client_origin_left;
+        block_window1_window_rect_rel.top = block_window1_window_rect.top - abs_client_origin_top;
+        block_window1_window_rect_rel.right = block_window1_window_rect.right - abs_client_origin_left;
+        block_window1_window_rect_rel.bottom = block_window1_window_rect.bottom - abs_client_origin_top;
         
-        printf("%d %d %d %d\n", block1_window_rect_rel.left, block1_window_rect_rel.top, block1_window_rect_rel.right, block1_window_rect_rel.bottom);
+        printf("%d %d %d %d\n", block_window1_window_rect_rel.left, block_window1_window_rect_rel.top, block_window1_window_rect_rel.right, block_window1_window_rect_rel.bottom);
 
         int32_t window_id = 1;
 
@@ -280,13 +280,13 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         }
         SelectObject(hdc , hpen);
         SelectObject(hdc , brash);
-        RoundRect(hdc , block1_window_rect_rel.left, block1_window_rect_rel.top, block1_window_rect_rel.left + text_size.cx, block1_window_rect_rel.top + text_size.cy, 10, 10);
+        RoundRect(hdc , block_window1_window_rect_rel.left, block_window1_window_rect_rel.top, block_window1_window_rect_rel.left + text_size.cx, block_window1_window_rect_rel.top + text_size.cy, 10, 10);
         DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
         
         {
           HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
           SelectObject(hdc, GetStockObject(NULL_PEN));
-          TextOut(hdc, block1_window_rect_rel.left, block1_window_rect_rel.top, button_text, lstrlen(button_text));
+          TextOut(hdc, block_window1_window_rect_rel.left, block_window1_window_rect_rel.top, button_text, lstrlen(button_text));
           DeleteObject(hpen);
         }
       }
