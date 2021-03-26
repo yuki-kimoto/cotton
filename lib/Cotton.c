@@ -71,6 +71,12 @@ enum {
   COTTON_WIN_NODE_DISPLAY_INLINE,
 };
 
+enum {
+  COTTON_WIN_NODE_TEXT_ALIGN_LEFT,
+  COTTON_WIN_NODE_TEXT_ALIGN_CENTER,
+  COTTON_WIN_NODE_TEXT_ALIGN_RIGHT,
+};
+
 typedef struct cotton_win_node COTTON_WIN_NODE;
 struct cotton_win_node {
   int8_t type;
@@ -87,6 +93,7 @@ struct cotton_win_node {
   int32_t padding_top;
   int32_t padding_right;
   int32_t padding_bottom;
+  int32_t text_align;
 };
 
 COTTON_WIN_NODE* COTTON_WIN_new_node(COTTON_WIN* cotton) {
@@ -158,6 +165,7 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
       elem_node1->padding_top = 5;
       elem_node1->padding_right = 5;
       elem_node1->padding_bottom = 5;
+      elem_node1->text_align = COTTON_WIN_NODE_TEXT_ALIGN_CENTER;
       
       text_node1 = COTTON_WIN_new_text_node(cotton, TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"));
       elem_node1->first = text_node1;
@@ -209,8 +217,19 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         int32_t width = elem_node1->padding_left + client_rect.right + elem_node1->padding_right;
         int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
         
+        UINT drow_text_flag = DT_WORDBREAK;
+        if (elem_node1->text_align == COTTON_WIN_NODE_TEXT_ALIGN_LEFT) {
+          drow_text_flag |= DT_LEFT;
+        }
+        else if (elem_node1->text_align == COTTON_WIN_NODE_TEXT_ALIGN_CENTER) {
+          drow_text_flag |= DT_CENTER;
+        }
+        else if (elem_node1->text_align == COTTON_WIN_NODE_TEXT_ALIGN_RIGHT) {
+          drow_text_flag |= DT_RIGHT;
+        }
+        
         RECT text_rect = {right : width, bottom:50};
-        DrawText(hdc, text, -1, &text_rect, DT_WORDBREAK | DT_CALCRECT);
+        DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
         
         printf("RRRRRR %d %d %d %d %d\n", text_rect.left, text_rect.top, text_rect.right, text_rect.bottom);
         
@@ -227,7 +246,7 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         
         // Draw text
         {
-          DrawText(hdc, text, -1, &text_rect, DT_WORDBREAK);
+          DrawText(hdc, text, -1, &text_rect, drow_text_flag);
           DeleteObject(hFont);
         }
       }
