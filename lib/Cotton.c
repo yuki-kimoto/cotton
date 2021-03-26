@@ -83,6 +83,10 @@ struct cotton_win_node {
   COTTON_WIN_NODE* sibparent;
   int8_t has_sibling;
   int8_t display;
+  int32_t padding_left;
+  int32_t padding_top;
+  int32_t padding_right;
+  int32_t padding_bottom;
 };
 
 COTTON_WIN_NODE* COTTON_WIN_new_node(COTTON_WIN* cotton) {
