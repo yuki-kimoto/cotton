@@ -27,16 +27,16 @@ struct cotton_win_new_main_window_args {
   COTTON_WIN* cotton;
 };
 
-typedef struct cotton_win_new_block_args COTTON_WIN_NEW_BLOCK_ARGS;
-struct cotton_win_new_block_args {
+typedef struct cotton_win_new_block_window_args COTTON_WIN_NEW_BLOCK_WINDOW_ARGS;
+struct cotton_win_new_block_window_args {
   HWND parent_window_handle;
   int32_t window_id;
 };
 
 HWND COTTON_WIN_new_main_window(COTTON_WIN* cotton, COTTON_WIN_NEW_MAIN_WINDOW_ARGS* args);
-HWND COTTON_WIN_new_block(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_ARGS* args);
+HWND COTTON_WIN_new_block_window(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_WINDOW_ARGS* args);
 
-HWND COTTON_WIN_new_block(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_ARGS* args) {
+HWND COTTON_WIN_new_block_window(COTTON_WIN* cotton, COTTON_WIN_NEW_BLOCK_WINDOW_ARGS* args) {
 
   // Create block. Now block is implemented as owner draw button
   LPCTSTR window_class_name = TEXT("BUTTON");
@@ -79,20 +79,20 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
       
       {
-        COTTON_WIN_NEW_BLOCK_ARGS new_block_args = {
+        COTTON_WIN_NEW_BLOCK_WINDOW_ARGS new_block_args = {
           parent_window_handle : window_handle,
           window_id : 1,
         };
-        block1 = COTTON_WIN_new_block(cotton, &new_block_args);
+        block1 = COTTON_WIN_new_block_window(cotton, &new_block_args);
         MoveWindow(block1, 300, 200, 200, 45, 1);
       }
       
       {
-        COTTON_WIN_NEW_BLOCK_ARGS new_block_args = {
+        COTTON_WIN_NEW_BLOCK_WINDOW_ARGS new_block_args = {
           parent_window_handle : window_handle,
           window_id : 2,
         };
-        block2 = COTTON_WIN_new_block(cotton, &new_block_args);
+        block2 = COTTON_WIN_new_block_window(cotton, &new_block_args);
         MoveWindow(block2, 300, 250, 200, 45, 1);
       }
 
