@@ -154,6 +154,11 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
       }
 
       elem_node1 = COTTON_WIN_new_element_node(cotton);
+      elem_node1->padding_left = 5;
+      elem_node1->padding_top = 5;
+      elem_node1->padding_right = 5;
+      elem_node1->padding_bottom = 5;
+      
       text_node1 = COTTON_WIN_new_text_node(cotton, TEXT("あいうえお"));
       elem_node1->first = text_node1;
       elem_node1->last = text_node1;
@@ -207,14 +212,16 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
           SelectObject(hdc, hpen);
           HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
           SelectObject(hdc, brash);
-          Rectangle(hdc, 0, 0, client_rect.right, text_size.cy);
+          int32_t width = elem_node1->padding_left + client_rect.right + elem_node1->padding_right;
+          int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
+          Rectangle(hdc, 0, 0, width, height);
           DeleteObject(hpen);
           DeleteObject(brash);
         }
         
         // Draw text
         {
-          TextOut(hdc , 0 , 0 , text_node->text, lstrlen(text_node->text));
+          TextOut(hdc, elem_node1->padding_left, elem_node1->padding_top, text_node->text, lstrlen(text_node->text));
           DeleteObject(hFont);
         }
       }
