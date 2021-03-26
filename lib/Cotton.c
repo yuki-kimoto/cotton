@@ -81,6 +81,10 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
   static HWND block_window1;
   static HWND block_window2;
   
+  static COTTON_WIN_BLOCK* block1;
+  static COTTON_WIN_BLOCK* block2;
+  static COTTON_WIN_BLOCK* block3;
+  
   switch (message) {
     case WM_DESTROY: {
       PostQuitMessage(0);
@@ -108,6 +112,10 @@ LRESULT CALLBACK WndProc(HWND window_handle , UINT message , WPARAM wparam , LPA
         block_window2 = COTTON_WIN_new_block_window(cotton, &new_block_args);
         MoveWindow(block_window2, 300, 250, 200, 45, 1);
       }
+
+      block1 = COTTON_WIN_new_block(cotton);
+      block2 = COTTON_WIN_new_block(cotton);
+      block3 = COTTON_WIN_new_block(cotton);
 
       return 0;
     }
