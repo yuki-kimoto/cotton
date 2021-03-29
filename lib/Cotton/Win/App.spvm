@@ -1,0 +1,9 @@
+package Cotton::Win::App {
+  has title : rw string;
+  
+  sub new : Cotton::Win::App() {
+    return new Cotton::Win::App;
+  }
+  
+  native sub run : void ($self : self);
+}
