@@ -361,11 +361,9 @@ HWND COTTON_WIN_APP_new_main_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_
   return window_handle;
 }
 
-int32_t SPNATIVE__Cotton__Win__App__run(SPVM_ENV* env, SPVM_VALUE* args) {
-  (void)env;
-  (void)args;
+int32_t SPNATIVE__Cotton__Win__App__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
-  void* sv_self = args[0].oval;
+  void* sv_self = stack[0].oval;
   
   HINSTANCE hInst = GetModuleHandle(NULL);
   
@@ -373,9 +371,19 @@ int32_t SPNATIVE__Cotton__Win__App__run(SPVM_ENV* env, SPVM_VALUE* args) {
   COTTON_WIN* cotton = COTTON_WIN_APP_new(NULL);
   cotton->dummy = 5;
   
+  void* sv_title;
+  SPVM_GET_FIELD_OBJECT(env, sv_self, "Cotton::Win::App", "title", "string", &sv_title, __FILE__, __LINE__);
+
+  void* sv_title_u16 = NULL;
+  {
+    stack[0].oval = sv_title;
+    SPVM_CALL_SUB(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+    sv_title_u16 = stack[0].oval;
+  }
+
   // Create main window
   COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
-    title : TEXT("Cotton"),
+    title : env->get_elems_short(env, sv_title_u16),
     cotton : cotton,
   };
   HWND main_window = COTTON_WIN_APP_new_main_window(cotton, &new_main_window_args);

@@ -1,4 +1,6 @@
 package Cotton::Win::App {
+  use SPVM::Unicode;
+  
   has title : rw string;
   
   sub new : Cotton::Win::App() {

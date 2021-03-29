@@ -4,6 +4,8 @@ package Cotton::Win {
   sub main : int ($args : string[]) {
     my $app = Cotton::Win::App->new;
     
+    $app->set_title("コットン");
+    
     $app->run;
   }
 }
