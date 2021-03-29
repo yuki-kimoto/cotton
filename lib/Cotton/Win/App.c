@@ -322,30 +322,6 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine ,int nCmdShow ) {
-  
-  // Cotton Application for Windows
-  COTTON_WIN* cotton = COTTON_WIN_APP_new(NULL);
-  cotton->dummy = 5;
-  
-  // Create main window
-  COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
-    title : TEXT("Cotton"),
-    cotton : cotton,
-  };
-  HWND main_window = COTTON_WIN_APP_new_main_window(cotton, &new_main_window_args);
-  if (main_window == NULL) return -1;
-  
-  // Get and dispatch message
-  MSG message;
-  while(GetMessage(&message , NULL , 0 , 0)) {
-    TranslateMessage(&message);
-    DispatchMessage(&message);
-  }
-  
-  return message.wParam;
-}
-
 HWND COTTON_WIN_APP_new_main_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args) {
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
@@ -393,7 +369,24 @@ int32_t SPNATIVE__Cotton__Win__App__run(SPVM_ENV* env, SPVM_VALUE* args) {
   
   HINSTANCE hInst = GetModuleHandle(NULL);
   
-  WinMain(hInst, NULL, NULL, SW_SHOWNORMAL);
+  // Cotton Application for Windows
+  COTTON_WIN* cotton = COTTON_WIN_APP_new(NULL);
+  cotton->dummy = 5;
+  
+  // Create main window
+  COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
+    title : TEXT("Cotton"),
+    cotton : cotton,
+  };
+  HWND main_window = COTTON_WIN_APP_new_main_window(cotton, &new_main_window_args);
+  if (main_window == NULL) return -1;
+  
+  // Get and dispatch message
+  MSG message;
+  while(GetMessage(&message , NULL , 0 , 0)) {
+    TranslateMessage(&message);
+    DispatchMessage(&message);
+  }
 
   return SPVM_SUCCESS;
 }
