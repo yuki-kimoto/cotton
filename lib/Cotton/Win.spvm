@@ -1,5 +1,6 @@
 package Cotton::Win {
   use Cotton::Win::App;
+  use Cotton::Node;
 
   sub main : int ($args : string[]) {
     my $app = Cotton::Win::App->new;
