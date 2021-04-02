@@ -365,19 +365,22 @@ int32_t SPNATIVE__Cotton__Win__App__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* sv_self = stack[0].oval;
   
+  int32_t e;
+  
   HINSTANCE hInst = GetModuleHandle(NULL);
   
   // Cotton Application for Windows
   COTTON_WIN* cotton = COTTON_WIN_APP_new(NULL);
   cotton->dummy = 5;
   
-  void* sv_title;
-  SPVM_GET_FIELD_OBJECT(env, sv_self, "Cotton::Win::App", "title", "string", &sv_title, __FILE__, __LINE__);
-
+  void* sv_title = env->get_field_object_by_name(env, sv_self, "Cotton::Win::App", "title", "string", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  
   void* sv_title_u16 = NULL;
   {
     stack[0].oval = sv_title;
-    SPVM_CALL_SUB(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+    e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+    if (e) { return e; }
     sv_title_u16 = stack[0].oval;
   }
 
@@ -396,5 +399,5 @@ int32_t SPNATIVE__Cotton__Win__App__run(SPVM_ENV* env, SPVM_VALUE* stack) {
     DispatchMessage(&message);
   }
 
-  return SPVM_SUCCESS;
+  return 0;
 }
