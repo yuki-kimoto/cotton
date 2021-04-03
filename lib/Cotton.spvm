@@ -69,28 +69,36 @@ package Cotton {
     }
     
     my $child_node_list_length = $child_node_list->length;
+    warn "AAAAAA $child_node_list_length";
     for (my $i = 0; $i < $child_node_list_length; $i++) {
       my $child_node = (Cotton::Node)$child_node_list->get($i);
       
       if ($i == 0) {
         $node->{first} = $child_node;
         $child_node->{has_sibling} = 1;
+        warn("AAAAAAA");
       }
       
       if ($i < $child_node_list_length - 1) {
         my $next_child_node = (Cotton::Node)$child_node_list->get($i + 1);
         $child_node->{sibparent} = $next_child_node;
         $child_node->{has_sibling} = 1;
+        warn("BBBBBB");
       }
       elsif ($i == $child_node_list_length - 1) {
         $child_node->{sibparent} = $node;
         $node->{last} = $child_node;
+        warn("CCCCCCCC");
       }
     }
     
     return $node;
   }
   
+  sub body : Cotton::Node ($objects : object[] ...) {
+    return new_tag("body", $objects);
+  }
+
   sub h1 : Cotton::Node ($objects : object[] ...) {
     return new_tag("h1", $objects);
   }
