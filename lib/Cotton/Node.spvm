@@ -1,4 +1,6 @@
 package Cotton::Node {
+  allow Cotton;
+
   use SPVM::Hash;
   use SPVM::StringList;
   
@@ -6,7 +8,13 @@ package Cotton::Node {
   has last : Cotton::Node;
   has sibparent : Cotton::Node;
   has has_sibling : byte;
-  has style : SPVM::Hash;
-  has classes : SPVM::StringList;
+  has tag : string;
   has id : string;
+  has style : SPVM::Hash;
+  has classes : string[];
+  has text : string;
+  
+  sub new : Cotton::Node () {
+    return new Cotton::Node;
+  }
 }

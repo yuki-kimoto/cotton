@@ -1,0 +1,4 @@
+package Cotton::Style {
+  allow Cotton;
+  has value : SPVM::Hash;
+}

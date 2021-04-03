@@ -1,0 +1,4 @@
+package Cotton::Id {
+  allow Cotton;
+  has value : string;
+}
