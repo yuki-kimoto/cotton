@@ -1,12 +1,14 @@
 package Cotton::Win {
   use Cotton::Win::App;
   use Cotton::Node;
-  use Cotton(div);
+  use Cotton(h1, div, a);
 
   sub main : int ($args : string[]) {
     my $app = Cotton::Win::App->new;
     
-    div(Cotton::Node->new);
+    div(
+      div()
+    );
     
     $app->set_title("コットン");
     
