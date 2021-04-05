@@ -24,6 +24,6 @@ package Cotton::Win {
     
     $app->run;
   }
-
-
 }
+
+

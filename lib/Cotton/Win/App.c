@@ -34,32 +34,6 @@ struct cotton_win_app_new_node_window_args {
 };
 
 HWND COTTON_WIN_APP_new_main_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args);
-HWND COTTON_WIN_APP_new_node_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_NODE_WINDOW_ARGS* args);
-
-HWND COTTON_WIN_APP_new_node_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_NODE_WINDOW_ARGS* args) {
-
-  // Create node. Now node is implemented as owner draw button
-  LPCTSTR window_class_name = TEXT("BUTTON");
-  LPCTSTR window_title = NULL;
-  DWORD window_style = WS_CHILD | WS_VISIBLE | BS_OWNERDRAW;
-  int window_x = 0;
-  int window_y = 0;
-  int window_width = 0;
-  int window_heigth = 0;
-  HWND window_parent_window_handle = args->parent_window_handle;
-  HMENU window_id = (HMENU)(intptr_t)args->window_id;
-  HINSTANCE instance_handle = GetModuleHandle(NULL);
-  LPVOID window_create_lparam = NULL;
-  HWND node = CreateWindow(
-    window_class_name, window_title,
-    window_style,
-    window_x, window_y, window_width, window_heigth,
-    window_parent_window_handle, window_id,
-    instance_handle, window_create_lparam
-  );
-  
-  return node;
-}
 
 enum {
   COTTON_WIN_APP_NODE_TYPE_ELEMENT,
@@ -142,24 +116,6 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
       
-      {
-        COTTON_WIN_APP_NEW_NODE_WINDOW_ARGS new_node_args = {
-          parent_window_handle : window_handle,
-          window_id : 1,
-        };
-        node_window1 = COTTON_WIN_APP_new_node_window(cotton, &new_node_args);
-        MoveWindow(node_window1, 300, 200, 200, 45, 1);
-      }
-      
-      {
-        COTTON_WIN_APP_NEW_NODE_WINDOW_ARGS new_node_args = {
-          parent_window_handle : window_handle,
-          window_id : 2,
-        };
-        node_window2 = COTTON_WIN_APP_new_node_window(cotton, &new_node_args);
-        MoveWindow(node_window2, 300, 250, 200, 45, 1);
-      }
-
       elem_node1 = COTTON_WIN_APP_new_element_node(cotton);
       elem_node1->padding_left = 5;
       elem_node1->padding_top = 5;
