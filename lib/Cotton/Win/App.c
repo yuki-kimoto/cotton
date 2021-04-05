@@ -61,7 +61,7 @@ struct cotton_win_app_node {
   COTTON_WIN_APP_NODE* first;
   COTTON_WIN_APP_NODE* last;
   COTTON_WIN_APP_NODE* sibparent;
-  int8_t has_sibling;
+  int8_t moresib;
   int8_t display;
   int32_t padding_left;
   int32_t padding_top;
@@ -69,20 +69,6 @@ struct cotton_win_app_node {
   int32_t padding_bottom;
   int32_t text_align;
 };
-
-COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_node(COTTON_WIN* cotton) {
-  COTTON_WIN_APP_NODE* node = calloc(1, sizeof(COTTON_WIN_APP_NODE));
-  
-  return node;
-}
-
-COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_element_node() {
-  COTTON_WIN_APP_NODE* node = calloc(1, sizeof(COTTON_WIN_APP_NODE));
-  
-  node->type = COTTON_WIN_APP_NODE_TYPE_ELEMENT;
-  
-  return node;
-}
 
 LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
 
@@ -103,7 +89,9 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       PAINTSTRUCT ps;
       HDC hdc = BeginPaint(window_handle, &ps);
 
-      COTTON_WIN_APP_NODE* elem_node1 = COTTON_WIN_APP_new_element_node();
+      COTTON_WIN_APP_NODE* elem_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
+      
+      elem_node1->type = COTTON_WIN_APP_NODE_TYPE_ELEMENT;
       elem_node1->padding_left = 5;
       elem_node1->padding_top = 5;
       elem_node1->padding_right = 5;
