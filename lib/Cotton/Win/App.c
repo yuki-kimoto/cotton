@@ -84,15 +84,6 @@ COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_element_node() {
   return node;
 }
 
-COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_text_node(COTTON_WIN* cotton, const TCHAR* text) {
-  COTTON_WIN_APP_NODE* node = calloc(1, sizeof(COTTON_WIN_APP_NODE));
-  
-  node->type = COTTON_WIN_APP_NODE_TYPE_TEXT;
-  node->text = text;
-  
-  return node;
-}
-
 LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
 
   static COTTON_WIN* cotton;
@@ -108,20 +99,26 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       return 0;
     }
     case WM_PAINT: {
+      // Get Device context
+      PAINTSTRUCT ps;
+      HDC hdc = BeginPaint(window_handle, &ps);
+
       COTTON_WIN_APP_NODE* elem_node1 = COTTON_WIN_APP_new_element_node();
       elem_node1->padding_left = 5;
       elem_node1->padding_top = 5;
       elem_node1->padding_right = 5;
       elem_node1->padding_bottom = 5;
       elem_node1->text_align = COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER;
+
+      COTTON_WIN_APP_NODE* text_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
       
-      COTTON_WIN_APP_NODE*text_node1 = COTTON_WIN_APP_new_text_node(cotton, TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"));
+      text_node1->type = COTTON_WIN_APP_NODE_TYPE_TEXT;
+      text_node1->text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
+      
       elem_node1->first = text_node1;
       elem_node1->last = text_node1;
       text_node1->sibparent = elem_node1;
 
-      PAINTSTRUCT ps;
-      HDC hdc = BeginPaint(window_handle , &ps);
       
       // Render block which has text
       {
