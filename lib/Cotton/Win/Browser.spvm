@@ -1,4 +1,4 @@
-package Cotton::Win {
+package Cotton::Win::Browser {
   use Cotton::App;
   use Cotton::Node;
   use Cotton(body, h1, div, a, id, class);
