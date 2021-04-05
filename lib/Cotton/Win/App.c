@@ -105,9 +105,6 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
   static COTTON_WIN_APP_NODE* elem_node1;
   static COTTON_WIN_APP_NODE* text_node1;
   
-  static COTTON_WIN_APP_NODE* node2;
-  static COTTON_WIN_APP_NODE* node3;
-  
   switch (message) {
     case WM_DESTROY: {
       PostQuitMessage(0);
@@ -129,9 +126,6 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       elem_node1->last = text_node1;
       text_node1->sibparent = elem_node1;
       
-      node2 = COTTON_WIN_APP_new_node(cotton);
-      node3 = COTTON_WIN_APP_new_node(cotton);
-
       return 0;
     }
     case WM_CTLCOLORBTN: {
