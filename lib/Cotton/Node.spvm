@@ -13,6 +13,7 @@ package Cotton::Node {
   has style : rw SPVM::Hash;
   has classes : rw string[];
   has text : rw string;
+  has calcurated_style : rw SPVM::Hash;
   
   sub new : Cotton::Node () {
     return new Cotton::Node;
