@@ -113,7 +113,13 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
     case WM_CREATE: {
       create_struct = (CREATESTRUCT*)lparam;
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
-      
+      return 0;
+    }
+    case WM_CTLCOLORBTN: {
+      // デフォルトでコントールの背景は透過させる
+      return (LRESULT)GetStockObject(NULL_BRUSH);
+    }
+    case WM_PAINT: {
       elem_node1 = COTTON_WIN_APP_new_element_node();
       elem_node1->padding_left = 5;
       elem_node1->padding_top = 5;
@@ -125,14 +131,7 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       elem_node1->first = text_node1;
       elem_node1->last = text_node1;
       text_node1->sibparent = elem_node1;
-      
-      return 0;
-    }
-    case WM_CTLCOLORBTN: {
-      // デフォルトでコントールの背景は透過させる
-      return (LRESULT)GetStockObject(NULL_BRUSH);
-    }
-    case WM_PAINT: {
+
       PAINTSTRUCT ps;
       HDC hdc = BeginPaint(window_handle , &ps);
       
