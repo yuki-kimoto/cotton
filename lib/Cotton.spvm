@@ -5,49 +5,6 @@ package Cotton : precompile {
   use Cotton::Classes;
   use SPVM::List;
   
-  sub calc_render_info : void ($root_node : Cotton::Node) {
-    # Check tree
-    my $cur_node = $root_node;
-    my $finish = 0;
-    while ($cur_node) {
-      # [START]Preorder traversal position
-      warn "AAAAAAAAA";
-      # [END]Preorder traversal position
-      
-      if ($cur_node->first) {
-        $cur_node = $cur_node->first;
-      }
-      else {
-        while (1) {
-          # [START]Postorder traversal position
-          warn "BBBBB";
-          # [END]Postorder traversal position
-          
-          if ($cur_node == $root_node) {
-
-            # Finish
-            $finish = 1;
-            
-            last;
-          }
-          
-          # Next sibling
-          if ($cur_node->moresib) {
-            $cur_node = $cur_node->sibparent;
-            last;
-          }
-          # Next is parent
-          else {
-            $cur_node = $cur_node->sibparent;
-          }
-        }
-        if ($finish) {
-          last;
-        }
-      }
-    }
-  }
-  
   sub new_tag : Cotton::Node ($tag : string, $objects : object[] ...) {
     
     my $node = new Cotton::Node;
