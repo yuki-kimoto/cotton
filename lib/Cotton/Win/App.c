@@ -96,11 +96,7 @@ COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_text_node(COTTON_WIN* cotton, const TCHA
 LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
 
   static CREATESTRUCT* create_struct;
-
   static COTTON_WIN* cotton;
-  
-  static COTTON_WIN_APP_NODE* elem_node1;
-  static COTTON_WIN_APP_NODE* text_node1;
   
   switch (message) {
     case WM_DESTROY: {
@@ -117,14 +113,14 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       return (LRESULT)GetStockObject(NULL_BRUSH);
     }
     case WM_PAINT: {
-      elem_node1 = COTTON_WIN_APP_new_element_node();
+      COTTON_WIN_APP_NODE* elem_node1 = COTTON_WIN_APP_new_element_node();
       elem_node1->padding_left = 5;
       elem_node1->padding_top = 5;
       elem_node1->padding_right = 5;
       elem_node1->padding_bottom = 5;
       elem_node1->text_align = COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER;
       
-      text_node1 = COTTON_WIN_APP_new_text_node(cotton, TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"));
+      COTTON_WIN_APP_NODE*text_node1 = COTTON_WIN_APP_new_text_node(cotton, TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"));
       elem_node1->first = text_node1;
       elem_node1->last = text_node1;
       text_node1->sibparent = elem_node1;
