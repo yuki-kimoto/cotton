@@ -1,7 +1,9 @@
 package Cotton::Win::App {
   use SPVM::Unicode;
+  use SPVM::List;
   
   has title : rw string;
+  has pages : rw SPVM::List;
   
   sub new : Cotton::Win::App() {
     return new Cotton::Win::App;

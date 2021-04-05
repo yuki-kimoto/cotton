@@ -2,10 +2,13 @@ package Cotton::Win {
   use Cotton::Win::App;
   use Cotton::Node;
   use Cotton(body, h1, div, a, id, class);
+  use SPVM::List;
+  use Cotton::Page;
 
   sub main : int ($args : string[]) {
     my $app = Cotton::Win::App->new;
-    
+
+=pod
     my $body = body(
       h1("ヘッド1"),
       div(
@@ -17,13 +20,24 @@ package Cotton::Win {
         "コンテント"
       ),
     );
+=cut
     
-    $app->calc_render_info($body);
+    my $pages = SPVM::List->new([]);
     
+    # Create index page
+    {
+      my $body = body("こんにちは");
+      
+      # Create index page
+      my $page = Cotton::Page->new;
+      $page->set_path("/");
+      $page->set_body($body);
+      $pages->push($page);
+    }
+    
+    $app->set_pages($pages);
     $app->set_title("コットン");
     
     $app->run;
   }
 }
-
-

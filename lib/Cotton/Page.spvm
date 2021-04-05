@@ -1,0 +1,11 @@
+package Cotton::Page {
+  has path : rw string;
+  has body : rw Cotton::Node;
+  has title : rw string;
+  
+  sub new : Cotton::Page () {
+    my $page = new Cotton::Page;
+    
+    return $page;
+  }
+}

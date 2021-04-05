@@ -168,8 +168,10 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
         // Draw text
         {
           DrawText(hdc, text, -1, &text_rect, drow_text_flag);
-          DeleteObject(hFont);
         }
+        
+        // Delete font handle
+        DeleteObject(hFont);
       }
       
       EndPaint(window_handle , &ps);
