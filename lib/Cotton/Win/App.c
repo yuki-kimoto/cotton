@@ -108,10 +108,6 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
       return 0;
     }
-    case WM_CTLCOLORBTN: {
-      // デフォルトでコントールの背景は透過させる
-      return (LRESULT)GetStockObject(NULL_BRUSH);
-    }
     case WM_PAINT: {
       COTTON_WIN_APP_NODE* elem_node1 = COTTON_WIN_APP_new_element_node();
       elem_node1->padding_left = 5;
