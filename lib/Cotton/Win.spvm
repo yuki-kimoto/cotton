@@ -18,6 +18,8 @@ package Cotton::Win {
       ),
     );
     
+    Cotton->calc_render_info($body);
+    
     $app->set_title("コットン");
     
     $app->run;

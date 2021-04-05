@@ -5,6 +5,49 @@ package Cotton {
   use Cotton::Classes;
   use SPVM::List;
   
+  sub calc_render_info : void ($root_node : Cotton::Node) {
+    # Check tree
+    my $cur_node = $root_node;
+    my $finish = 0;
+    while ($cur_node) {
+      # [START]Preorder traversal position
+      warn "AAAAAAAAA";
+      # [END]Preorder traversal position
+      
+      if ($cur_node->first) {
+        $cur_node = $cur_node->first;
+      }
+      else {
+        while (1) {
+          # [START]Postorder traversal position
+          warn "BBBBB";
+          # [END]Postorder traversal position
+          
+          if ($cur_node == $root_node) {
+
+            # Finish
+            $finish = 1;
+            
+            last;
+          }
+          
+          # Next sibling
+          if ($cur_node->moresib) {
+            $cur_node = $cur_node->sibparent;
+            last;
+          }
+          # Next is parent
+          else {
+            $cur_node = $cur_node->sibparent;
+          }
+        }
+        if ($finish) {
+          last;
+        }
+      }
+    }
+  }
+  
   sub new_tag : Cotton::Node ($tag : string, $objects : object[] ...) {
     
     my $node = new Cotton::Node;
@@ -69,26 +112,22 @@ package Cotton {
     }
     
     my $child_node_list_length = $child_node_list->length;
-    warn "AAAAAA $child_node_list_length";
     for (my $i = 0; $i < $child_node_list_length; $i++) {
       my $child_node = (Cotton::Node)$child_node_list->get($i);
       
       if ($i == 0) {
         $node->{first} = $child_node;
-        $child_node->{has_sibling} = 1;
-        warn("AAAAAAA");
+        $child_node->{moresib} = 1;
       }
       
       if ($i < $child_node_list_length - 1) {
         my $next_child_node = (Cotton::Node)$child_node_list->get($i + 1);
         $child_node->{sibparent} = $next_child_node;
-        $child_node->{has_sibling} = 1;
-        warn("BBBBBB");
+        $child_node->{moresib} = 1;
       }
       elsif ($i == $child_node_list_length - 1) {
         $child_node->{sibparent} = $node;
         $node->{last} = $child_node;
-        warn("CCCCCCCC");
       }
     }
     
