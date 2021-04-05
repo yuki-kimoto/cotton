@@ -99,9 +99,6 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
 
   static COTTON_WIN* cotton;
   
-  static HWND node_window1;
-  static HWND node_window2;
-  
   static COTTON_WIN_APP_NODE* elem_node1;
   static COTTON_WIN_APP_NODE* text_node1;
   
@@ -196,72 +193,6 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
         {
           DrawText(hdc, text, -1, &text_rect, drow_text_flag);
           DeleteObject(hFont);
-        }
-      }
-      
-      {
-        RECT main_window_rect;
-    		GetWindowRect(window_handle, &main_window_rect);
-        int cxSizeFrame = GetSystemMetrics(SM_CXSIZEFRAME); // 境界線幅X方向
-        int cySizeFrame = GetSystemMetrics(SM_CYSIZEFRAME); // 境界線幅Y方向
-        int cyCaption = GetSystemMetrics(SM_CYCAPTION);     // タイトルバーの高さ
-
-        int32_t abs_client_origin_left = main_window_rect.left + cxSizeFrame;
-        int32_t abs_client_origin_top = main_window_rect.top + cySizeFrame + cyCaption;
-
-        RECT node_window1_window_rect;
-    		GetWindowRect(node_window1, &node_window1_window_rect);
-        RECT node_window1_window_rect_rel;
-        node_window1_window_rect_rel.left = node_window1_window_rect.left - abs_client_origin_left;
-        node_window1_window_rect_rel.top = node_window1_window_rect.top - abs_client_origin_top;
-        node_window1_window_rect_rel.right = node_window1_window_rect.right - abs_client_origin_left;
-        node_window1_window_rect_rel.bottom = node_window1_window_rect.bottom - abs_client_origin_top;
-        
-        int32_t window_id = 1;
-
-        LOGFONT lfFont;
-        lfFont.lfHeight     = 40;
-        lfFont.lfWidth = lfFont.lfEscapement =
-        lfFont.lfOrientation    = 0;
-        lfFont.lfWeight     = FW_BOLD;
-        lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-        lfFont.lfStrikeOut    = FALSE; 
-        lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-        lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-        lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-        lfFont.lfQuality    = DEFAULT_QUALITY;
-        lfFont.lfPitchAndFamily = 0;
-        lfFont.lfFaceName[0]    = '\0';
-        HFONT hFont = CreateFontIndirect(&lfFont);
-        
-        SelectObject(hdc, hFont);
-        SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
-        SetBkMode(hdc , TRANSPARENT);
-
-        TCHAR buffer[200];
-        wsprintf(buffer, TEXT("%s%d%s"), TEXT("ボタン"), window_id , TEXT("😀"));
-        LPCTSTR button_text = buffer;
-        SIZE text_size;
-        GetTextExtentPoint32(hdc , button_text , lstrlen(button_text) , &text_size);
-        
-        HBRUSH brash;
-        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0xee, 0x00, 0x00));
-        if (window_id == 1) {
-          brash = CreateSolidBrush(RGB(0xee, 0x00, 0x00));
-        }
-        else {
-          brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
-        }
-        SelectObject(hdc , hpen);
-        SelectObject(hdc , brash);
-        RoundRect(hdc , node_window1_window_rect_rel.left, node_window1_window_rect_rel.top, node_window1_window_rect_rel.left + text_size.cx, node_window1_window_rect_rel.top + text_size.cy, 10, 10);
-        DeleteObject(SelectObject(hdc , GetStockObject(NULL_BRUSH)));
-        
-        {
-          HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
-          SelectObject(hdc, GetStockObject(NULL_PEN));
-          TextOut(hdc, node_window1_window_rect_rel.left, node_window1_window_rect_rel.top, button_text, lstrlen(button_text));
-          DeleteObject(hpen);
         }
       }
       
