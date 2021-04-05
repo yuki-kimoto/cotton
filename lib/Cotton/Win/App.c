@@ -95,7 +95,6 @@ COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_text_node(COTTON_WIN* cotton, const TCHA
 
 LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
 
-  static CREATESTRUCT* create_struct;
   static COTTON_WIN* cotton;
   
   switch (message) {
@@ -104,7 +103,7 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       return 0;
     }
     case WM_CREATE: {
-      create_struct = (CREATESTRUCT*)lparam;
+      CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
       return 0;
     }
