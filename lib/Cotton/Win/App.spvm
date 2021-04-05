@@ -53,5 +53,4 @@ package Cotton::Win::App {
       }
     }
   }
-
 }

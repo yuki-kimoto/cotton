@@ -1,13 +1,15 @@
 package Cotton::Win {
-  use Cotton::Win::App;
+  use Cotton::App;
   use Cotton::Node;
   use Cotton(body, h1, div, a, id, class);
   use SPVM::List;
   use Cotton::Page;
 
-  sub main : int ($args : string[]) {
-    my $app = Cotton::Win::App->new;
+  use Cotton::Win::App;
 
+  sub main : int ($args : string[]) {
+    my $app = Cotton::App->new;
+    
 =pod
     my $body = body(
       h1("ヘッド1"),
@@ -38,6 +40,8 @@ package Cotton::Win {
     $app->set_pages($pages);
     $app->set_title("コットン");
     
-    $app->run;
+    my $win_app = Cotton::Win::App->new;
+    $win_app->set_title("コットン");
+    $win_app->run;
   }
 }
