@@ -1,12 +1,12 @@
-package Cotton::Win::App {
+package Cotton::Win::VM {
   use SPVM::Unicode;
   use SPVM::List;
   
   has title : rw string;
   has pages : rw SPVM::List;
   
-  sub new : Cotton::Win::App() {
-    return new Cotton::Win::App;
+  sub new : Cotton::Win::VM() {
+    return new Cotton::Win::VM;
   }
   
   native sub run : void ($self : self);
