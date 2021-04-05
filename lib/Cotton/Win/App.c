@@ -76,7 +76,7 @@ COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_node(COTTON_WIN* cotton) {
   return node;
 }
 
-COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_element_node(COTTON_WIN* cotton) {
+COTTON_WIN_APP_NODE* COTTON_WIN_APP_new_element_node() {
   COTTON_WIN_APP_NODE* node = calloc(1, sizeof(COTTON_WIN_APP_NODE));
   
   node->type = COTTON_WIN_APP_NODE_TYPE_ELEMENT;
@@ -116,7 +116,7 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       
       cotton = (COTTON_WIN*)create_struct->lpCreateParams;
       
-      elem_node1 = COTTON_WIN_APP_new_element_node(cotton);
+      elem_node1 = COTTON_WIN_APP_new_element_node();
       elem_node1->padding_left = 5;
       elem_node1->padding_top = 5;
       elem_node1->padding_right = 5;
