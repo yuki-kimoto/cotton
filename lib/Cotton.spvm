@@ -1,4 +1,4 @@
-package Cotton {
+package Cotton : precompile {
   use Cotton::Node;
   use Cotton::Style;
   use Cotton::Id;
