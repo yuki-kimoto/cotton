@@ -70,6 +70,99 @@ struct cotton_win_app_node {
   int32_t text_align;
 };
 
+void Cotton_Runtime_draw_node(HWND window_handle) {
+  // Get Device context
+  PAINTSTRUCT ps;
+  
+  HDC hdc = BeginPaint(window_handle, &ps);
+  
+  COTTON_WIN_APP_NODE* elem_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
+  
+  elem_node1->type = COTTON_WIN_APP_NODE_TYPE_ELEMENT;
+  elem_node1->padding_left = 5;
+  elem_node1->padding_top = 5;
+  elem_node1->padding_right = 5;
+  elem_node1->padding_bottom = 5;
+  elem_node1->text_align = COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER;
+
+  COTTON_WIN_APP_NODE* text_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
+  
+  text_node1->type = COTTON_WIN_APP_NODE_TYPE_TEXT;
+  text_node1->text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
+  
+  elem_node1->first = text_node1;
+  elem_node1->last = text_node1;
+  text_node1->sibparent = elem_node1;
+
+  
+  // Render block which has text
+  {
+    LOGFONT lfFont;
+    lfFont.lfHeight     = 40;
+    lfFont.lfWidth = lfFont.lfEscapement =
+    lfFont.lfOrientation    = 0;
+    lfFont.lfWeight     = FW_BOLD;
+    lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+    lfFont.lfStrikeOut    = FALSE; 
+    lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+    lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+    lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+    lfFont.lfQuality    = DEFAULT_QUALITY;
+    lfFont.lfPitchAndFamily = 0;
+    lfFont.lfFaceName[0]    = '\0';
+    HFONT hFont = CreateFontIndirect(&lfFont);
+    
+    COTTON_WIN_APP_NODE* text_node = elem_node1->first;
+    const TCHAR* text = text_node->text;
+
+    SelectObject(hdc, hFont);
+    SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+    SetBkMode(hdc , TRANSPARENT);
+
+    SIZE text_size;
+    GetTextExtentPoint32(hdc, text, lstrlen(text), &text_size);
+
+    RECT client_rect;
+    GetClientRect(window_handle , &client_rect);
+    int32_t width = elem_node1->padding_left + client_rect.right + elem_node1->padding_right;
+    int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
+    
+    UINT drow_text_flag = DT_WORDBREAK;
+    if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_LEFT) {
+      drow_text_flag |= DT_LEFT;
+    }
+    else if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER) {
+      drow_text_flag |= DT_CENTER;
+    }
+    else if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_RIGHT) {
+      drow_text_flag |= DT_RIGHT;
+    }
+    
+    RECT text_rect = {right : width, bottom:50};
+    DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
+    
+    // Draw block
+    {
+      HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+      SelectObject(hdc, hpen);
+      HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+      SelectObject(hdc, brash);
+      Rectangle(hdc, 0, 0, width, text_rect.bottom);
+      DeleteObject(hpen);
+      DeleteObject(brash);
+    }
+    
+    // Draw text
+    {
+      DrawText(hdc, text, -1, &text_rect, drow_text_flag);
+    }
+    
+    // Delete font handle
+    DeleteObject(hFont);
+  }
+  EndPaint(window_handle , &ps);
+}
+
 LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
 
   static COTTON_WIN* cotton;
@@ -85,96 +178,10 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       return 0;
     }
     case WM_PAINT: {
-      // Get Device context
-      PAINTSTRUCT ps;
-      HDC hdc = BeginPaint(window_handle, &ps);
-
-      COTTON_WIN_APP_NODE* elem_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
       
-      elem_node1->type = COTTON_WIN_APP_NODE_TYPE_ELEMENT;
-      elem_node1->padding_left = 5;
-      elem_node1->padding_top = 5;
-      elem_node1->padding_right = 5;
-      elem_node1->padding_bottom = 5;
-      elem_node1->text_align = COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER;
-
-      COTTON_WIN_APP_NODE* text_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
+      // Draw node
+      Cotton_Runtime_draw_node(window_handle);
       
-      text_node1->type = COTTON_WIN_APP_NODE_TYPE_TEXT;
-      text_node1->text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
-      
-      elem_node1->first = text_node1;
-      elem_node1->last = text_node1;
-      text_node1->sibparent = elem_node1;
-
-      
-      // Render block which has text
-      {
-        LOGFONT lfFont;
-        lfFont.lfHeight     = 40;
-        lfFont.lfWidth = lfFont.lfEscapement =
-        lfFont.lfOrientation    = 0;
-        lfFont.lfWeight     = FW_BOLD;
-        lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-        lfFont.lfStrikeOut    = FALSE; 
-        lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-        lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-        lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-        lfFont.lfQuality    = DEFAULT_QUALITY;
-        lfFont.lfPitchAndFamily = 0;
-        lfFont.lfFaceName[0]    = '\0';
-        HFONT hFont = CreateFontIndirect(&lfFont);
-        
-        COTTON_WIN_APP_NODE* text_node = elem_node1->first;
-        const TCHAR* text = text_node->text;
-
-        SelectObject(hdc, hFont);
-        SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
-        SetBkMode(hdc , TRANSPARENT);
-
-        SIZE text_size;
-        GetTextExtentPoint32(hdc, text, lstrlen(text), &text_size);
-
-        RECT client_rect;
-        GetClientRect(window_handle , &client_rect);
-        int32_t width = elem_node1->padding_left + client_rect.right + elem_node1->padding_right;
-        int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
-        
-        UINT drow_text_flag = DT_WORDBREAK;
-        if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_LEFT) {
-          drow_text_flag |= DT_LEFT;
-        }
-        else if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER) {
-          drow_text_flag |= DT_CENTER;
-        }
-        else if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_RIGHT) {
-          drow_text_flag |= DT_RIGHT;
-        }
-        
-        RECT text_rect = {right : width, bottom:50};
-        DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
-        
-        // Draw block
-        {
-          HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
-          SelectObject(hdc, hpen);
-          HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
-          SelectObject(hdc, brash);
-          Rectangle(hdc, 0, 0, width, text_rect.bottom);
-          DeleteObject(hpen);
-          DeleteObject(brash);
-        }
-        
-        // Draw text
-        {
-          DrawText(hdc, text, -1, &text_rect, drow_text_flag);
-        }
-        
-        // Delete font handle
-        DeleteObject(hFont);
-      }
-      
-      EndPaint(window_handle , &ps);
       return 0;
     }
   }
