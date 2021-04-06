@@ -23,10 +23,10 @@ package Cotton::Win::Browser {
       ),
     );
 =cut
+    # Application name
+    $app->set_name("コットン");
     
-    my $pages = SPVM::List->new([]);
-    
-    # Create index page
+    # Add index page
     {
       my $body = body("こんにちは");
       
@@ -34,11 +34,8 @@ package Cotton::Win::Browser {
       my $page = Cotton::Page->new;
       $page->set_path("/");
       $page->set_body($body);
-      $pages->push($page);
+      $app->push_page($page);
     }
-    
-    $app->set_pages($pages);
-    $app->set_name("コットン");
     
     my $win_app = Cotton::Win::VM->new;
     $win_app->set_title("コットン");
