@@ -37,10 +37,10 @@ package Cotton::Win::Browser {
       $app->push_page($page);
     }
     
-    my $runtime = Cotton::Win::Runtime->new;
-    $runtime->set_app($app);
+    # ランタイムを生成
+    my $runtime = Cotton::Win::Runtime->new($app);
     
-    warn $runtime->app_name;
+    # アプリケーションの実行
     $runtime->run;
   }
 }

@@ -3,20 +3,18 @@ package Cotton::Win::Runtime {
   use SPVM::List;
   use Cotton::App;
   
-  has pages : rw SPVM::List;
-  has app : rw Cotton::App;
-  has n : rw string;
+  has app : Cotton::App;
   
-  sub new : Cotton::Win::Runtime() {
+  sub new : Cotton::Win::Runtime($app : Cotton::App) {
     my $self = new Cotton::Win::Runtime;
     
-    $self->{n} = "ppp";
+    $self->{app} = $app;
     
     return $self;
   }
   
   sub app_name : string ($self : self) {
-    return $self->app->name;
+    return $self->{app}->name;
   }
   
   native sub run : void ($self : self);
