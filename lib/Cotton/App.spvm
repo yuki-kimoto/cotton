@@ -6,6 +6,14 @@ package Cotton::App {
   has pages : rw SPVM::List;
   
   sub new : Cotton::App() {
-    return new Cotton::App;
+    my $self = new Cotton::App;
+    
+    $self->{pages} = SPVM::List->new([]);
+    
+    return $self;
+  }
+  
+  sub push_page : void ($self : self, $page : Cotton::Page) {
+    $self->{pages}->push($page);
   }
 }
