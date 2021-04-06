@@ -33,7 +33,7 @@ struct cotton_win_app_new_node_window_args {
   int32_t window_id;
 };
 
-HWND COTTON_WIN_APP_new_main_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args);
+HWND COTTON_WIN_APP_new_main_window(SPVM_ENV* env, COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args);
 
 enum {
   COTTON_WIN_APP_NODE_TYPE_ELEMENT,
@@ -164,7 +164,8 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
 }
 
 LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
-
+  
+  static SPVM_ENV* env;
   static COTTON_WIN* cotton;
   
   switch (message) {
@@ -174,7 +175,9 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
     }
     case WM_CREATE: {
       CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
-      cotton = (COTTON_WIN*)create_struct->lpCreateParams;
+      void** wm_create_args = (void**)create_struct->lpCreateParams;
+      env = wm_create_args[0];
+      cotton = (COTTON_WIN*)wm_create_args[1];
       return 0;
     }
     case WM_PAINT: {
@@ -188,7 +191,7 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-HWND COTTON_WIN_APP_new_main_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args) {
+HWND COTTON_WIN_APP_new_main_window(SPVM_ENV* env, COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args) {
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   
@@ -215,7 +218,10 @@ HWND COTTON_WIN_APP_new_main_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_
   int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
-  void* window_wm_create_lparam = (void*)args->cotton;
+  void** wm_create_args = calloc(2, sizeof(void*));
+  wm_create_args[0] = env;
+  wm_create_args[1] = cotton;
+  void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
       window_class_name, window_title,
       window_style,
@@ -258,7 +264,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
     app_name : env->get_elems_short(env, sv_app_name_u16),
     cotton : cotton,
   };
-  HWND main_window = COTTON_WIN_APP_new_main_window(cotton, &new_main_window_args);
+  HWND main_window = COTTON_WIN_APP_new_main_window(env, cotton, &new_main_window_args);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
