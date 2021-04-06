@@ -11,8 +11,29 @@ typedef struct cotton_win_app_new_args COTTON_WIN_RUNTIME_NEW_ARGS;
 struct cotton_win_app_new_args {
 };
 
+int16_t* COTTON_WIN_RUNTIME_utf8_to_utf16(SPVM_ENV* env, const char* string) {
+  int32_t e;
+  SPVM_VALUE stack[256];
+  
+  void* sv_string = env->new_string_nolen(env, string);
+  
+  void* sv_app_name_u16 = NULL;
+  {
+    stack[0].oval = sv_string;
+    e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+    if (e) { return NULL; }
+    sv_app_name_u16 = stack[0].oval;
+  }
+  
+  int16_t* message_u16 = env->get_elems_short(env, sv_app_name_u16);
+  
+  return message_u16;
+}
+
 void COTTON_WIN_RUNTIME_alert(SPVM_ENV* env, const char* message) {
-  MessageBoxA(NULL, message, "Alert", MB_OK);
+  int16_t* message_u16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, message);
+  
+  MessageBoxW(NULL, message_u16, TEXT("Alert"), MB_OK);
 }
 
 COTTON_WIN_RUNTIME* COTTON_WIN_RUNTIME_new() {
@@ -183,7 +204,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       env = wm_create_args[0];
       cotton = (COTTON_WIN_RUNTIME*)wm_create_args[1];
 
-      // COTTON_WIN_RUNTIME_alert(env, "Hello");
+      // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
       return 0;
     }
