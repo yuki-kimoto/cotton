@@ -5,7 +5,7 @@ package Cotton::Win::Browser {
   use SPVM::List;
   use Cotton::Page;
 
-  use Cotton::Win::VM;
+  use Cotton::Win::Runtime;
 
   sub main : int ($args : string[]) {
     my $app = Cotton::App->new;
@@ -37,8 +37,8 @@ package Cotton::Win::Browser {
       $app->push_page($page);
     }
     
-    my $win_app = Cotton::Win::VM->new;
-    $win_app->set_title("コットン");
-    $win_app->run;
+    my $runtime = Cotton::Win::Runtime->new;
+    $runtime->set_title("コットン");
+    $runtime->run;
   }
 }
