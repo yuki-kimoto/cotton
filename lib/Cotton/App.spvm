@@ -2,7 +2,7 @@ package Cotton::App {
   use SPVM::Unicode;
   use SPVM::List;
   
-  has title : rw string;
+  has name : rw string;
   has pages : rw SPVM::List;
   
   sub new : Cotton::App() {

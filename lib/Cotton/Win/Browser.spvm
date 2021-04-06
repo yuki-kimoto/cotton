@@ -38,7 +38,7 @@ package Cotton::Win::Browser {
     }
     
     $app->set_pages($pages);
-    $app->set_title("コットン");
+    $app->set_name("コットン");
     
     my $win_app = Cotton::Win::VM->new;
     $win_app->set_title("コットン");
