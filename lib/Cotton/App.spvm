@@ -5,9 +5,12 @@ package Cotton::App {
   
   has name : rw string;
   has pages : rw SPVM::List;
+  has interface : Cotton::Interface;
   
   sub new : Cotton::App() {
     my $self = new Cotton::App;
+    
+    $self->{interface} = Cotton::Interface->new;
     
     $self->{pages} = SPVM::List->new([]);
     

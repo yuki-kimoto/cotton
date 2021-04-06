@@ -1,3 +1,5 @@
 package Cotton::Interface {
-  
+  sub new : Cotton::Interface () {
+    return new Cotton::Interface;
+  }
 }
