@@ -1,6 +1,7 @@
 package Cotton::App {
   use SPVM::Unicode;
   use SPVM::List;
+  use Cotton::Interface;
   
   has name : rw string;
   has pages : rw SPVM::List;
