@@ -23,7 +23,7 @@ COTTON_WIN COTTON_WIN_APP_free(COTTON_WIN* cotton) {
 
 typedef struct cotton_win_app_new_main_window_args COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS;
 struct cotton_win_app_new_main_window_args {
-  LPCTSTR title;
+  LPCTSTR app_name;
   COTTON_WIN* cotton;
 };
 
@@ -200,7 +200,7 @@ HWND COTTON_WIN_APP_new_main_window(COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_
 
   // Create Main Window
   const TCHAR* window_class_name = TEXT("main_window");
-  const TCHAR* window_title = args->title;
+  const TCHAR* window_title = args->app_name;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
   int window_y = CW_USEDEFAULT;
@@ -232,20 +232,25 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   COTTON_WIN* cotton = COTTON_WIN_APP_new(NULL);
   cotton->dummy = 5;
   
-  void* sv_title = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "title", "string", &e, __FILE__, __LINE__);
-  if (e) { return e; }
-  
-  void* sv_title_u16 = NULL;
+  void* sv_app_name = NULL;
   {
-    stack[0].oval = sv_title;
+    stack[0].oval = sv_self;
+    e = env->call_sub_by_name(env, "Cotton::Win::Runtime", "app_name", "string(self)", stack, __FILE__, __LINE__);
+    if (e) { return e; }
+    sv_app_name = stack[0].oval;
+  }
+  
+  void* sv_app_name_u16 = NULL;
+  {
+    stack[0].oval = sv_app_name;
     e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
     if (e) { return e; }
-    sv_title_u16 = stack[0].oval;
+    sv_app_name_u16 = stack[0].oval;
   }
 
   // Create main window
   COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
-    title : env->get_elems_short(env, sv_title_u16),
+    app_name : env->get_elems_short(env, sv_app_name_u16),
     cotton : cotton,
   };
   HWND main_window = COTTON_WIN_APP_new_main_window(cotton, &new_main_window_args);

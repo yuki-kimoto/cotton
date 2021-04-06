@@ -38,7 +38,9 @@ package Cotton::Win::Browser {
     }
     
     my $runtime = Cotton::Win::Runtime->new;
-    $runtime->set_title("コットン");
+    $runtime->set_app($app);
+    
+    warn $runtime->app_name;
     $runtime->run;
   }
 }
