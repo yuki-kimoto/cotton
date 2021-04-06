@@ -17,17 +17,17 @@ int16_t* COTTON_WIN_RUNTIME_utf8_to_utf16(SPVM_ENV* env, const char* string) {
   
   void* sv_string = env->new_string_nolen(env, string);
   
-  void* sv_app_name_u16 = NULL;
+  void* sv_string_u16 = NULL;
   {
     stack[0].oval = sv_string;
     e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
     if (e) { return NULL; }
-    sv_app_name_u16 = stack[0].oval;
+    sv_string_u16 = stack[0].oval;
   }
   
-  int16_t* message_u16 = env->get_elems_short(env, sv_app_name_u16);
+  int16_t* string_u16 = env->get_elems_short(env, sv_string_u16);
   
-  return message_u16;
+  return string_u16;
 }
 
 void COTTON_WIN_RUNTIME_alert(SPVM_ENV* env, const char* message) {
@@ -62,7 +62,7 @@ struct cotton_win_app_new_node_window_args {
   int32_t window_id;
 };
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, COTTON_WIN_RUNTIME* cotton, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args);
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args);
 
 enum {
   COTTON_WIN_RUNTIME_NODE_TYPE_ELEMENT,
@@ -195,7 +195,7 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
 LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static SPVM_ENV* env;
-  static COTTON_WIN_RUNTIME* cotton;
+  static void* sv_app;
   
   switch (message) {
     case WM_DESTROY: {
@@ -206,7 +206,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = wm_create_args[0];
-      cotton = (COTTON_WIN_RUNTIME*)wm_create_args[1];
+      sv_app = (COTTON_WIN_RUNTIME*)wm_create_args[1];
 
       // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
@@ -223,7 +223,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, COTTON_WIN_RUNTIME* cotton, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args) {
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args) {
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   
@@ -252,7 +252,7 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, COTTON_WIN_RUNTIME* cotto
   HMENU window_id = NULL;
   void** wm_create_args = calloc(2, sizeof(void*));
   wm_create_args[0] = env;
-  wm_create_args[1] = cotton;
+  wm_create_args[1] = sv_app;
   void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
       window_class_name, window_title,
@@ -271,10 +271,6 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
-  // Cotton Application for Windows
-  COTTON_WIN_RUNTIME* cotton = COTTON_WIN_RUNTIME_new(NULL);
-  cotton->dummy = 5;
-
   void* sv_app = NULL;
   {
     sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
@@ -300,9 +296,8 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   // Create main window
   COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
     app_name : env->get_elems_short(env, sv_app_name_u16),
-    cotton : cotton,
   };
-  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, cotton, &new_main_window_args);
+  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_app, &new_main_window_args);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
