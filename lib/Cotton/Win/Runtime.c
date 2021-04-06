@@ -2,65 +2,65 @@
 
 #include <windows.h>
 
-typedef struct cotton_win COTTON_WIN;
+typedef struct cotton_win COTTON_WIN_RUNTIME;
 struct cotton_win {
   int32_t dummy;
 };
 
-typedef struct cotton_win_app_new_args COTTON_WIN_APP_NEW_ARGS;
+typedef struct cotton_win_app_new_args COTTON_WIN_RUNTIME_NEW_ARGS;
 struct cotton_win_app_new_args {
 };
 
-COTTON_WIN* COTTON_WIN_APP_new() {
-  COTTON_WIN* cotton = calloc(1, sizeof(COTTON_WIN));
+COTTON_WIN_RUNTIME* COTTON_WIN_RUNTIME_new() {
+  COTTON_WIN_RUNTIME* cotton = calloc(1, sizeof(COTTON_WIN_RUNTIME));
   
   return cotton;
 }
 
-COTTON_WIN COTTON_WIN_APP_free(COTTON_WIN* cotton) {
+COTTON_WIN_RUNTIME COTTON_WIN_RUNTIME_free(COTTON_WIN_RUNTIME* cotton) {
   free(cotton);
 }
 
-typedef struct cotton_win_app_new_main_window_args COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS;
+typedef struct cotton_win_app_new_main_window_args COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS;
 struct cotton_win_app_new_main_window_args {
   LPCTSTR app_name;
-  COTTON_WIN* cotton;
+  COTTON_WIN_RUNTIME* cotton;
 };
 
-typedef struct cotton_win_app_new_node_window_args COTTON_WIN_APP_NEW_NODE_WINDOW_ARGS;
+typedef struct cotton_win_app_new_node_window_args COTTON_WIN_RUNTIME_NEW_NODE_WINDOW_ARGS;
 struct cotton_win_app_new_node_window_args {
   HWND parent_window_handle;
   int32_t window_id;
 };
 
-HWND COTTON_WIN_APP_new_main_window(SPVM_ENV* env, COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args);
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, COTTON_WIN_RUNTIME* cotton, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args);
 
 enum {
-  COTTON_WIN_APP_NODE_TYPE_ELEMENT,
-  COTTON_WIN_APP_NODE_TYPE_TEXT,
+  COTTON_WIN_RUNTIME_NODE_TYPE_ELEMENT,
+  COTTON_WIN_RUNTIME_NODE_TYPE_TEXT,
 };
 
 enum {
-  COTTON_WIN_APP_NODE_DISPLAY_BLOCK,
-  COTTON_WIN_APP_NODE_DISPLAY_INLINE,
+  COTTON_WIN_RUNTIME_NODE_DISPLAY_BLOCK,
+  COTTON_WIN_RUNTIME_NODE_DISPLAY_INLINE,
 };
 
 enum {
-  COTTON_WIN_APP_NODE_TEXT_ALIGN_LEFT,
-  COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER,
-  COTTON_WIN_APP_NODE_TEXT_ALIGN_RIGHT,
+  COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_LEFT,
+  COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_CENTER,
+  COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_RIGHT,
 };
 
-typedef struct cotton_win_app_node COTTON_WIN_APP_NODE;
+typedef struct cotton_win_app_node COTTON_WIN_RUNTIME_NODE;
 struct cotton_win_app_node {
   int8_t type;
   int32_t font_size;
   int32_t color;
   int8_t font_weight;
   const TCHAR* text;
-  COTTON_WIN_APP_NODE* first;
-  COTTON_WIN_APP_NODE* last;
-  COTTON_WIN_APP_NODE* sibparent;
+  COTTON_WIN_RUNTIME_NODE* first;
+  COTTON_WIN_RUNTIME_NODE* last;
+  COTTON_WIN_RUNTIME_NODE* sibparent;
   int8_t moresib;
   int8_t display;
   int32_t padding_left;
@@ -76,18 +76,18 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
   
   HDC hdc = BeginPaint(window_handle, &ps);
   
-  COTTON_WIN_APP_NODE* elem_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
+  COTTON_WIN_RUNTIME_NODE* elem_node1 = calloc(1, sizeof(COTTON_WIN_RUNTIME_NODE));
   
-  elem_node1->type = COTTON_WIN_APP_NODE_TYPE_ELEMENT;
+  elem_node1->type = COTTON_WIN_RUNTIME_NODE_TYPE_ELEMENT;
   elem_node1->padding_left = 5;
   elem_node1->padding_top = 5;
   elem_node1->padding_right = 5;
   elem_node1->padding_bottom = 5;
-  elem_node1->text_align = COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER;
+  elem_node1->text_align = COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_CENTER;
 
-  COTTON_WIN_APP_NODE* text_node1 = calloc(1, sizeof(COTTON_WIN_APP_NODE));
+  COTTON_WIN_RUNTIME_NODE* text_node1 = calloc(1, sizeof(COTTON_WIN_RUNTIME_NODE));
   
-  text_node1->type = COTTON_WIN_APP_NODE_TYPE_TEXT;
+  text_node1->type = COTTON_WIN_RUNTIME_NODE_TYPE_TEXT;
   text_node1->text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
   
   elem_node1->first = text_node1;
@@ -112,7 +112,7 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
     lfFont.lfFaceName[0]    = '\0';
     HFONT hFont = CreateFontIndirect(&lfFont);
     
-    COTTON_WIN_APP_NODE* text_node = elem_node1->first;
+    COTTON_WIN_RUNTIME_NODE* text_node = elem_node1->first;
     const TCHAR* text = text_node->text;
 
     SelectObject(hdc, hFont);
@@ -128,13 +128,13 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
     int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
     
     UINT drow_text_flag = DT_WORDBREAK;
-    if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_LEFT) {
+    if (elem_node1->text_align == COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_LEFT) {
       drow_text_flag |= DT_LEFT;
     }
-    else if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_CENTER) {
+    else if (elem_node1->text_align == COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_CENTER) {
       drow_text_flag |= DT_CENTER;
     }
-    else if (elem_node1->text_align == COTTON_WIN_APP_NODE_TEXT_ALIGN_RIGHT) {
+    else if (elem_node1->text_align == COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_RIGHT) {
       drow_text_flag |= DT_RIGHT;
     }
     
@@ -163,10 +163,10 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
   EndPaint(window_handle , &ps);
 }
 
-LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
+LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static SPVM_ENV* env;
-  static COTTON_WIN* cotton;
+  static COTTON_WIN_RUNTIME* cotton;
   
   switch (message) {
     case WM_DESTROY: {
@@ -177,7 +177,7 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
       CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = wm_create_args[0];
-      cotton = (COTTON_WIN*)wm_create_args[1];
+      cotton = (COTTON_WIN_RUNTIME*)wm_create_args[1];
       return 0;
     }
     case WM_PAINT: {
@@ -191,14 +191,14 @@ LRESULT CALLBACK COTTON_WIN_APP_WndProc(HWND window_handle , UINT message , WPAR
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-HWND COTTON_WIN_APP_new_main_window(SPVM_ENV* env, COTTON_WIN* cotton, COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS* args) {
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, COTTON_WIN_RUNTIME* cotton, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args) {
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   
   // Register Window Class
   WNDCLASS winc;
   winc.style = CS_HREDRAW | CS_VREDRAW;
-  winc.lpfnWndProc = COTTON_WIN_APP_WndProc;
+  winc.lpfnWndProc = COTTON_WIN_RUNTIME_WndProc;
   winc.cbClsExtra = winc.cbWndExtra = 0;
   winc.hInstance = instance_handle;
   winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
@@ -240,9 +240,9 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t e;
   
   // Cotton Application for Windows
-  COTTON_WIN* cotton = COTTON_WIN_APP_new(NULL);
+  COTTON_WIN_RUNTIME* cotton = COTTON_WIN_RUNTIME_new(NULL);
   cotton->dummy = 5;
-  
+
   void* sv_app_name = NULL;
   {
     stack[0].oval = sv_self;
@@ -260,11 +260,11 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   }
 
   // Create main window
-  COTTON_WIN_APP_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
+  COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
     app_name : env->get_elems_short(env, sv_app_name_u16),
     cotton : cotton,
   };
-  HWND main_window = COTTON_WIN_APP_new_main_window(env, cotton, &new_main_window_args);
+  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, cotton, &new_main_window_args);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
