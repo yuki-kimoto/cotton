@@ -2,15 +2,6 @@
 
 #include <windows.h>
 
-typedef struct cotton_win COTTON_WIN_RUNTIME;
-struct cotton_win {
-  int32_t dummy;
-};
-
-typedef struct cotton_win_app_new_args COTTON_WIN_RUNTIME_NEW_ARGS;
-struct cotton_win_app_new_args {
-};
-
 int16_t* COTTON_WIN_RUNTIME_utf8_to_utf16(SPVM_ENV* env, const char* string) {
   int32_t e;
   SPVM_VALUE stack[256];
@@ -38,16 +29,6 @@ void COTTON_WIN_RUNTIME_alert(SPVM_ENV* env, const char* message) {
 
 static void alert(SPVM_ENV* env, const char* message) {
   COTTON_WIN_RUNTIME_alert(env, message);
-}
-
-COTTON_WIN_RUNTIME* COTTON_WIN_RUNTIME_new() {
-  COTTON_WIN_RUNTIME* cotton = calloc(1, sizeof(COTTON_WIN_RUNTIME));
-  
-  return cotton;
-}
-
-COTTON_WIN_RUNTIME COTTON_WIN_RUNTIME_free(COTTON_WIN_RUNTIME* cotton) {
-  free(cotton);
 }
 
 typedef struct cotton_win_app_new_node_window_args COTTON_WIN_RUNTIME_NEW_NODE_WINDOW_ARGS;
@@ -203,7 +184,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = wm_create_args[0];
-      sv_app = (COTTON_WIN_RUNTIME*)wm_create_args[1];
+      sv_app = (void*)wm_create_args[1];
 
       // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
