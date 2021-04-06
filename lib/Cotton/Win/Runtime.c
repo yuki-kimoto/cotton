@@ -11,6 +11,10 @@ typedef struct cotton_win_app_new_args COTTON_WIN_RUNTIME_NEW_ARGS;
 struct cotton_win_app_new_args {
 };
 
+void COTTON_WIN_RUNTIME_alert(SPVM_ENV* env, const char* message) {
+  MessageBoxA(NULL, message, "Alert", MB_OK);
+}
+
 COTTON_WIN_RUNTIME* COTTON_WIN_RUNTIME_new() {
   COTTON_WIN_RUNTIME* cotton = calloc(1, sizeof(COTTON_WIN_RUNTIME));
   
@@ -178,6 +182,9 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = wm_create_args[0];
       cotton = (COTTON_WIN_RUNTIME*)wm_create_args[1];
+
+      // COTTON_WIN_RUNTIME_alert(env, "Hello");
+
       return 0;
     }
     case WM_PAINT: {
