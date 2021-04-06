@@ -233,8 +233,6 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
-  HINSTANCE hInst = GetModuleHandle(NULL);
-  
   // Cotton Application for Windows
   COTTON_WIN* cotton = COTTON_WIN_APP_new(NULL);
   cotton->dummy = 5;
