@@ -50,19 +50,13 @@ COTTON_WIN_RUNTIME COTTON_WIN_RUNTIME_free(COTTON_WIN_RUNTIME* cotton) {
   free(cotton);
 }
 
-typedef struct cotton_win_app_new_main_window_args COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS;
-struct cotton_win_app_new_main_window_args {
-  LPCTSTR app_name;
-  COTTON_WIN_RUNTIME* cotton;
-};
-
 typedef struct cotton_win_app_new_node_window_args COTTON_WIN_RUNTIME_NEW_NODE_WINDOW_ARGS;
 struct cotton_win_app_new_node_window_args {
   HWND parent_window_handle;
   int32_t window_id;
 };
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args);
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app);
 
 enum {
   COTTON_WIN_RUNTIME_NODE_TYPE_ELEMENT,
@@ -197,6 +191,9 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   static SPVM_ENV* env;
   static void* sv_app;
   
+  SPVM_VALUE stack[256];
+  int32_t e;
+  
   switch (message) {
     case WM_DESTROY: {
       PostQuitMessage(0);
@@ -213,6 +210,27 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       return 0;
     }
     case WM_PAINT: {
+
+      int32_t e;
+      
+      void* sv_app_name = NULL;
+      {
+        stack[0].oval = sv_app;
+        e = env->call_sub_by_name(env, "Cotton::App", "name", "string(self)", stack, __FILE__, __LINE__);
+        if (e) { return e; }
+        sv_app_name = stack[0].oval;
+      }
+      
+      void* sv_app_name_u16 = NULL;
+      {
+        stack[0].oval = sv_app_name;
+        e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+        if (e) { return e; }
+        sv_app_name_u16 = stack[0].oval;
+      }
+      int16_t* app_name_u16 = env->get_elems_short(env, sv_app_name_u16);
+      
+      SetWindowTextW(window_handle, app_name_u16);
       
       // Draw node
       Cotton_Runtime_draw_node(window_handle);
@@ -223,7 +241,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app, COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS* args) {
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app) {
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   
@@ -242,7 +260,7 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app, COTTON_WIN_
 
   // Create Main Window
   const TCHAR* window_class_name = TEXT("main_window");
-  const TCHAR* window_title = args->app_name;
+  const TCHAR* window_title = NULL;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
   int window_y = CW_USEDEFAULT;
@@ -271,33 +289,11 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
-  void* sv_app = NULL;
-  {
-    sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
-    if (e) { return e; }
-  }
-
-  void* sv_app_name = NULL;
-  {
-    stack[0].oval = sv_self;
-    e = env->call_sub_by_name(env, "Cotton::Win::Runtime", "app_name", "string(self)", stack, __FILE__, __LINE__);
-    if (e) { return e; }
-    sv_app_name = stack[0].oval;
-  }
-  
-  void* sv_app_name_u16 = NULL;
-  {
-    stack[0].oval = sv_app_name;
-    e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
-    if (e) { return e; }
-    sv_app_name_u16 = stack[0].oval;
-  }
+  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  if (e) { return e; }
 
   // Create main window
-  COTTON_WIN_RUNTIME_NEW_MAIN_WINDOW_ARGS new_main_window_args = {
-    app_name : env->get_elems_short(env, sv_app_name_u16),
-  };
-  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_app, &new_main_window_args);
+  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_app);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
