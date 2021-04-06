@@ -5,6 +5,7 @@ package Cotton::App {
   
   has name : rw string;
   has pages : rw SPVM::List;
+  has runtime : rw object;
   has interface : Cotton::Interface;
   
   sub new : Cotton::App() {

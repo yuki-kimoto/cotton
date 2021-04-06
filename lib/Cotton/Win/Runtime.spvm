@@ -10,6 +10,8 @@ package Cotton::Win::Runtime {
     
     $self->{app} = $app;
     
+    $app->set_runtime($self);
+    
     return $self;
   }
   
