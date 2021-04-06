@@ -36,6 +36,10 @@ void COTTON_WIN_RUNTIME_alert(SPVM_ENV* env, const char* message) {
   MessageBoxW(NULL, message_u16, TEXT("Alert"), MB_OK);
 }
 
+static void alert(SPVM_ENV* env, const char* message) {
+  COTTON_WIN_RUNTIME_alert(env, message);
+}
+
 COTTON_WIN_RUNTIME* COTTON_WIN_RUNTIME_new() {
   COTTON_WIN_RUNTIME* cotton = calloc(1, sizeof(COTTON_WIN_RUNTIME));
   
@@ -270,6 +274,12 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   // Cotton Application for Windows
   COTTON_WIN_RUNTIME* cotton = COTTON_WIN_RUNTIME_new(NULL);
   cotton->dummy = 5;
+
+  void* sv_app = NULL;
+  {
+    sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
+    if (e) { return e; }
+  }
 
   void* sv_app_name = NULL;
   {
