@@ -76,11 +76,18 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     int32_t padding_top = 5;
     int32_t padding_right = 5;
     int32_t padding_bottom = 5;
+    
+    COLORREF color = RGB(0xFF, 0xFF, 0xFF);
+    COLORREF background_color = RGB(0x00, 0xAA, 0x77);
 
     const TCHAR* text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
     
     // Render block which has text
     {
+      // draw width
+      int32_t draw_width = parent_width;
+      
+      // Font
       LOGFONT lfFont;
       lfFont.lfHeight     = 40;
       lfFont.lfWidth = lfFont.lfEscapement =
@@ -95,29 +102,22 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       lfFont.lfPitchAndFamily = 0;
       lfFont.lfFaceName[0]    = '\0';
       HFONT hFont = CreateFontIndirect(&lfFont);
-      
       SelectObject(hdc, hFont);
-      SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
-      SetBkMode(hdc , TRANSPARENT);
-
       UINT drow_text_flag = DT_WORDBREAK;
       drow_text_flag |= DT_LEFT;
-      
-      // Node width
-      int32_t draw_width = parent_width;
       
       // Culcurate text height
       RECT culc_node_rect = {right : draw_width - 1};
       DrawText(hdc, text, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
       
-      // Node Height
+      // draw height
       int32_t draw_height = culc_node_rect.bottom + 1;
       
       // Draw block
       {
-        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+        HPEN hpen = CreatePen(PS_SOLID , 0 , background_color);
         SelectObject(hdc, hpen);
-        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        HBRUSH brash = CreateSolidBrush(background_color);
         SelectObject(hdc, brash);
         Rectangle(hdc, 0, 0, draw_width - 1, draw_height - 1);
         DeleteObject(hpen);
@@ -126,6 +126,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       
       // Draw text
       {
+        SetTextColor(hdc, color);
+        SetBkMode(hdc , TRANSPARENT);
         DrawText(hdc, text, -1, &culc_node_rect, drow_text_flag);
       }
       
