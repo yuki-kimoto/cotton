@@ -6,7 +6,8 @@ package Cotton::Win::Browser {
   use Cotton::Page;
 
   use Cotton::Win::Runtime;
-
+  use Cotton::Win::PaintInfo;
+  
   sub main : int ($args : string[]) {
     my $app = Cotton::App->new;
     
