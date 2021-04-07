@@ -6,7 +6,8 @@ package Cotton::App {
   has name : rw string;
   has pages : rw SPVM::List;
   has runtime : rw object;
-  has interface : Cotton::Interface;
+  has interface : rw Cotton::Interface;
+  has current_page : rw Cotton::Page;
   
   sub new : Cotton::App() {
     my $self = new Cotton::App;
@@ -20,5 +21,15 @@ package Cotton::App {
   
   sub push_page : void ($self : self, $page : Cotton::Page) {
     $self->{pages}->push($page);
+  }
+  
+  sub paint_nodes : void($self :self, $paint_info :object) {
+    my $page = $self->current_page;
+    
+    my $body = $page->body;
+    
+    # Drow node
+    
+    $self->interface->paint_node->($self, $paint_info, $body);
   }
 }

@@ -12,7 +12,15 @@ package Cotton::Win::Runtime {
     
     $app->set_runtime($self);
     
+    $app->interface->set_paint_node(sub : void ($self: self, $app : Cotton::App, $paint_info : object, $node : Cotton::Node) {
+      Cotton::Win::Runtime->paint_node($app, $paint_info, $node);
+    });
+    
     return $self;
+  }
+  
+  sub paint_node : void ($app : Cotton::App, $paint_info : object, $node : Cotton::Node) {
+    warn "AAAAAAA";
   }
   
   sub app_name : string ($self : self) {

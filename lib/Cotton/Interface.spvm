@@ -1,4 +1,8 @@
 package Cotton::Interface {
+  use Cotton::Interface::I_paint_node;
+  
+  has paint_node : rw Cotton::Interface::I_paint_node;
+  
   sub new : Cotton::Interface () {
     return new Cotton::Interface;
   }

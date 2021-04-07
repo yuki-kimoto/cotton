@@ -39,6 +39,9 @@ package Cotton::Win::Browser {
       $page->set_path("/");
       $page->set_body($body);
       $app->push_page($page);
+
+      # Set current page;
+      $app->set_current_page($page);
     }
     
     # ランタイムを生成
