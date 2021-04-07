@@ -33,83 +33,108 @@ static void alert(SPVM_ENV* env, const char* message) {
 
 HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app);
 
-void Cotton_Runtime_draw_node(HWND window_handle) {
-  // Get Device context
-  PAINTSTRUCT ps;
+int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
+  SPVM_VALUE stack[256];
+  int32_t e;
   
-  HDC hdc = BeginPaint(window_handle, &ps);
-  
-  int32_t padding_left = 5;
-  int32_t padding_top = 5;
-  int32_t padding_right = 5;
-  int32_t padding_bottom = 5;
-
-  const TCHAR* text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
-  
-  // Render block which has text
+  // Draw page title
   {
-    LOGFONT lfFont;
-    lfFont.lfHeight     = 40;
-    lfFont.lfWidth = lfFont.lfEscapement =
-    lfFont.lfOrientation    = 0;
-    lfFont.lfWeight     = FW_BOLD;
-    lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-    lfFont.lfStrikeOut    = FALSE; 
-    lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-    lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-    lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-    lfFont.lfQuality    = DEFAULT_QUALITY;
-    lfFont.lfPitchAndFamily = 0;
-    lfFont.lfFaceName[0]    = '\0';
-    HFONT hFont = CreateFontIndirect(&lfFont);
-    
-    SelectObject(hdc, hFont);
-    SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
-    SetBkMode(hdc , TRANSPARENT);
-
-    SIZE text_size;
-    GetTextExtentPoint32(hdc, text, lstrlen(text), &text_size);
-
-    RECT client_rect;
-    GetClientRect(window_handle , &client_rect);
-    int32_t width = padding_left + client_rect.right + padding_right;
-    int32_t height = padding_top + text_size.cy + padding_bottom;
-    
-    UINT drow_text_flag = DT_WORDBREAK;
-    drow_text_flag |= DT_LEFT;
-    
-    RECT text_rect = {right : width, bottom:50};
-    DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
-    
-    // Draw block
+    void* sv_app_name = NULL;
     {
-      HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
-      SelectObject(hdc, hpen);
-      HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
-      SelectObject(hdc, brash);
-      Rectangle(hdc, 0, 0, width, text_rect.bottom);
-      DeleteObject(hpen);
-      DeleteObject(brash);
+      stack[0].oval = sv_app;
+      e = env->call_sub_by_name(env, "Cotton::App", "name", "string(self)", stack, __FILE__, __LINE__);
+      if (e) { return e; }
+      sv_app_name = stack[0].oval;
     }
     
-    // Draw text
+    void* sv_app_name_u16 = NULL;
     {
-      DrawText(hdc, text, -1, &text_rect, drow_text_flag);
+      stack[0].oval = sv_app_name;
+      e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+      if (e) { return e; }
+      sv_app_name_u16 = stack[0].oval;
     }
+    int16_t* app_name_u16 = env->get_elems_short(env, sv_app_name_u16);
     
-    // Delete font handle
-    DeleteObject(hFont);
+    SetWindowTextW(window_handle, app_name_u16);
   }
-  EndPaint(window_handle , &ps);
+  
+  // Draw client area
+  {
+    // Get Device context
+    PAINTSTRUCT ps;
+    
+    HDC hdc = BeginPaint(window_handle, &ps);
+    
+    int32_t padding_left = 5;
+    int32_t padding_top = 5;
+    int32_t padding_right = 5;
+    int32_t padding_bottom = 5;
+
+    const TCHAR* text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
+    
+    // Render block which has text
+    {
+      LOGFONT lfFont;
+      lfFont.lfHeight     = 40;
+      lfFont.lfWidth = lfFont.lfEscapement =
+      lfFont.lfOrientation    = 0;
+      lfFont.lfWeight     = FW_BOLD;
+      lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+      lfFont.lfStrikeOut    = FALSE; 
+      lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+      lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+      lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+      lfFont.lfQuality    = DEFAULT_QUALITY;
+      lfFont.lfPitchAndFamily = 0;
+      lfFont.lfFaceName[0]    = '\0';
+      HFONT hFont = CreateFontIndirect(&lfFont);
+      
+      SelectObject(hdc, hFont);
+      SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
+      SetBkMode(hdc , TRANSPARENT);
+
+      SIZE text_size;
+      GetTextExtentPoint32(hdc, text, lstrlen(text), &text_size);
+
+      RECT client_rect;
+      GetClientRect(window_handle , &client_rect);
+      int32_t width = padding_left + client_rect.right + padding_right;
+      int32_t height = padding_top + text_size.cy + padding_bottom;
+      
+      UINT drow_text_flag = DT_WORDBREAK;
+      drow_text_flag |= DT_LEFT;
+      
+      RECT text_rect = {right : width, bottom:50};
+      DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
+      
+      // Draw block
+      {
+        HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+        SelectObject(hdc, hpen);
+        HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+        SelectObject(hdc, brash);
+        Rectangle(hdc, 0, 0, width, text_rect.bottom);
+        DeleteObject(hpen);
+        DeleteObject(brash);
+      }
+      
+      // Draw text
+      {
+        DrawText(hdc, text, -1, &text_rect, drow_text_flag);
+      }
+      
+      // Delete font handle
+      DeleteObject(hFont);
+    }
+    EndPaint(window_handle , &ps);
+  }
 }
 
 LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static SPVM_ENV* env;
   static void* sv_app;
-  
-  SPVM_VALUE stack[256];
-  int32_t e;
   
   switch (message) {
     case WM_DESTROY: {
@@ -127,30 +152,8 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       return 0;
     }
     case WM_PAINT: {
-
-      int32_t e;
-      
-      void* sv_app_name = NULL;
-      {
-        stack[0].oval = sv_app;
-        e = env->call_sub_by_name(env, "Cotton::App", "name", "string(self)", stack, __FILE__, __LINE__);
-        if (e) { return e; }
-        sv_app_name = stack[0].oval;
-      }
-      
-      void* sv_app_name_u16 = NULL;
-      {
-        stack[0].oval = sv_app_name;
-        e = env->call_sub_by_name(env, "SPVM::Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
-        if (e) { return e; }
-        sv_app_name_u16 = stack[0].oval;
-      }
-      int16_t* app_name_u16 = env->get_elems_short(env, sv_app_name_u16);
-      
-      SetWindowTextW(window_handle, app_name_u16);
-      
       // Draw node
-      Cotton_Runtime_draw_node(window_handle);
+      Cotton_Runtime_paint(env, sv_app, window_handle);
       
       return 0;
     }
