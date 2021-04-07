@@ -59,12 +59,18 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     SetWindowTextW(window_handle, app_name_u16);
   }
   
-  // Draw client area
+  // Draw parent area
   {
-    // Get Device context
+    // Begin paint and get Device context
     PAINTSTRUCT ps;
-    
     HDC hdc = BeginPaint(window_handle, &ps);
+    
+    // Get parent width and heigth
+    // Plus 1 becuase Windows don't contain right and bottom pixcel
+    RECT parent_rect;
+    GetClientRect(window_handle , &parent_rect);
+    int32_t parent_width = parent_rect.right + 1;
+    int32_t parent_height = parent_rect.bottom + 1;
     
     int32_t padding_left = 5;
     int32_t padding_top = 5;
@@ -94,19 +100,18 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
       SetBkMode(hdc , TRANSPARENT);
 
-      SIZE text_size;
-      GetTextExtentPoint32(hdc, text, lstrlen(text), &text_size);
-
-      RECT client_rect;
-      GetClientRect(window_handle , &client_rect);
-      int32_t width = padding_left + client_rect.right + padding_right;
-      int32_t height = padding_top + text_size.cy + padding_bottom;
-      
       UINT drow_text_flag = DT_WORDBREAK;
       drow_text_flag |= DT_LEFT;
       
-      RECT text_rect = {right : width, bottom:50};
-      DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
+      // Node width
+      int32_t draw_width = parent_width;
+      
+      // Culcurate text height
+      RECT culc_node_rect = {right : draw_width - 1};
+      DrawText(hdc, text, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
+      
+      // Node Height
+      int32_t draw_height = culc_node_rect.bottom + 1;
       
       // Draw block
       {
@@ -114,19 +119,21 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
         SelectObject(hdc, hpen);
         HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
         SelectObject(hdc, brash);
-        Rectangle(hdc, 0, 0, width, text_rect.bottom);
+        Rectangle(hdc, 0, 0, draw_width - 1, draw_height - 1);
         DeleteObject(hpen);
         DeleteObject(brash);
       }
       
       // Draw text
       {
-        DrawText(hdc, text, -1, &text_rect, drow_text_flag);
+        DrawText(hdc, text, -1, &culc_node_rect, drow_text_flag);
       }
       
       // Delete font handle
       DeleteObject(hFont);
     }
+    
+    // End paint
     EndPaint(window_handle , &ps);
   }
 }
