@@ -31,48 +31,7 @@ static void alert(SPVM_ENV* env, const char* message) {
   COTTON_WIN_RUNTIME_alert(env, message);
 }
 
-typedef struct cotton_win_app_new_node_window_args COTTON_WIN_RUNTIME_NEW_NODE_WINDOW_ARGS;
-struct cotton_win_app_new_node_window_args {
-  HWND parent_window_handle;
-  int32_t window_id;
-};
-
 HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app);
-
-enum {
-  COTTON_WIN_RUNTIME_NODE_TYPE_ELEMENT,
-  COTTON_WIN_RUNTIME_NODE_TYPE_TEXT,
-};
-
-enum {
-  COTTON_WIN_RUNTIME_NODE_DISPLAY_BLOCK,
-  COTTON_WIN_RUNTIME_NODE_DISPLAY_INLINE,
-};
-
-enum {
-  COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_LEFT,
-  COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_CENTER,
-  COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_RIGHT,
-};
-
-typedef struct cotton_win_app_node COTTON_WIN_RUNTIME_NODE;
-struct cotton_win_app_node {
-  int8_t type;
-  int32_t font_size;
-  int32_t color;
-  int8_t font_weight;
-  const TCHAR* text;
-  COTTON_WIN_RUNTIME_NODE* first;
-  COTTON_WIN_RUNTIME_NODE* last;
-  COTTON_WIN_RUNTIME_NODE* sibparent;
-  int8_t moresib;
-  int8_t display;
-  int32_t padding_left;
-  int32_t padding_top;
-  int32_t padding_right;
-  int32_t padding_bottom;
-  int32_t text_align;
-};
 
 void Cotton_Runtime_draw_node(HWND window_handle) {
   // Get Device context
@@ -80,24 +39,12 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
   
   HDC hdc = BeginPaint(window_handle, &ps);
   
-  COTTON_WIN_RUNTIME_NODE* elem_node1 = calloc(1, sizeof(COTTON_WIN_RUNTIME_NODE));
-  
-  elem_node1->type = COTTON_WIN_RUNTIME_NODE_TYPE_ELEMENT;
-  elem_node1->padding_left = 5;
-  elem_node1->padding_top = 5;
-  elem_node1->padding_right = 5;
-  elem_node1->padding_bottom = 5;
-  elem_node1->text_align = COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_CENTER;
+  int32_t padding_left = 5;
+  int32_t padding_top = 5;
+  int32_t padding_right = 5;
+  int32_t padding_bottom = 5;
 
-  COTTON_WIN_RUNTIME_NODE* text_node1 = calloc(1, sizeof(COTTON_WIN_RUNTIME_NODE));
-  
-  text_node1->type = COTTON_WIN_RUNTIME_NODE_TYPE_TEXT;
-  text_node1->text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
-  
-  elem_node1->first = text_node1;
-  elem_node1->last = text_node1;
-  text_node1->sibparent = elem_node1;
-
+  const TCHAR* text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
   
   // Render block which has text
   {
@@ -116,9 +63,6 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
     lfFont.lfFaceName[0]    = '\0';
     HFONT hFont = CreateFontIndirect(&lfFont);
     
-    COTTON_WIN_RUNTIME_NODE* text_node = elem_node1->first;
-    const TCHAR* text = text_node->text;
-
     SelectObject(hdc, hFont);
     SetTextColor(hdc, RGB(0xFF, 0xFF, 0xFF));
     SetBkMode(hdc , TRANSPARENT);
@@ -128,19 +72,11 @@ void Cotton_Runtime_draw_node(HWND window_handle) {
 
     RECT client_rect;
     GetClientRect(window_handle , &client_rect);
-    int32_t width = elem_node1->padding_left + client_rect.right + elem_node1->padding_right;
-    int32_t height = elem_node1->padding_top + text_size.cy + elem_node1->padding_bottom;
+    int32_t width = padding_left + client_rect.right + padding_right;
+    int32_t height = padding_top + text_size.cy + padding_bottom;
     
     UINT drow_text_flag = DT_WORDBREAK;
-    if (elem_node1->text_align == COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_LEFT) {
-      drow_text_flag |= DT_LEFT;
-    }
-    else if (elem_node1->text_align == COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_CENTER) {
-      drow_text_flag |= DT_CENTER;
-    }
-    else if (elem_node1->text_align == COTTON_WIN_RUNTIME_NODE_TEXT_ALIGN_RIGHT) {
-      drow_text_flag |= DT_RIGHT;
-    }
+    drow_text_flag |= DT_LEFT;
     
     RECT text_rect = {right : width, bottom:50};
     DrawText(hdc, text, -1, &text_rect, drow_text_flag | DT_CALCRECT);
