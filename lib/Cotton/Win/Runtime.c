@@ -80,7 +80,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     int32_t color = RGB(0xFF, 0xFF, 0xFF);
     int32_t background_color = RGB(0x00, 0xAA, 0x77);
 
-    const TCHAR* text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
+    const int16_t* text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
     
     // Render block which has text
     {
@@ -188,8 +188,8 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app) {
   if (!RegisterClass(&winc)) return NULL;
 
   // Create Main Window
-  const TCHAR* window_class_name = TEXT("main_window");
-  const TCHAR* window_title = NULL;
+  const int16_t* window_class_name = TEXT("main_window");
+  const int16_t* window_title = NULL;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
   int window_y = CW_USEDEFAULT;
