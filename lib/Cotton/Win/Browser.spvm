@@ -1,7 +1,7 @@
 package Cotton::Win::Browser {
   use Cotton::App;
   use Cotton::Node;
-  use Cotton(body, h1, div, a, id, class);
+  use Cotton(body, h1, div, a, id, class, rgb);
   use SPVM::List;
   use Cotton::Page;
 
@@ -29,6 +29,9 @@ package Cotton::Win::Browser {
     # Add index page
     {
       my $body = body("こんにちは");
+      
+      $body->set_color(rgb(0xFF, 0xFF, 0xFF));
+      $body->set_background_color(rgb(0x00, 0xAA, 0x77));
       
       # Create index page
       my $page = Cotton::Page->new;

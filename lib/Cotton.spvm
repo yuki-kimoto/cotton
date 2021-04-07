@@ -5,6 +5,11 @@ package Cotton : precompile {
   use Cotton::Classes;
   use SPVM::List;
   
+  sub rgb : int ($red : int, $green : int, $blue : int) {
+    my $rgb = $red << (8 * 2) + $green << 8 + $blue;
+    return $rgb;
+  }
+  
   sub new_tag : Cotton::Node ($tag : string, $objects : object[] ...) {
     
     my $node = new Cotton::Node;
