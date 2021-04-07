@@ -77,8 +77,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     int32_t padding_right = 5;
     int32_t padding_bottom = 5;
     
-    COLORREF color = RGB(0xFF, 0xFF, 0xFF);
-    COLORREF background_color = RGB(0x00, 0xAA, 0x77);
+    int32_t color = RGB(0xFF, 0xFF, 0xFF);
+    int32_t background_color = RGB(0x00, 0xAA, 0x77);
 
     const TCHAR* text = TEXT("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
     
