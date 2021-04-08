@@ -257,28 +257,34 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
 
 int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
+  int32_t e;
+  
   void* sv_self = stack[0].oval;
   void* sv_paint_info = stack[1].oval;
+  void* sv_node = stack[2].oval;
   
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
   HDC hdc = paint_info->hdc;
-  
-  printf("DDD %d", hdc);
 
+  int32_t draw_left = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_left", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  int32_t draw_top = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_top", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  int32_t draw_width = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_width", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  int32_t draw_height = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_height", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  
   // Draw block
   {
     HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
     SelectObject(hdc, hpen);
     HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
     SelectObject(hdc, brash);
-    Rectangle(hdc, 300, 300, 400, 400);
+    Rectangle(hdc, draw_left, draw_top, draw_width - 1, draw_height - 1);
     DeleteObject(hpen);
     DeleteObject(brash);
   }
-  
-  int32_t e;
-  
-  printf("native paint_node");
 
   return 0;
 }

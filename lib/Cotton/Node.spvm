@@ -1,5 +1,6 @@
 package Cotton::Node {
   allow Cotton;
+  allow Cotton::App;
 
   use SPVM::Hash;
   use SPVM::StringList;
@@ -16,6 +17,10 @@ package Cotton::Node {
   has calcurated_style : rw SPVM::Hash;
   has color : rw int;
   has background_color : rw int;
+  has draw_left : int;
+  has draw_top : int;
+  has draw_width : int;
+  has draw_height : int;
   
   sub new : Cotton::Node () {
     return new Cotton::Node;

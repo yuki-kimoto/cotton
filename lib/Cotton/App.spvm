@@ -28,6 +28,10 @@ package Cotton::App {
     my $page = $self->current_page;
     
     my $body = $page->body;
+    $body->{draw_left} = 300;
+    $body->{draw_top} = 300;
+    $body->{draw_width} = 400;
+    $body->{draw_height} = 400;
     
     # Drow node
     
