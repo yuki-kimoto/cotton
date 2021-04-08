@@ -88,7 +88,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       free(paint_info);
     }
     
-    
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
     RECT parent_rect;
@@ -250,6 +249,17 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
     TranslateMessage(&message);
     DispatchMessage(&message);
   }
+
+  return 0;
+}
+
+int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  void* sv_self = stack[0].oval;
+  
+  int32_t e;
+  
+  printf("native paint_node");
 
   return 0;
 }

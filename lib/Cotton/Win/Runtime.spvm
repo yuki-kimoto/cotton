@@ -19,9 +19,7 @@ package Cotton::Win::Runtime {
     return $self;
   }
   
-  sub paint_node : void ($app : Cotton::App, $paint_info : object, $node : Cotton::Node) {
-    warn "paint_node";
-  }
+  native sub paint_node : void ($app : Cotton::App, $paint_info : object, $node : Cotton::Node);
   
   sub app_name : string ($self : self) {
     return $self->{app}->name;
