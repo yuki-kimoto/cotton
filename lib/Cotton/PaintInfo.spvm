@@ -1,0 +1,2 @@
+package Cotton::PaintInfo : pointer_t;
+

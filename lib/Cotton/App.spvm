@@ -2,6 +2,7 @@ package Cotton::App {
   use SPVM::Unicode;
   use SPVM::List;
   use Cotton::Interface;
+  use Cotton::PaintInfo;
   
   has name : rw string;
   has pages : rw SPVM::List;
@@ -23,7 +24,7 @@ package Cotton::App {
     $self->{pages}->push($page);
   }
   
-  sub paint_nodes : void($self :self, $paint_info :object) {
+  sub paint_nodes : void($self :self, $paint_info : Cotton::PaintInfo) {
     my $page = $self->current_page;
     
     my $body = $page->body;

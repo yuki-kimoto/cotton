@@ -31,6 +31,10 @@ static void alert(SPVM_ENV* env, const char* message) {
   COTTON_WIN_RUNTIME_alert(env, message);
 }
 
+struct COTTON_RUNTIME_PAINT_INFO {
+  HDC hdc;
+};
+
 HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app);
 
 int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
@@ -64,6 +68,14 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     // Begin paint and get Device context
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
+    
+    struct COTTON_RUNTIME_PAINT_INFO* paint_info = calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
+    paint_info->hdc = hdc;
+    
+    void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
+    if (e) {
+      printf("Error");
+    }
     
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
