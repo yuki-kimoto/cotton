@@ -71,6 +71,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     
     // Call Cotton::App->paint_nodes
     {
+      int32_t scope = env->enter_scope(env);
+      
       struct COTTON_RUNTIME_PAINT_INFO* paint_info = calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
       paint_info->hdc = hdc;
       
@@ -84,7 +86,10 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       e = env->call_sub_by_name(env, "Cotton::App", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
       if (e) { return e; }
       
-      env->dec_ref_count(env, sv_paint_info);
+      printf("CCCCCC %d\n", env->get_ref_count(env, sv_paint_info));
+
+      env->leave_scope(env, scope);
+
       free(paint_info);
     }
     
@@ -131,7 +136,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       // draw height
       int32_t draw_height = culc_node_rect.bottom + 1;
 
-      printf("EEE %d", hdc);
+      printf("EEE %d\n", hdc);
       
       // Draw block
       {
@@ -251,6 +256,8 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
     TranslateMessage(&message);
     DispatchMessage(&message);
   }
+  
+  printf("GGGGGGGGG\n");
 
   return 0;
 }
