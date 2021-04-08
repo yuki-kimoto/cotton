@@ -88,9 +88,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       
       printf("CCCCCC %d\n", env->get_ref_count(env, sv_paint_info));
 
-      env->leave_scope(env, scope);
-
       free(paint_info);
+      env->leave_scope(env, scope);
     }
     
     // Get parent width and heigth
