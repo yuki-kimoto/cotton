@@ -130,6 +130,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       
       // draw height
       int32_t draw_height = culc_node_rect.bottom + 1;
+
+      printf("EEE %d", hdc);
       
       // Draw block
       {
@@ -256,6 +258,23 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
 int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* sv_self = stack[0].oval;
+  void* sv_paint_info = stack[1].oval;
+  
+  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
+  HDC hdc = paint_info->hdc;
+  
+  printf("DDD %d", hdc);
+
+  // Draw block
+  {
+    HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
+    SelectObject(hdc, hpen);
+    HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+    SelectObject(hdc, brash);
+    Rectangle(hdc, 300, 300, 400, 400);
+    DeleteObject(hpen);
+    DeleteObject(brash);
+  }
   
   int32_t e;
   
