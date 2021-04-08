@@ -3,6 +3,7 @@ package Cotton::App {
   use SPVM::List;
   use Cotton::Interface;
   use Cotton::PaintInfo;
+  use Cotton::Node;
   
   has name : rw string;
   has pages : rw SPVM::List;
@@ -27,14 +28,33 @@ package Cotton::App {
   sub paint_nodes : void($self :self, $paint_info : Cotton::PaintInfo) {
     my $page = $self->current_page;
     
+    my $node_list = SPVM::List->new([]);
     my $body = $page->body;
-    $body->{draw_left} = 300;
-    $body->{draw_top} = 300;
-    $body->{draw_width} = 400;
-    $body->{draw_height} = 400;
+
+    {
+      my $node = Cotton::Node->new;
+      
+      $node->{draw_left} = 300;
+      $node->{draw_top} = 300;
+      $node->{draw_width} = 400;
+      $node->{draw_height} = 400;
+      $node_list->push($node);
+    }
+    {
+      my $node = Cotton::Node->new;
+      $node->{draw_left} = 400;
+      $node->{draw_top} = 400;
+      $node->{draw_width} = 500;
+      $node->{draw_height} = 500;
+      $node_list->push($node);
+    }
     
     # Drow node
-    
-    $self->interface->paint_node->($self, $paint_info, $body);
+    my $node_list_length = $node_list->length;
+    for (my $i = 0; $i < $node_list_length; $i++) {
+      warn("AAAAAAA");
+      my $node = (Cotton::Node)$node_list->get($i);
+      $self->interface->paint_node->($self, $paint_info, $node);
+    }
   }
 }
