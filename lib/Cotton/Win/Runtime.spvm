@@ -20,7 +20,7 @@ package Cotton::Win::Runtime {
   }
   
   sub paint_node : void ($app : Cotton::App, $paint_info : object, $node : Cotton::Node) {
-    warn "AAAAAAA";
+    warn "paint_node";
   }
   
   sub app_name : string ($self : self) {
