@@ -112,7 +112,8 @@ package Cotton::App {
       }
     }
     
-    
+    my $node = (Cotton::Node)$node_list->get(1);
+    $node->{z_index} = 3;
     
     return $node_list;
   }
