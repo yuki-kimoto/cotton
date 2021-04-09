@@ -1,4 +1,4 @@
-package Cotton::App {
+package Cotton::App : precompile {
   use SPVM::Unicode;
   use SPVM::List;
   use Cotton::Interface;
