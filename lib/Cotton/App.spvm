@@ -30,7 +30,7 @@ package Cotton::App {
     
     my $body = $page->body;
     
-    my $node_list = $self->convert_dom_nodes_to_liner($body);
+    my $node_list = $self->convert_dom_to_excution_order($body);
     
     {
       my $node_list = SPVM::List->new([]);
@@ -62,15 +62,21 @@ package Cotton::App {
     }
   }
 
-  sub convert_dom_nodes_to_liner : SPVM::List ($self : self, $root_node : Cotton::Node) {
+  sub convert_dom_to_excution_order : SPVM::List ($self : self, $root_node : Cotton::Node) {
+    
+    my $execution_order_before_z_index_sort = 0;
+    
+    # convert_dom_to_excution_order
     my $node_list = SPVM::List->new([]);
-
-    # Check tree
     my $cur_node = $root_node;
     my $finish = 0;
     while ($cur_node) {
       # [START]Preorder traversal position
       warn "Pre";
+      $cur_node->{execution_order_before_z_index_sort} = $execution_order_before_z_index_sort;
+      $execution_order_before_z_index_sort++;
+      $node_list->push($cur_node);
+      
       # [END]Preorder traversal position
       
       if ($cur_node->first) {
@@ -105,6 +111,8 @@ package Cotton::App {
         }
       }
     }
+    
+    
     
     return $node_list;
   }

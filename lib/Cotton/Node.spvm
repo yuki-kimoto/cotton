@@ -21,7 +21,7 @@ package Cotton::Node {
   has draw_top : int;
   has draw_width : int;
   has draw_height : int;
-  has z_index : int;
+  has execution_order_before_z_index_sort : int;
   
   sub new : Cotton::Node () {
     return new Cotton::Node;
