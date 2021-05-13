@@ -15,10 +15,7 @@ package Cotton::Win::Browser {
     
     # Add index page
     {
-      my $body = body(
-        div("あいうえお"),
-        div("かきくけこ")
-      );
+      my $body = body("こんにちは");
 =pod
       my $body = body(
         ul(

@@ -39,7 +39,7 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app);
 
 int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
   SPVM_VALUE stack[256];
-  int32_t e;
+  int32_t e = 0;
   
   // Draw page title
   {
@@ -77,17 +77,13 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       paint_info->hdc = hdc;
       
       void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
-      if (e) {
-        printf("Error");
-      }
+      if (e) { return e; }
 
       stack[0].oval = sv_app;
       stack[1].oval = sv_paint_info;
       e = env->call_sub_by_name(env, "Cotton::App", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
       if (e) { return e; }
       
-      printf("CCCCCC %d\n", env->get_ref_count(env, sv_paint_info));
-
       free(paint_info);
       env->leave_scope(env, scope);
     }
@@ -135,8 +131,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       // draw height
       int32_t draw_height = culc_node_rect.bottom + 1;
 
-      printf("EEE %d\n", hdc);
-      
       // Draw block
       {
         HPEN hpen = CreatePen(PS_SOLID , 0 , background_color);
@@ -162,6 +156,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     // End paint
     EndPaint(window_handle , &ps);
   }
+  
+  return 0;
 }
 
 LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
@@ -185,8 +181,16 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       return 0;
     }
     case WM_PAINT: {
+      int32_t e = 0;
+      
       // Draw node
-      Cotton_Runtime_paint(env, sv_app, window_handle);
+      e = Cotton_Runtime_paint(env, sv_app, window_handle);
+      
+      if (e) {
+        alert(env, "エラーが発生しました。");
+        PostQuitMessage(0);
+        return 0;
+      }
       
       return 0;
     }

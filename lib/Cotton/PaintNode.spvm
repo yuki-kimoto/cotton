@@ -1,0 +1,27 @@
+package Cotton::PaintNode {
+  allow Cotton;
+  allow Cotton::App;
+
+  use SPVM::Hash;
+  use SPVM::StringList;
+  
+  has moresib : rw byte;
+  has tag : rw string;
+  has id : rw string;
+  has style : rw SPVM::Hash;
+  has classes : rw string[];
+  has text : rw string;
+  has calcurated_style : rw SPVM::Hash;
+  has color : rw int;
+  has background_color : rw int;
+  has draw_left : rw int;
+  has draw_top : rw int;
+  has draw_width : rw int;
+  has draw_height : rw int;
+  has execution_order_before_z_index_sort : rw int;
+  has z_index : rw int;
+  
+  sub new : Cotton::PaintNode () {
+    return new Cotton::PaintNode;
+  }
+}
