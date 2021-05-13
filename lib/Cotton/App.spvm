@@ -32,9 +32,16 @@ package Cotton::App : precompile {
     {
       my $body = $page->body;
       
-      warn "AAAAA";
       my $nodes = $self->convert_dom_to_excution_order($body);
-      warn "BBBBBB";
+      for (my $i = 0; $i < @$nodes; $i++) {
+        my $node = $nodes->[$i];
+        $node->{draw_left} = 0;
+        $node->{draw_top} = 0;
+        $node->{draw_width} = 600;
+        $node->{draw_height} = 100;
+        
+        $self->interface->paint_node->($self, $paint_info, $node);
+      }
     }
     
     {
@@ -61,7 +68,6 @@ package Cotton::App : precompile {
       my $node_list_length = $node_list->length;
       for (my $i = 0; $i < $node_list_length; $i++) {
         my $node = (Cotton::Node)$node_list->get($i);
-        warn "AAAAAA";
         $self->interface->paint_node->($self, $paint_info, $node);
       }
     }
