@@ -31,7 +31,17 @@ package Cotton::App : precompile {
     
     my $body = $page->body;
     
-    my $node_list = $self->convert_dom_to_excution_order($body);
+    {
+      my $nodes = $self->convert_dom_to_excution_order($body);
+      
+      # Drow node
+      my $nodes_length = @$nodes;
+      for (my $i = 0; $i < $nodes_length; $i++) {
+        my $node = $nodes->[$i];
+        $self->interface->paint_node->($self, $paint_info, $node);
+      }
+    }
+    
     
     {
       my $node_list = SPVM::List->new([]);
@@ -39,7 +49,7 @@ package Cotton::App : precompile {
         my $node = Cotton::Node->new;
         
         $node->{draw_left} = 300;
-        $node->{draw_top} = 300;
+        $node->{draw_top} = 500;
         $node->{draw_width} = 400;
         $node->{draw_height} = 400;
         $node_list->push($node);
@@ -47,7 +57,7 @@ package Cotton::App : precompile {
       {
         my $node = Cotton::Node->new;
         $node->{draw_left} = 400;
-        $node->{draw_top} = 400;
+        $node->{draw_top} = 600;
         $node->{draw_width} = 500;
         $node->{draw_height} = 500;
         $node_list->push($node);
@@ -139,11 +149,6 @@ package Cotton::App : precompile {
         }
       }
     });
-    
-    for (my $i = 0; $i < @$nodes; $i++) {
-      my $node = $nodes->[$i];
-      warn $node->z_index . " " . $node->execution_order_before_z_index_sort;
-    }
     
     return $nodes;
   }

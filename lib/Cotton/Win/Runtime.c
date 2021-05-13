@@ -129,7 +129,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       drow_text_flag |= DT_LEFT;
       
       // Culcurate text height
-      RECT culc_node_rect = {right : draw_width - 1};
+      RECT culc_node_rect = {top : 200, right : draw_width - 1};
       DrawText(hdc, text, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
       
       // draw height
@@ -143,7 +143,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
         SelectObject(hdc, hpen);
         HBRUSH brash = CreateSolidBrush(background_color);
         SelectObject(hdc, brash);
-        Rectangle(hdc, 0, 0, draw_width - 1, draw_height - 1);
+        Rectangle(hdc, 0, 200, draw_width - 1, draw_height - 1);
         DeleteObject(hpen);
         DeleteObject(brash);
       }
@@ -180,7 +180,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       env = wm_create_args[0];
       sv_app = (void*)wm_create_args[1];
 
-      COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
+      // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
       return 0;
     }

@@ -16,6 +16,11 @@ package Cotton::Win::Browser {
     # Add index page
     {
       my $body = body(
+        div("あいうえお"),
+        div("かきくけこ")
+      );
+=pod
+      my $body = body(
         ul(
           li(),
           li(),
@@ -25,7 +30,8 @@ package Cotton::Win::Browser {
           li(),
         ),
       );
-      
+=cut
+
       $body->set_color(rgb(0xFF, 0xFF, 0xFF));
       $body->set_background_color(rgb(0x00, 0xAA, 0x77));
       
