@@ -117,8 +117,6 @@ package Cotton::App : precompile {
       }
     }
 
-    $node_list->get(3);
-    
     my $nodes = (Cotton::Node[])$node_list->to_array;
     
     
