@@ -37,7 +37,6 @@ package Cotton::App : precompile {
       warn "BBBBBB";
     }
     
-    
     {
       my $node_list = SPVM::List->new([]);
       {
@@ -117,9 +116,12 @@ package Cotton::App : precompile {
         }
       }
     }
+
+    $node_list->get(3);
     
     my $nodes = (Cotton::Node[])$node_list->to_array;
-
+    
+    
     sort_object($nodes, 0, scalar @$nodes, sub : int ($self : self, $object1 : object, $object2 : object) {
       my $node1 = (Cotton::Node)$object1;
       my $node2 = (Cotton::Node)$object2;

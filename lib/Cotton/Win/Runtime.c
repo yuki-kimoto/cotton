@@ -187,7 +187,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       e = Cotton_Runtime_paint(env, sv_app, window_handle);
       
       if (e) {
-        alert(env, "エラーが発生しました。");
+        alert(env, env->get_chars(env, env->get_exception(env)));
         PostQuitMessage(0);
         return 0;
       }
