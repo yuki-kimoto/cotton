@@ -4,7 +4,7 @@ package Cotton::App : precompile {
   use Cotton::Interface;
   use Cotton::PaintInfo;
   use Cotton::Node;
-  use SPVM::Sort (sorto);
+  use SPVM::ArrayUtil (sort_object);
   
   has name : rw string;
   has pages : rw SPVM::List;
@@ -117,7 +117,7 @@ package Cotton::App : precompile {
     
     my $nodes = (Cotton::Node[])$node_list->to_array;
     
-    sorto($nodes, sub : int ($self : self, $object1 : object, $object2 : object) {
+    sort_object($nodes, 0, scalar @$nodes, sub : int ($self : self, $object1 : object, $object2 : object) {
       my $node1 = (Cotton::Node)$object1;
       my $node2 = (Cotton::Node)$object2;
       

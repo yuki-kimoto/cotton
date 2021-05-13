@@ -180,7 +180,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       env = wm_create_args[0];
       sv_app = (void*)wm_create_args[1];
 
-      // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
+      COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
       return 0;
     }
@@ -256,8 +256,6 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
     DispatchMessage(&message);
   }
   
-  printf("GGGGGGGGG\n");
-
   return 0;
 }
 
