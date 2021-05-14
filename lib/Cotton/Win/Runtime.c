@@ -88,7 +88,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       env->leave_scope(env, scope);
     }
     
-    
     // End paint
     EndPaint(window_handle , &ps);
   }
@@ -234,6 +233,25 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   if (e) { return e; }
   
   if (sv_text) {
+    // Render block which has text
+    const char* text = env->get_chars(env, sv_text);
+    
+    const int16_t* text_utf16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, text);
+
+    RECT parent_rect = {left : 0, top : 0, bottom: 100, right: 800};
+    // GetClientRect(window_handle , &parent_rect);
+
+    // Get parent width and heigth
+    // Plus 1 becuase Windows don't contain right and bottom pixcel
+    int32_t parent_width = parent_rect.right + 1;
+    int32_t parent_height = parent_rect.bottom + 1;
+    
+    int32_t color = RGB(0xFF, 0x00, 0x00);
+    int32_t background_color = RGB(0x00, 0xAA, 0x77);
+    
+    // draw width
+    int32_t draw_width = parent_width;
+    
     // Font
     LOGFONT lfFont;
     lfFont.lfHeight     = 40;
@@ -252,80 +270,23 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
     SelectObject(hdc, hFont);
     UINT drow_text_flag = DT_WORDBREAK;
     drow_text_flag |= DT_LEFT;
-
-
-    int32_t color = RGB(0xFF, 0x00, 0x00);
     
-    /*
+    // Culcurate text height
+    RECT culc_node_rect = {top : 200, right : draw_width - 1};
+    DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
+    
+    // draw height
+    int32_t draw_height = culc_node_rect.bottom + 1;
+
     // Draw text
     {
       SetTextColor(hdc, color);
       SetBkMode(hdc , TRANSPARENT);
-      RECT culc_node_rect = {top : 100, left : 100};
-      DrawText(hdc, TEXT("あいえうお"), -1, &culc_node_rect, drow_text_flag);
+      DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag);
     }
-    */
-    
-    const char* text = env->get_chars(env, sv_text);
-    
-    const int16_t* text_utf16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, text);
     
     // Delete font handle
     DeleteObject(hFont);
-
-    // Render block which has text
-    {
-      RECT parent_rect = {left : 0, top : 0, bottom: 100, right: 800};
-      // GetClientRect(window_handle , &parent_rect);
-
-      // Get parent width and heigth
-      // Plus 1 becuase Windows don't contain right and bottom pixcel
-      int32_t parent_width = parent_rect.right + 1;
-      int32_t parent_height = parent_rect.bottom + 1;
-      
-      int32_t color = RGB(0xFF, 0x00, 0x00);
-      int32_t background_color = RGB(0x00, 0xAA, 0x77);
-      
-      // draw width
-      int32_t draw_width = parent_width;
-      
-      // Font
-      LOGFONT lfFont;
-      lfFont.lfHeight     = 40;
-      lfFont.lfWidth = lfFont.lfEscapement =
-      lfFont.lfOrientation    = 0;
-      lfFont.lfWeight     = FW_BOLD;
-      lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-      lfFont.lfStrikeOut    = FALSE; 
-      lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-      lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-      lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-      lfFont.lfQuality    = DEFAULT_QUALITY;
-      lfFont.lfPitchAndFamily = 0;
-      lfFont.lfFaceName[0]    = '\0';
-      HFONT hFont = CreateFontIndirect(&lfFont);
-      SelectObject(hdc, hFont);
-      UINT drow_text_flag = DT_WORDBREAK;
-      drow_text_flag |= DT_LEFT;
-      
-      // Culcurate text height
-      RECT culc_node_rect = {top : 200, right : draw_width - 1};
-      DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
-      
-      // draw height
-      int32_t draw_height = culc_node_rect.bottom + 1;
-
-      // Draw text
-      {
-        SetTextColor(hdc, color);
-        SetBkMode(hdc , TRANSPARENT);
-        DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag);
-      }
-      
-      // Delete font handle
-      DeleteObject(hFont);
-    }
-
   }
 
 
