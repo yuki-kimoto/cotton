@@ -68,72 +68,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     // Begin paint and get Device context
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
-    
-    // Render block which has text
-    {
-      // Get parent width and heigth
-      // Plus 1 becuase Windows don't contain right and bottom pixcel
-      RECT parent_rect;
-      GetClientRect(window_handle , &parent_rect);
-      int32_t parent_width = parent_rect.right + 1;
-      int32_t parent_height = parent_rect.bottom + 1;
-      
-      int32_t color = RGB(0xFF, 0xFF, 0xFF);
-      int32_t background_color = RGB(0x00, 0xAA, 0x77);
-
-      const int16_t* text = COTTON_WIN_RUNTIME_utf8_to_utf16(env, "あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
-    
-
-      // draw width
-      int32_t draw_width = parent_width;
-      
-      // Font
-      LOGFONT lfFont;
-      lfFont.lfHeight     = 40;
-      lfFont.lfWidth = lfFont.lfEscapement =
-      lfFont.lfOrientation    = 0;
-      lfFont.lfWeight     = FW_BOLD;
-      lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-      lfFont.lfStrikeOut    = FALSE; 
-      lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-      lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-      lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-      lfFont.lfQuality    = DEFAULT_QUALITY;
-      lfFont.lfPitchAndFamily = 0;
-      lfFont.lfFaceName[0]    = '\0';
-      HFONT hFont = CreateFontIndirect(&lfFont);
-      SelectObject(hdc, hFont);
-      UINT drow_text_flag = DT_WORDBREAK;
-      drow_text_flag |= DT_LEFT;
-      
-      // Culcurate text height
-      RECT culc_node_rect = {top : 200, right : draw_width - 1};
-      DrawText(hdc, text, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
-      
-      // draw height
-      int32_t draw_height = culc_node_rect.bottom + 1;
-
-      // Draw block
-      {
-        HPEN hpen = CreatePen(PS_SOLID , 0 , background_color);
-        SelectObject(hdc, hpen);
-        HBRUSH brash = CreateSolidBrush(background_color);
-        SelectObject(hdc, brash);
-        Rectangle(hdc, 0, 200, draw_width - 1, draw_height - 1);
-        DeleteObject(hpen);
-        DeleteObject(brash);
-      }
-      
-      // Draw text
-      {
-        SetTextColor(hdc, color);
-        SetBkMode(hdc , TRANSPARENT);
-        DrawText(hdc, text, -1, &culc_node_rect, drow_text_flag);
-      }
-      
-      // Delete font handle
-      DeleteObject(hFont);
-    }
 
     // Call Cotton::App->paint_nodes
     {
@@ -336,11 +270,64 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
     
     const int16_t* text_utf16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, text);
     
-    TextOut(hdc , 10 , 10 , text_utf16 , lstrlen(text_utf16));
-    
     // Delete font handle
     DeleteObject(hFont);
+
+    // Render block which has text
+    {
+      RECT parent_rect = {left : 0, top : 0, bottom: 100, right: 800};
+      // GetClientRect(window_handle , &parent_rect);
+
+      // Get parent width and heigth
+      // Plus 1 becuase Windows don't contain right and bottom pixcel
+      int32_t parent_width = parent_rect.right + 1;
+      int32_t parent_height = parent_rect.bottom + 1;
+      
+      int32_t color = RGB(0xFF, 0x00, 0x00);
+      int32_t background_color = RGB(0x00, 0xAA, 0x77);
+      
+      // draw width
+      int32_t draw_width = parent_width;
+      
+      // Font
+      LOGFONT lfFont;
+      lfFont.lfHeight     = 40;
+      lfFont.lfWidth = lfFont.lfEscapement =
+      lfFont.lfOrientation    = 0;
+      lfFont.lfWeight     = FW_BOLD;
+      lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+      lfFont.lfStrikeOut    = FALSE; 
+      lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+      lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+      lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+      lfFont.lfQuality    = DEFAULT_QUALITY;
+      lfFont.lfPitchAndFamily = 0;
+      lfFont.lfFaceName[0]    = '\0';
+      HFONT hFont = CreateFontIndirect(&lfFont);
+      SelectObject(hdc, hFont);
+      UINT drow_text_flag = DT_WORDBREAK;
+      drow_text_flag |= DT_LEFT;
+      
+      // Culcurate text height
+      RECT culc_node_rect = {top : 200, right : draw_width - 1};
+      DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
+      
+      // draw height
+      int32_t draw_height = culc_node_rect.bottom + 1;
+
+      // Draw text
+      {
+        SetTextColor(hdc, color);
+        SetBkMode(hdc , TRANSPARENT);
+        DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag);
+      }
+      
+      // Delete font handle
+      DeleteObject(hFont);
+    }
+
   }
-  
+
+
   return 0;
 }

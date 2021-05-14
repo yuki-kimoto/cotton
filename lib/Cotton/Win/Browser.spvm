@@ -15,7 +15,7 @@ package Cotton::Win::Browser {
     
     # Add index page
     {
-      my $body = body("こんにちは");
+      my $body = body("あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
 =pod
       my $body = body(
         ul(
