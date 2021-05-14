@@ -69,25 +69,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
     
-    // Call Cotton::App->paint_nodes
-    {
-      int32_t scope = env->enter_scope(env);
-      
-      struct COTTON_RUNTIME_PAINT_INFO* paint_info = calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
-      paint_info->hdc = hdc;
-      
-      void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
-      if (e) { return e; }
-
-      stack[0].oval = sv_app;
-      stack[1].oval = sv_paint_info;
-      e = env->call_sub_by_name(env, "Cotton::App", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
-      if (e) { return e; }
-      
-      free(paint_info);
-      env->leave_scope(env, scope);
-    }
-    
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
     RECT parent_rect;
@@ -152,6 +133,26 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
       // Delete font handle
       DeleteObject(hFont);
     }
+
+    // Call Cotton::App->paint_nodes
+    {
+      int32_t scope = env->enter_scope(env);
+      
+      struct COTTON_RUNTIME_PAINT_INFO* paint_info = calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
+      paint_info->hdc = hdc;
+      
+      void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      stack[0].oval = sv_app;
+      stack[1].oval = sv_paint_info;
+      e = env->call_sub_by_name(env, "Cotton::App", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
+      if (e) { return e; }
+      
+      free(paint_info);
+      env->leave_scope(env, scope);
+    }
+    
     
     // End paint
     EndPaint(window_handle , &ps);
@@ -282,7 +283,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   if (e) { return e; }
   int32_t draw_height = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_height", &e, __FILE__, __LINE__);
   if (e) { return e; }
-  
+
   // Draw block
   {
     HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
@@ -293,6 +294,52 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
     DeleteObject(hpen);
     DeleteObject(brash);
   }
+  
+  void* sv_text = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "text", "string", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  
+  if (sv_text) {
+    // Font
+    LOGFONT lfFont;
+    lfFont.lfHeight     = 40;
+    lfFont.lfWidth = lfFont.lfEscapement =
+    lfFont.lfOrientation    = 0;
+    lfFont.lfWeight     = FW_BOLD;
+    lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+    lfFont.lfStrikeOut    = FALSE; 
+    lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+    lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+    lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+    lfFont.lfQuality    = DEFAULT_QUALITY;
+    lfFont.lfPitchAndFamily = 0;
+    lfFont.lfFaceName[0]    = '\0';
+    HFONT hFont = CreateFontIndirect(&lfFont);
+    SelectObject(hdc, hFont);
+    UINT drow_text_flag = DT_WORDBREAK;
+    drow_text_flag |= DT_LEFT;
 
+
+    int32_t color = RGB(0xFF, 0x00, 0x00);
+    
+    /*
+    // Draw text
+    {
+      SetTextColor(hdc, color);
+      SetBkMode(hdc , TRANSPARENT);
+      RECT culc_node_rect = {top : 100, left : 100};
+      DrawText(hdc, TEXT("あいえうお"), -1, &culc_node_rect, drow_text_flag);
+    }
+    */
+    
+    const char* text = env->get_chars(env, sv_text);
+    
+    const int16_t* text_utf16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, text);
+    
+    TextOut(hdc , 10 , 10 , text_utf16 , lstrlen(text_utf16));
+    
+    // Delete font handle
+    DeleteObject(hFont);
+  }
+  
   return 0;
 }

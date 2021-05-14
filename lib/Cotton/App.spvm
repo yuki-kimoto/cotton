@@ -43,7 +43,7 @@ package Cotton::App : precompile {
         $self->interface->paint_node->($self, $paint_info, $node);
       }
     }
-    
+
     {
       my $node_list = SPVM::List->new([]);
       {
@@ -71,6 +71,7 @@ package Cotton::App : precompile {
         $self->interface->paint_node->($self, $paint_info, $node);
       }
     }
+
   }
 
   sub convert_dom_to_excution_order : Cotton::Node[] ($self : self, $root_node : Cotton::Node) {
