@@ -69,20 +69,21 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
     
-    // Get parent width and heigth
-    // Plus 1 becuase Windows don't contain right and bottom pixcel
-    RECT parent_rect;
-    GetClientRect(window_handle , &parent_rect);
-    int32_t parent_width = parent_rect.right + 1;
-    int32_t parent_height = parent_rect.bottom + 1;
-    
-    int32_t color = RGB(0xFF, 0xFF, 0xFF);
-    int32_t background_color = RGB(0x00, 0xAA, 0x77);
-
-    const int16_t* text = COTTON_WIN_RUNTIME_utf8_to_utf16(env, "あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
-    
     // Render block which has text
     {
+      // Get parent width and heigth
+      // Plus 1 becuase Windows don't contain right and bottom pixcel
+      RECT parent_rect;
+      GetClientRect(window_handle , &parent_rect);
+      int32_t parent_width = parent_rect.right + 1;
+      int32_t parent_height = parent_rect.bottom + 1;
+      
+      int32_t color = RGB(0xFF, 0xFF, 0xFF);
+      int32_t background_color = RGB(0x00, 0xAA, 0x77);
+
+      const int16_t* text = COTTON_WIN_RUNTIME_utf8_to_utf16(env, "あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
+    
+
       // draw width
       int32_t draw_width = parent_width;
       
