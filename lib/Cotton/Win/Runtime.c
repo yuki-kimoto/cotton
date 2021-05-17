@@ -202,7 +202,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   
   int32_t e;
   
-  void* sv_self = stack[0].oval;
+  void* sv_app = stack[0].oval;
   void* sv_paint_info = stack[1].oval;
   void* sv_node = stack[2].oval;
   
@@ -238,8 +238,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
     
     const int16_t* text_utf16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, text);
 
-    RECT parent_rect = {left : 0, top : 0, bottom: 100, right: 800};
-    // GetClientRect(window_handle , &parent_rect);
+    RECT parent_rect = {left : draw_left, top : draw_top, right: draw_width - 1, bottom: draw_height - 1};
 
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
@@ -272,7 +271,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
     drow_text_flag |= DT_LEFT;
     
     // Culcurate text height
-    RECT culc_node_rect = {top : 200, right : draw_width - 1};
+    RECT culc_node_rect = {left : parent_rect.left, top : parent_rect.top, right: parent_rect.right, bottom: parent_rect.bottom};
     DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
     
     // draw height
@@ -290,5 +289,24 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   }
 
 
+  return 0;
+}
+
+int32_t SPNATIVE__Cotton__Win__Runtime__get_layout_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t e;
+  
+  stack[0].ival = 0;
+  
+  return 0;
+}
+
+
+int32_t SPNATIVE__Cotton__Win__Runtime__get_layout_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t e;
+  
+  stack[0].ival = 0;
+  
   return 0;
 }

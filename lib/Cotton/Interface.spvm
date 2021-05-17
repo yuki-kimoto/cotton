@@ -1,7 +1,11 @@
 package Cotton::Interface {
   use Cotton::Interface::I_paint_node;
+  use Cotton::Interface::I_get_layout_viewport_width;
+  use Cotton::Interface::I_get_layout_viewport_height;
   
   has paint_node : rw Cotton::Interface::I_paint_node;
+  has get_layout_viewport_width : rw Cotton::Interface::I_get_layout_viewport_width;
+  has get_layout_viewport_height : rw Cotton::Interface::I_get_layout_viewport_height;
   
   sub new : Cotton::Interface () {
     return new Cotton::Interface;
