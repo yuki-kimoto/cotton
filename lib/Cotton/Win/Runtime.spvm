@@ -16,8 +16,8 @@ package Cotton::Win::Runtime {
     $app->set_runtime($self);
     
     my $runtime = $self;
-    $app->interface->set_paint_node([$runtime : Cotton::Win::Runtime] sub : void ($self: self, $app : Cotton::App, $paint_info : object, $node : Cotton::Node) {
-      $runtime->paint_node($app, $paint_info, $node);
+    $app->interface->set_paint_node([$runtime : Cotton::Win::Runtime] sub : void ($self: self, $paint_info : object, $node : Cotton::Node) {
+      $runtime->paint_node($paint_info, $node);
     });
     
     $app->interface->set_get_layout_viewport_width([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
@@ -31,7 +31,7 @@ package Cotton::Win::Runtime {
     return $self;
   }
   
-  native sub paint_node : void ($self : self, $app : Cotton::App, $paint_info : object, $node : Cotton::Node);
+  native sub paint_node : void ($self : self, $paint_info : object, $node : Cotton::Node);
 
   native sub get_layout_viewport_width : void ($self : self);
 

@@ -35,11 +35,14 @@ struct COTTON_RUNTIME_PAINT_INFO {
   HDC hdc;
 };
 
-int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self, void* sv_app) {
+int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
   SPVM_VALUE stack[256];
   int32_t e = 0;
   
   void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+
+  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
@@ -114,7 +117,6 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = wm_create_args[0];
       sv_self = (void*)wm_create_args[1];
-      sv_app = (void*)wm_create_args[2];
 
       // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
@@ -124,7 +126,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       int32_t e = 0;
       
       // Draw node
-      e = Cotton_Runtime_paint(env, sv_self, sv_app);
+      e = Cotton_Runtime_paint(env, sv_self);
       
       if (e) {
         alert(env, env->get_chars(env, env->get_exception(env)));
@@ -217,10 +219,12 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   int32_t e;
   
   void* sv_self = stack[0].oval;
-  void* sv_app = stack[1].oval;
-  void* sv_paint_info = stack[2].oval;
-  void* sv_node = stack[3].oval;
-  
+  void* sv_paint_info = stack[1].oval;
+  void* sv_node = stack[2].oval;
+
+  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
   HDC hdc = paint_info->hdc;
 
