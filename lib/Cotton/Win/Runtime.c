@@ -105,7 +105,6 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   
   static SPVM_ENV* env;
   static void* sv_self;
-  static void* sv_app;
   
   switch (message) {
     case WM_DESTROY: {
@@ -140,7 +139,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self, void* sv_app) {
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self) {
   
   int32_t e = 0;
   
@@ -172,7 +171,6 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self, void* sv_a
   void** wm_create_args = calloc(2, sizeof(void*));
   wm_create_args[0] = env;
   wm_create_args[1] = sv_self;
-  wm_create_args[2] = sv_app;
   void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
       window_class_name, window_title,
@@ -197,11 +195,8 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
-  if (e) { return e; }
-
   // Create main window
-  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_self, sv_app);
+  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_self);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
