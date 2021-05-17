@@ -35,9 +35,14 @@ struct COTTON_RUNTIME_PAINT_INFO {
   HDC hdc;
 };
 
-int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self, void* sv_app, HWND window_handle) {
+int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self, void* sv_app) {
   SPVM_VALUE stack[256];
   int32_t e = 0;
+  
+  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  
+  HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
   
   // Draw page title
   {
@@ -119,7 +124,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       int32_t e = 0;
       
       // Draw node
-      e = Cotton_Runtime_paint(env, sv_self, sv_app, window_handle);
+      e = Cotton_Runtime_paint(env, sv_self, sv_app);
       
       if (e) {
         alert(env, env->get_chars(env, env->get_exception(env)));
