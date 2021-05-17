@@ -35,7 +35,7 @@ struct COTTON_RUNTIME_PAINT_INFO {
   HDC hdc;
 };
 
-int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
+int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self, void* sv_app, HWND window_handle) {
   SPVM_VALUE stack[256];
   int32_t e = 0;
   
@@ -96,6 +96,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
 LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static SPVM_ENV* env;
+  static void* sv_self;
   static void* sv_app;
   
   switch (message) {
@@ -107,9 +108,8 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = wm_create_args[0];
-      sv_app = (void*)wm_create_args[1];
-      
-      
+      sv_self = (void*)wm_create_args[1];
+      sv_app = (void*)wm_create_args[2];
 
       // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
@@ -119,7 +119,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       int32_t e = 0;
       
       // Draw node
-      e = Cotton_Runtime_paint(env, sv_app, window_handle);
+      e = Cotton_Runtime_paint(env, sv_self, sv_app, window_handle);
       
       if (e) {
         alert(env, env->get_chars(env, env->get_exception(env)));
@@ -164,7 +164,8 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self, void* sv_a
   HMENU window_id = NULL;
   void** wm_create_args = calloc(2, sizeof(void*));
   wm_create_args[0] = env;
-  wm_create_args[1] = sv_app;
+  wm_create_args[1] = sv_self;
+  wm_create_args[2] = sv_app;
   void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
       window_class_name, window_title,
@@ -210,7 +211,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   
   int32_t e;
   
-  void* sv_runtime = stack[0].oval;
+  void* sv_self = stack[0].oval;
   void* sv_app = stack[1].oval;
   void* sv_paint_info = stack[2].oval;
   void* sv_node = stack[3].oval;
