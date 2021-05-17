@@ -110,6 +110,8 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = wm_create_args[0];
       sv_app = (void*)wm_create_args[1];
+      
+      
 
       // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
 
@@ -202,9 +204,10 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   
   int32_t e;
   
-  void* sv_app = stack[0].oval;
-  void* sv_paint_info = stack[1].oval;
-  void* sv_node = stack[2].oval;
+  void* sv_runtime = stack[0].oval;
+  void* sv_app = stack[1].oval;
+  void* sv_paint_info = stack[2].oval;
+  void* sv_node = stack[3].oval;
   
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
   HDC hdc = paint_info->hdc;

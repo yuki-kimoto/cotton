@@ -2,36 +2,40 @@ package Cotton::Win::Runtime {
   use SPVM::Unicode;
   use SPVM::List;
   use Cotton::App;
+  use Cotton::Win::WindowHandle;
   
   has app : Cotton::App;
+  has window_handle : Cotton::Win::WindowHandle;
   
   sub new : Cotton::Win::Runtime($app : Cotton::App) {
     my $self = new Cotton::Win::Runtime;
     
+    # Set Application
     $self->{app} = $app;
     
     $app->set_runtime($self);
     
-    $app->interface->set_paint_node(sub : void ($self: self, $app : Cotton::App, $paint_info : object, $node : Cotton::Node) {
-      Cotton::Win::Runtime->paint_node($app, $paint_info, $node);
+    my $runtime = $self;
+    $app->interface->set_paint_node([$runtime : Cotton::Win::Runtime] sub : void ($self: self, $app : Cotton::App, $paint_info : object, $node : Cotton::Node) {
+      $runtime->paint_node($app, $paint_info, $node);
     });
     
-    $app->interface->set_get_layout_viewport_width(sub : int ($self: self) {
-      Cotton::Win::Runtime->get_layout_viewport_width();
+    $app->interface->set_get_layout_viewport_width([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
+      $runtime->get_layout_viewport_width;
     });
     
-    $app->interface->set_get_layout_viewport_height(sub : int ($self: self) {
-      Cotton::Win::Runtime->get_layout_viewport_height();
+    $app->interface->set_get_layout_viewport_height([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
+      $runtime->get_layout_viewport_height;
     });
     
     return $self;
   }
   
-  native sub paint_node : void ($app : Cotton::App, $paint_info : object, $node : Cotton::Node);
+  native sub paint_node : void ($self : self, $app : Cotton::App, $paint_info : object, $node : Cotton::Node);
 
-  native sub get_layout_viewport_width : void ();
+  native sub get_layout_viewport_width : void ($self : self);
 
-  native sub get_layout_viewport_height : void ();
+  native sub get_layout_viewport_height : void ($self : self);
   
   native sub run : void ($self : self);
 }
