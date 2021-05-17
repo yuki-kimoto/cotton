@@ -35,8 +35,6 @@ struct COTTON_RUNTIME_PAINT_INFO {
   HDC hdc;
 };
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app);
-
 int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_app, HWND window_handle) {
   SPVM_VALUE stack[256];
   int32_t e = 0;
@@ -135,7 +133,9 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app) {
+HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self, void* sv_app) {
+  
+  int32_t e = 0;
   
   HINSTANCE instance_handle = GetModuleHandle(NULL);
   
@@ -173,7 +173,13 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_app) {
       window_width, window_heigth,
       window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
-
+  
+  void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
+  if (e) { return NULL; }
+  
+  env->set_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
+  if (e) { return NULL; }
+  
   return window_handle;
 }
 
@@ -187,7 +193,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   if (e) { return e; }
 
   // Create main window
-  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_app);
+  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_self, sv_app);
   if (main_window == NULL) return -1;
   
   // Get and dispatch message
