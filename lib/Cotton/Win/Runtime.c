@@ -139,7 +139,21 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self) {
+int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  // Get and dispatch message
+  MSG message;
+  while(GetMessage(&message , NULL , 0 , 0)) {
+    TranslateMessage(&message);
+    DispatchMessage(&message);
+  }
+  
+  return 0;
+}
+
+int32_t SPNATIVE__Cotton__Win__Runtime__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  void* sv_self = stack[0].oval;
   
   int32_t e = 0;
   
@@ -156,7 +170,7 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self) {
   winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName = TEXT("main_window");
-  if (!RegisterClass(&winc)) return NULL;
+  if (!RegisterClass(&winc)) { return env->die(env, "Can't register window class"); };
 
   // Create Main Window
   const int16_t* window_class_name = TEXT("main_window");
@@ -181,30 +195,10 @@ HWND COTTON_WIN_RUNTIME_new_main_window(SPVM_ENV* env, void* sv_self) {
   );
   
   void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
-  if (e) { return NULL; }
+  if (e) { return e; }
   
   env->set_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
-  if (e) { return NULL; }
-  
-  return window_handle;
-}
-
-int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
-  
-  void* sv_self = stack[0].oval;
-  
-  int32_t e;
-  
-  // Create main window
-  HWND main_window = COTTON_WIN_RUNTIME_new_main_window(env, sv_self);
-  if (main_window == NULL) return -1;
-  
-  // Get and dispatch message
-  MSG message;
-  while(GetMessage(&message , NULL , 0 , 0)) {
-    TranslateMessage(&message);
-    DispatchMessage(&message);
-  }
+  if (e) { return e; }
   
   return 0;
 }
