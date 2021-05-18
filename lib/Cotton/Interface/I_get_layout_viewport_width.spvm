@@ -1,3 +1,0 @@
-package Cotton::Interface::I_get_layout_viewport_width : callback_t {
-  sub : int ($self : self);
-}

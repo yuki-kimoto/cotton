@@ -20,12 +20,12 @@ package Cotton::Win::Runtime {
       $runtime->paint_node($paint_info, $node);
     });
     
-    $app->interface->set_get_layout_viewport_width([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
-      $runtime->get_layout_viewport_width;
+    $app->interface->set_get_viewport_width([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
+      $runtime->get_viewport_width;
     });
     
-    $app->interface->set_get_layout_viewport_height([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
-      $runtime->get_layout_viewport_height;
+    $app->interface->set_get_viewport_height([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
+      $runtime->get_viewport_height;
     });
     
     return $self;
@@ -33,9 +33,9 @@ package Cotton::Win::Runtime {
   
   native sub paint_node : void ($self : self, $paint_info : object, $node : Cotton::Node);
 
-  native sub get_layout_viewport_width : void ($self : self);
+  native sub get_viewport_width : void ($self : self);
 
-  native sub get_layout_viewport_height : void ($self : self);
+  native sub get_viewport_height : void ($self : self);
   
   native sub run : void ($self : self);
 }

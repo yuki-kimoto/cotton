@@ -306,7 +306,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   return 0;
 }
 
-int32_t SPNATIVE__Cotton__Win__Runtime__get_layout_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPNATIVE__Cotton__Win__Runtime__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
@@ -316,7 +316,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__get_layout_viewport_width(SPVM_ENV* env,
 }
 
 
-int32_t SPNATIVE__Cotton__Win__Runtime__get_layout_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPNATIVE__Cotton__Win__Runtime__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
