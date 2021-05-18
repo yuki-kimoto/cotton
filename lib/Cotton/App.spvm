@@ -32,8 +32,6 @@ package Cotton::App : precompile {
     my $viewport_width = $self->interface->get_viewport_width->();
     my $viewport_height = $self->interface->get_viewport_height->();
     
-    warn "AAAAA $viewport_width $viewport_height";
-    
     {
       my $body = $page->body;
       
@@ -42,7 +40,7 @@ package Cotton::App : precompile {
         my $node = $nodes->[$i];
         $node->{draw_left} = 0;
         $node->{draw_top} = 0;
-        $node->{draw_width} = 600;
+        $node->{draw_width} = $viewport_width;
         $node->{draw_height} = 100;
         
         $self->interface->paint_node->($paint_info, $node);
