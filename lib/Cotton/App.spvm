@@ -29,6 +29,11 @@ package Cotton::App : precompile {
   sub paint_nodes : void($self :self, $paint_info : Cotton::PaintInfo) {
     my $page = $self->current_page;
     
+    my $viewport_width = $self->interface->get_viewport_width->();
+    my $viewport_height = $self->interface->get_viewport_height->();
+    
+    warn "AAAAA $viewport_width $viewport_height";
+    
     {
       my $body = $page->body;
       
