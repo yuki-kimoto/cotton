@@ -163,9 +163,10 @@ package Cotton : precompile {
     return $classes;
   }
 
-  sub style : Cotton::Style ($style_value : SPVM::Hash) {
+  sub style : Cotton::Style ($style_key_values : object[]) {
+    my $style_key_values_h = SPVM::Hash->new($style_key_values);
     my $style = new Cotton::Style;
-    $style->{value} = $style_value;
+    $style->{value} = $style_key_values_h;
     
     return $style;
   }
