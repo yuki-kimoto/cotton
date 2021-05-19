@@ -48,6 +48,6 @@ package Cotton::Win::Browser {
     my $runtime = Cotton::Win::Runtime->new($app);
     
     # アプリケーションの実行
-    $runtime->run;
+    $app->interface->run_app->($app);
   }
 }
