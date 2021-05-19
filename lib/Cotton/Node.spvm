@@ -1,6 +1,7 @@
 package Cotton::Node {
   allow Cotton;
   allow Cotton::App;
+  allow Cotton::Renderer;
 
   use SPVM::Hash;
   use SPVM::StringList;
