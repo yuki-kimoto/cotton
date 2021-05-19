@@ -2,7 +2,7 @@
 
 #include <windows.h>
 
-int16_t* COTTON_WIN_RUNTIME_utf8_to_utf16(SPVM_ENV* env, const char* string) {
+int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, const char* string) {
   int32_t e;
   SPVM_VALUE stack[256];
   
@@ -21,14 +21,14 @@ int16_t* COTTON_WIN_RUNTIME_utf8_to_utf16(SPVM_ENV* env, const char* string) {
   return string_u16;
 }
 
-void COTTON_WIN_RUNTIME_alert(SPVM_ENV* env, const char* message) {
-  int16_t* message_u16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, message);
+void COTTON_RUNTIME_ENGINE_WIN_alert(SPVM_ENV* env, const char* message) {
+  int16_t* message_u16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, message);
   
   MessageBoxW(NULL, message_u16, TEXT("Alert"), MB_OK);
 }
 
 static void alert(SPVM_ENV* env, const char* message) {
-  COTTON_WIN_RUNTIME_alert(env, message);
+  COTTON_RUNTIME_ENGINE_WIN_alert(env, message);
 }
 
 struct COTTON_RUNTIME_PAINT_INFO {
@@ -39,10 +39,10 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
   SPVM_VALUE stack[256];
   int32_t e = 0;
   
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
@@ -101,7 +101,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
   return 0;
 }
 
-LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
+LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static SPVM_ENV* env;
   static void* sv_self;
@@ -117,7 +117,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
       env = wm_create_args[0];
       sv_self = (void*)wm_create_args[1];
 
-      // COTTON_WIN_RUNTIME_alert(env, "ハローワールド");
+      // COTTON_RUNTIME_ENGINE_WIN_alert(env, "ハローワールド");
 
       return 0;
     }
@@ -139,7 +139,7 @@ LRESULT CALLBACK COTTON_WIN_RUNTIME_WndProc(HWND window_handle , UINT message , 
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPNATIVE__Cotton__Runtime__Engine__Win__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   // Get and dispatch message
   MSG message;
@@ -151,7 +151,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPNATIVE__Cotton__Win__Runtime__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPNATIVE__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* sv_self = stack[0].oval;
   
@@ -162,7 +162,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__create_main_window(SPVM_ENV* env, SPVM_V
   // Register Window Class
   WNDCLASS winc;
   winc.style = CS_HREDRAW | CS_VREDRAW;
-  winc.lpfnWndProc = COTTON_WIN_RUNTIME_WndProc;
+  winc.lpfnWndProc = COTTON_RUNTIME_ENGINE_WIN_WndProc;
   winc.cbClsExtra = winc.cbWndExtra = 0;
   winc.hInstance = instance_handle;
   winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
@@ -197,13 +197,13 @@ int32_t SPNATIVE__Cotton__Win__Runtime__create_main_window(SPVM_ENV* env, SPVM_V
   void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
   if (e) { return e; }
   
-  env->set_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
+  env->set_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   return 0;
 }
 
-int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
@@ -211,7 +211,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   void* sv_paint_info = stack[1].oval;
   void* sv_node = stack[2].oval;
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
@@ -244,7 +244,7 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
     // Render block which has text
     const char* text = env->get_chars(env, sv_text);
     
-    const int16_t* text_utf16 = COTTON_WIN_RUNTIME_utf8_to_utf16(env, text);
+    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
 
     RECT parent_rect = {left : draw_left, top : draw_top, right: draw_width - 1, bottom: draw_height - 1};
 
@@ -300,16 +300,16 @@ int32_t SPNATIVE__Cotton__Win__Runtime__paint_node(SPVM_ENV* env, SPVM_VALUE* st
   return 0;
 }
 
-int32_t SPNATIVE__Cotton__Win__Runtime__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPNATIVE__Cotton__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
   
   void* sv_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
@@ -323,16 +323,16 @@ int32_t SPNATIVE__Cotton__Win__Runtime__get_viewport_width(SPVM_ENV* env, SPVM_V
 }
 
 
-int32_t SPNATIVE__Cotton__Win__Runtime__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPNATIVE__Cotton__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
 
   void* sv_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Win::Runtime", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
