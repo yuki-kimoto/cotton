@@ -6,6 +6,7 @@ package Cotton::Browser::Win {
   use Cotton::Page;
   
   use Cotton::Runtime::Engine::Win;
+  use Cotton::Runtime;
   
   sub main : int ($args : string[]) {
     my $app = Cotton::App->new;
@@ -44,11 +45,15 @@ package Cotton::Browser::Win {
       $app->set_current_page($page);
     }
     
-    # ランタイムを生成
+    # Create runtime
+    my $runtime = Cotton::Runtime->new({});
+    
+    # Create engine
     my $engine = Cotton::Runtime::Engine::Win->new({});
     $engine->setup_interfaces($app);
+    $engine->setup_runtime($runtime);
     
-    # アプリケーションの実行
+    # Execute application
     $app->interface->run_app->($app);
   }
 }

@@ -1,5 +1,7 @@
 package Cotton::Renderer {
   use Cotton::App;
+  use Cotton::Runtime;
+  
   use SPVM::ArrayUtil (sort_object);
   
   sub new : Cotton::Renderer () {
@@ -7,6 +9,58 @@ package Cotton::Renderer {
   }
   
   sub paint_nodes : void($self :self, $app : Cotton::App, $paint_info : Cotton::PaintInfo) {
+    my $page = $app->current_page;
+    
+    my $viewport_width = $app->interface->get_viewport_width->();
+    my $viewport_height = $app->interface->get_viewport_height->();
+    
+    {
+      my $body = $page->body;
+      
+      my $nodes = $self->convert_dom_to_excution_order($app, $body);
+      for (my $i = 0; $i < @$nodes; $i++) {
+        my $node = $nodes->[$i];
+        $node->{draw_left} = 0;
+        $node->{draw_top} = 0;
+        $node->{draw_width} = $viewport_width;
+        $node->{draw_height} = 100;
+        
+        $app->interface->paint_node->($paint_info, $node);
+      }
+    }
+
+    {
+      my $node_list = SPVM::List->new([]);
+      {
+        my $node = Cotton::Node->new;
+        
+        $node->{draw_left} = 300;
+        $node->{draw_top} = 500;
+        $node->{draw_width} = 400;
+        $node->{draw_height} = 400;
+        $node_list->push($node);
+      }
+      {
+        my $node = Cotton::Node->new;
+        $node->{draw_left} = 400;
+        $node->{draw_top} = 600;
+        $node->{draw_width} = 500;
+        $node->{draw_height} = 500;
+        $node_list->push($node);
+      }
+      
+      # Drow node
+      my $node_list_length = $node_list->length;
+      for (my $i = 0; $i < $node_list_length; $i++) {
+        my $node = (Cotton::Node)$node_list->get($i);
+        $app->interface->paint_node->($paint_info, $node);
+      }
+    }
+  }
+
+  sub paint_nodes_runtime : void($self :self, $runtime : Cotton::Runtime, $paint_info : Cotton::PaintInfo) {
+    my $app = $runtime->app;
+    
     my $page = $app->current_page;
     
     my $viewport_width = $app->interface->get_viewport_width->();
