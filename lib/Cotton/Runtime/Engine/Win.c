@@ -39,7 +39,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
   SPVM_VALUE stack[256];
   int32_t e = 0;
   
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
   void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
@@ -194,10 +194,10 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env
       window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
-  void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
   if (e) { return e; }
   
-  env->set_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
+  env->set_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   return 0;
@@ -306,7 +306,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env
   
   void* sv_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
   void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
@@ -329,7 +329,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* en
 
   void* sv_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
   void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);

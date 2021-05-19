@@ -2,10 +2,10 @@ package Cotton::Runtime::Engine::Win {
   use SPVM::Unicode;
   use SPVM::List;
   use Cotton::App;
-  use Cotton::Win::WindowHandle;
+  use Cotton::Runtime::Engine::Win::WindowHandle;
   
   has app : rw Cotton::App;
-  has window_handle : Cotton::Win::WindowHandle;
+  has window_handle : Cotton::Runtime::Engine::Win::WindowHandle;
   
   sub new : Cotton::Runtime::Engine::Win($app : Cotton::App) {
     my $self = new Cotton::Runtime::Engine::Win;

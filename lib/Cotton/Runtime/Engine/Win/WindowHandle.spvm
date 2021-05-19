@@ -1,0 +1,1 @@
+package Cotton::Runtime::Engine::Win::WindowHandle : pointer_t;
