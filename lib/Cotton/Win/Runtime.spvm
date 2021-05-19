@@ -4,7 +4,7 @@ package Cotton::Win::Runtime {
   use Cotton::App;
   use Cotton::Win::WindowHandle;
   
-  has app : Cotton::App;
+  has app : rw Cotton::App;
   has window_handle : Cotton::Win::WindowHandle;
   
   sub new : Cotton::Win::Runtime($app : Cotton::App) {
@@ -26,6 +26,12 @@ package Cotton::Win::Runtime {
     
     $app->interface->set_get_viewport_height([$runtime : Cotton::Win::Runtime] sub : int ($self: self) {
       return $runtime->get_viewport_height;
+    });
+
+    $app->interface->set_run_app([$runtime : Cotton::Win::Runtime] sub : void ($self: self, $app : Cotton::App) {
+      $runtime->set_app($app);
+      $runtime->create_main_window;
+      $runtime->run;
     });
     
     $self->create_main_window;

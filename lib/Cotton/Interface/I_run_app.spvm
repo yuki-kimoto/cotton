@@ -1,3 +1,5 @@
 package Cotton::Interface::I_run_app : callback_t {
-  sub : void ($self : self);
+  use Cotton::App;
+  
+  sub : void ($self : self, $app : Cotton::App);
 }
