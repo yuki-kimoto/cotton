@@ -7,9 +7,13 @@ package Cotton::Runtime::Engine::Win {
   has app : rw Cotton::App;
   has window_handle : Cotton::Runtime::Engine::Win::WindowHandle;
   
-  sub new : Cotton::Runtime::Engine::Win($app : Cotton::App) {
+  sub new : Cotton::Runtime::Engine::Win($options : object[]) {
     my $self = new Cotton::Runtime::Engine::Win;
     
+    return $self;
+  }
+  
+  sub setup_interfaces : void ($self : self, $app : Cotton::App) {
     # Set Application
     $self->{app} = $app;
     
@@ -33,8 +37,6 @@ package Cotton::Runtime::Engine::Win {
       $runtime->create_main_window;
       $runtime->run;
     });
-    
-    return $self;
   }
   
   native sub create_main_window : void ($self : self);

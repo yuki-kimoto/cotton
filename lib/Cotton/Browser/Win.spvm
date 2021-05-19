@@ -45,7 +45,8 @@ package Cotton::Browser::Win {
     }
     
     # ランタイムを生成
-    my $runtime = Cotton::Runtime::Engine::Win->new($app);
+    my $engine = Cotton::Runtime::Engine::Win->new({});
+    $engine->setup_interfaces($app);
     
     # アプリケーションの実行
     $app->interface->run_app->($app);
