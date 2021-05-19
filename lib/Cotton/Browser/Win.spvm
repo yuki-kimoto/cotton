@@ -50,10 +50,9 @@ package Cotton::Browser::Win {
     
     # Create engine
     my $engine = Cotton::Runtime::Engine::Win->new({});
-    $engine->setup_interfaces($app);
     $engine->setup_runtime($runtime);
     
     # Execute application
-    $app->interface->run_app->($app);
+    $runtime->interface->run_app->($app);
   }
 }

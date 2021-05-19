@@ -44,6 +44,9 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
 
   void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
+
+  void* sv_runtime = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "runtime", "Cotton::Runtime", &e, __FILE__, __LINE__);
+  if (e) { return e; }
   
   HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
   
@@ -75,7 +78,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
 
-    // Call Cotton::App->paint_nodes
+    // Call Cotton::Runtime->paint_nodes
     {
       int32_t scope = env->enter_scope(env);
       
@@ -84,11 +87,12 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       
       void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
       if (e) { return e; }
-
-      stack[0].oval = sv_app;
+      
+      stack[0].oval = sv_runtime;
       stack[1].oval = sv_paint_info;
-      e = env->call_sub_by_name(env, "Cotton::App", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
+      e = env->call_sub_by_name(env, "Cotton::Runtime", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
       if (e) { return e; }
+
       
       free(paint_info);
       env->leave_scope(env, scope);
@@ -318,7 +322,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env
   GetClientRect(window_handle, &rect);
 
   stack[0].ival = rect.right + 1;
-  
+
   return 0;
 }
 

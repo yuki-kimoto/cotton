@@ -9,13 +9,10 @@ package Cotton::App : precompile {
   has name : rw string;
   has pages : rw SPVM::List;
   has runtime : rw object;
-  has interface : rw Cotton::Interface;
   has current_page : rw Cotton::Page;
   
   sub new : Cotton::App() {
     my $self = new Cotton::App;
-    
-    $self->{interface} = Cotton::Interface->new;
     
     $self->{pages} = SPVM::List->new([]);
     
@@ -25,11 +22,4 @@ package Cotton::App : precompile {
   sub push_page : void ($self : self, $page : Cotton::Page) {
     $self->{pages}->push($page);
   }
-  
-  sub paint_nodes : void($self :self, $paint_info : Cotton::PaintInfo) {
-    my $renderer = Cotton::Renderer->new;
-    
-    $renderer->paint_nodes($self, $paint_info);
-  }
-
 }

@@ -15,7 +15,7 @@ package Cotton::Runtime {
     my $self = new Cotton::Runtime;
     
     $self->{interface} = Cotton::Interface->new;
-    
+
     return $self;
   }
   

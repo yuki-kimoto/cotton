@@ -8,63 +8,13 @@ package Cotton::Renderer {
     return new Cotton::Renderer;
   }
   
-  sub paint_nodes : void($self :self, $app : Cotton::App, $paint_info : Cotton::PaintInfo) {
-    my $page = $app->current_page;
-    
-    my $viewport_width = $app->interface->get_viewport_width->();
-    my $viewport_height = $app->interface->get_viewport_height->();
-    
-    {
-      my $body = $page->body;
-      
-      my $nodes = $self->convert_dom_to_excution_order($app, $body);
-      for (my $i = 0; $i < @$nodes; $i++) {
-        my $node = $nodes->[$i];
-        $node->{draw_left} = 0;
-        $node->{draw_top} = 0;
-        $node->{draw_width} = $viewport_width;
-        $node->{draw_height} = 100;
-        
-        $app->interface->paint_node->($paint_info, $node);
-      }
-    }
-
-    {
-      my $node_list = SPVM::List->new([]);
-      {
-        my $node = Cotton::Node->new;
-        
-        $node->{draw_left} = 300;
-        $node->{draw_top} = 500;
-        $node->{draw_width} = 400;
-        $node->{draw_height} = 400;
-        $node_list->push($node);
-      }
-      {
-        my $node = Cotton::Node->new;
-        $node->{draw_left} = 400;
-        $node->{draw_top} = 600;
-        $node->{draw_width} = 500;
-        $node->{draw_height} = 500;
-        $node_list->push($node);
-      }
-      
-      # Drow node
-      my $node_list_length = $node_list->length;
-      for (my $i = 0; $i < $node_list_length; $i++) {
-        my $node = (Cotton::Node)$node_list->get($i);
-        $app->interface->paint_node->($paint_info, $node);
-      }
-    }
-  }
-
   sub paint_nodes_runtime : void($self :self, $runtime : Cotton::Runtime, $paint_info : Cotton::PaintInfo) {
     my $app = $runtime->app;
     
     my $page = $app->current_page;
     
-    my $viewport_width = $app->interface->get_viewport_width->();
-    my $viewport_height = $app->interface->get_viewport_height->();
+    my $viewport_width = $runtime->interface->get_viewport_width->();
+    my $viewport_height = $runtime->interface->get_viewport_height->();
     
     {
       my $body = $page->body;
@@ -77,7 +27,7 @@ package Cotton::Renderer {
         $node->{draw_width} = $viewport_width;
         $node->{draw_height} = 100;
         
-        $app->interface->paint_node->($paint_info, $node);
+        $runtime->interface->paint_node->($paint_info, $node);
       }
     }
 
@@ -105,9 +55,10 @@ package Cotton::Renderer {
       my $node_list_length = $node_list->length;
       for (my $i = 0; $i < $node_list_length; $i++) {
         my $node = (Cotton::Node)$node_list->get($i);
-        $app->interface->paint_node->($paint_info, $node);
+        $runtime->interface->paint_node->($paint_info, $node);
       }
     }
+
   }
 
   sub convert_dom_to_excution_order : Cotton::Node[] ($self : self, $app : Cotton::App, $root_node : Cotton::Node) {
@@ -120,7 +71,6 @@ package Cotton::Renderer {
     my $finish = 0;
     while ($cur_node) {
       # [START]Preorder traversal position
-      warn "Pre";
       $cur_node->{execution_order_before_z_index_sort} = $execution_order_before_z_index_sort;
       $execution_order_before_z_index_sort++;
       $node_list->push($cur_node);
@@ -133,7 +83,6 @@ package Cotton::Renderer {
       else {
         while (1) {
           # [START]Postorder traversal position
-          warn "Post";
           # [END]Postorder traversal position
           
           if ($cur_node == $root_node) {
