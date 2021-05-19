@@ -1,0 +1,3 @@
+package Cotton::Interface::I_run_app : callback_t {
+  sub : void ($self : self);
+}
