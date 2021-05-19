@@ -8,7 +8,6 @@ package Cotton::App : precompile {
   
   has name : rw string;
   has pages : rw SPVM::List;
-  has runtime : rw object;
   has current_page : rw Cotton::Page;
   
   sub new : Cotton::App() {
