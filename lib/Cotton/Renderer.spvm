@@ -25,7 +25,9 @@ package Cotton::Renderer {
         $node->{draw_left} = 0;
         $node->{draw_top} = 0;
         $node->{draw_width} = $viewport_width;
-        $node->{draw_height} = 100;
+        my $draw_height = $runtime->interface->calc_text_height->($paint_info, $node->{text}, $viewport_width, undef);
+        
+        $node->{draw_height} = $draw_height;
         
         $runtime->interface->paint_node->($paint_info, $node);
       }
@@ -58,7 +60,6 @@ package Cotton::Renderer {
         $runtime->interface->paint_node->($paint_info, $node);
       }
     }
-
   }
 
   sub convert_dom_to_excution_order : Cotton::Node[] ($self : self, $app : Cotton::App, $root_node : Cotton::Node) {

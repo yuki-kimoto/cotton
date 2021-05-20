@@ -207,6 +207,71 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env
   return 0;
 }
 
+int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t e;
+  
+  void* sv_self = stack[0].oval;
+  void* sv_paint_info = stack[1].oval;
+  void* sv_text = stack[2].oval;
+  int32_t draw_width = stack[3].ival;
+  void* sv_font_styles = stack[4].oval;
+
+  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
+  HDC hdc = paint_info->hdc;
+  
+  int32_t draw_height = 0;
+  if (sv_text) {
+    // Render block which has text
+    const char* text = env->get_chars(env, sv_text);
+    
+    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+
+    RECT parent_rect = {left : 0, top : 0, right: draw_width - 1};
+
+    // Get parent width and heigth
+    // Plus 1 becuase Windows don't contain right and bottom pixcel
+    int32_t parent_width = parent_rect.right + 1;
+    int32_t parent_height = parent_rect.bottom + 1;
+    
+    int32_t color = RGB(0xFF, 0x00, 0x00);
+    int32_t background_color = RGB(0x00, 0xAA, 0x77);
+    
+    // draw width
+    int32_t draw_width = parent_width;
+    
+    // Font
+    LOGFONT lfFont;
+    lfFont.lfHeight     = 40;
+    lfFont.lfWidth = lfFont.lfEscapement =
+    lfFont.lfOrientation    = 0;
+    lfFont.lfWeight     = FW_BOLD;
+    lfFont.lfItalic = lfFont.lfUnderline = FALSE;
+    lfFont.lfStrikeOut    = FALSE; 
+    lfFont.lfCharSet    = SHIFTJIS_CHARSET;
+    lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
+    lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
+    lfFont.lfQuality    = DEFAULT_QUALITY;
+    lfFont.lfPitchAndFamily = 0;
+    lfFont.lfFaceName[0]    = '\0';
+    HFONT hFont = CreateFontIndirect(&lfFont);
+    SelectObject(hdc, hFont);
+    UINT drow_text_flag = DT_WORDBREAK;
+    drow_text_flag |= DT_LEFT;
+    
+    // Culcurate text height
+    RECT culc_node_rect = {left : parent_rect.left, top : parent_rect.top, right: parent_rect.right, bottom: parent_rect.bottom};
+    DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
+    
+    // draw height
+    draw_height = culc_node_rect.bottom + 1;
+  }
+  
+  stack[0].ival = draw_height;
+  
+  return 0;
+}
+
 int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;

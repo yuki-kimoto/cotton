@@ -28,7 +28,7 @@ package Cotton::Runtime::Engine::Win {
     $runtime->interface->set_get_viewport_height([$engine : Cotton::Runtime::Engine::Win] sub : int ($self: self) {
       return $engine->get_viewport_height;
     });
-
+    
     $runtime->interface->set_run_app([$runtime : Cotton::Runtime, $engine : Cotton::Runtime::Engine::Win] sub : void ($self: self, $app : Cotton::App) {
       $runtime->set_app($app);
       
@@ -39,15 +39,21 @@ package Cotton::Runtime::Engine::Win {
       
       $engine->run;
     });
+    
+    $runtime->interface->set_calc_text_height([$engine : Cotton::Runtime::Engine::Win] sub : int ($self: self, $paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]) {
+      return $engine->calc_text_height($paint_info, $text, $width, $font_styles);
+    });
   }
 
   native sub create_main_window : void ($self : self);
   
-  native sub paint_node : void ($self : self, $paint_info : object, $node : Cotton::Node);
-
   native sub get_viewport_width : int ($self : self);
 
   native sub get_viewport_height : int ($self : self);
+
+  native sub paint_node : void ($self : self, $paint_info : object, $node : Cotton::Node);
+
+  native sub calc_text_height : int ($self: self, $paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
   native sub run : void ($self : self);
 }
