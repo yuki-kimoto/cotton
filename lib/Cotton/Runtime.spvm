@@ -22,6 +22,6 @@ package Cotton::Runtime {
   sub paint_nodes : void($self :self, $paint_info : Cotton::PaintInfo) {
     my $renderer = Cotton::Renderer->new;
     
-    $renderer->paint_nodes_runtime($self, $paint_info);
+    $renderer->paint_nodes($self, $paint_info);
   }
 }

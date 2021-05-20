@@ -8,7 +8,7 @@ package Cotton::Renderer {
     return new Cotton::Renderer;
   }
   
-  sub paint_nodes_runtime : void($self :self, $runtime : Cotton::Runtime, $paint_info : Cotton::PaintInfo) {
+  sub paint_nodes : void($self :self, $runtime : Cotton::Runtime, $paint_info : Cotton::PaintInfo) {
     my $app = $runtime->app;
     
     my $page = $app->current_page;
