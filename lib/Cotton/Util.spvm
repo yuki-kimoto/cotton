@@ -1,0 +1,125 @@
+package Cotton::Util : precompile {
+  use SPVM::Regex;
+  use SPVM::StringUtil;
+
+  sub parse_css_color : int ($color_string : string) {
+    
+    if ($color_string == undef) {
+      return undef;
+    }
+    
+    my $color_string = SPVM::StringUtil->trim_ascii_space($color_string);
+    
+    if ($color_string eq "black") {
+      $color_string = "#000000";
+    }
+    elsif ($color_string eq "silver") {
+      $color_string = "#C0C0C0";
+    }
+    elsif ($color_string eq "gray") {
+      $color_string = "#808080";
+    }
+    elsif ($color_string eq "white") {
+      $color_string = "#FFFFFF";
+    }
+    elsif ($color_string eq "maroon") {
+      $color_string = "#800000";
+    }
+    elsif ($color_string eq "red") {
+      $color_string = "#FF0000";
+    }
+    elsif ($color_string eq "purple") {
+      $color_string = "#800080";
+    }
+    elsif ($color_string eq "fuchsia") {
+      $color_string = "#FF00FF";
+    }
+    elsif ($color_string eq "green") {
+      $color_string = "#008000";
+    }
+    elsif ($color_string eq "lime") {
+      $color_string = "#00FF00";
+    }
+    elsif ($color_string eq "olive") {
+      $color_string = "#808000";
+    }
+    elsif ($color_string eq "yellow") {
+      $color_string = "#FFFF00";
+    }
+    elsif ($color_string eq "black") {
+      $color_string = "#000000";
+    }
+    elsif ($color_string eq "navy") {
+      $color_string = "#000080";
+    }
+    elsif ($color_string eq "blue") {
+      $color_string = "#0000FF";
+    }
+    elsif ($color_string eq "teal") {
+      $color_string = "#008080";
+    }
+    elsif ($color_string eq "aqua") {
+      $color_string = "#00FFFF";
+    }
+    elsif ($color_string eq "transparent  ") {
+      $color_string = "rgba(0,0,0,0)";
+    }
+    
+    my $color_code3_re = SPVM::Regex->new("#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])");
+    my $color_code6_re = SPVM::Regex->new("#([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])");
+    my $rgb_re = SPVM::Regex->new("rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)");
+    
+    my $rgb_value = 0;
+    if ($color_code3_re->match($color_string, 0)) {
+      my $captures = $color_code3_re->captures;
+      my $rgb_string = $captures->[0] . $captures->[0] . $captures->[1] . $captures->[1] . $captures->[2] . $captures->[2];
+      $rgb_value = SPVM::StringUtil->hex($rgb_string);
+    }
+    elsif ($color_code6_re->match($color_string, 0)) {
+      my $captures = $color_code6_re->captures;
+      my $rgb_string = $captures->[0];
+      $rgb_value = SPVM::StringUtil->hex($rgb_string);
+    }
+    elsif ($rgb_re->match($color_string, 0)) {
+      my $captures = $rgb_re->captures;
+      
+      my $red_string = $captures->[0];
+      my $green_string = $captures->[1];
+      my $blue_string = $captures->[2];
+      
+      my $red_value = SPVM::StringUtil->to_int($red_string);
+      my $green_value = SPVM::StringUtil->to_int($green_string);
+      my $blue_value = SPVM::StringUtil->to_int($blue_string);
+      
+      $rgb_value = $red_value << 16 + $green_value << 8 + $blue_value;
+    }
+    else {
+      die "Invalid color format";
+    }
+    
+    return $rgb_value;
+  }
+  
+=pod
+
+色名指定	数値指定	色名	16進数	10進数
+ 	 	black	#000000	0,0,0
+ 	 	silver	#C0C0C0	192,192,192
+ 	 	gray	#808080	128,128,128
+ 	 	white	#FFFFFF	255,255,255
+ 	 	maroon	#800000	128,0,0
+ 	 	red	#FF0000	255,0,0
+ 	 	purple	#800080	128,0,128
+ 	 	fuchsia	#FF00FF	255,0,255
+ 	 	green	#008000	0,128,0
+ 	 	lime	#00FF00	0,255,0
+ 	 	olive	#808000	128,128,0
+ 	 	yellow	#FFFF00	255,255,0
+ 	 	navy	#000080	0,0,128
+ 	 	blue	#0000FF	0,0,255
+ 	 	teal	#008080	0,128,128
+ 	 	aqua	#00FFFF	0,255,255
+
+=cut
+
+}
