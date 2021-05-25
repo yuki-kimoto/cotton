@@ -1,7 +1,9 @@
 #include <spvm_native.h>
 
 #include <windows.h>
+#include <d2d1_1.h>
 
+extern "C" {
 int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, const char* string) {
   int32_t e;
   SPVM_VALUE stack[256];
@@ -24,7 +26,7 @@ int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, const char* stri
 void COTTON_RUNTIME_ENGINE_WIN_alert(SPVM_ENV* env, const char* message) {
   int16_t* message_u16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, message);
   
-  MessageBoxW(NULL, message_u16, TEXT("Alert"), MB_OK);
+  MessageBoxW(NULL, (LPCWSTR)message_u16, TEXT("Alert"), MB_OK);
 }
 
 static void alert(SPVM_ENV* env, const char* message) {
@@ -69,7 +71,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     }
     int16_t* app_name_u16 = env->get_elems_short(env, sv_app_name_u16);
     
-    SetWindowTextW(window_handle, app_name_u16);
+    SetWindowTextW(window_handle, (LPCWSTR)app_name_u16);
   }
   
   // Draw parent area
@@ -82,7 +84,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     {
       int32_t scope = env->enter_scope(env);
       
-      struct COTTON_RUNTIME_PAINT_INFO* paint_info = calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
+      struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
       paint_info->hdc = hdc;
       
       void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
@@ -118,7 +120,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
     case WM_CREATE: {
       CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       void** wm_create_args = (void**)create_struct->lpCreateParams;
-      env = wm_create_args[0];
+      env = (SPVM_ENV*)wm_create_args[0];
       sv_self = (void*)wm_create_args[1];
 
       // COTTON_RUNTIME_ENGINE_WIN_alert(env, "ハローワールド");
@@ -177,7 +179,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env
   if (!RegisterClass(&winc)) { return env->die(env, "Can't register window class"); };
 
   // Create Main Window
-  const int16_t* window_class_name = TEXT("main_window");
+  const int16_t* window_class_name = (const int16_t*)TEXT("main_window");
   const int16_t* window_title = NULL;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
@@ -186,12 +188,12 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env
   int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
-  void** wm_create_args = calloc(2, sizeof(void*));
+  void** wm_create_args = (void**)calloc(2, sizeof(void*));
   wm_create_args[0] = env;
   wm_create_args[1] = sv_self;
   void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
-      window_class_name, window_title,
+      (LPCWSTR)window_class_name, (LPCWSTR)window_title,
       window_style,
       window_x, window_y,
       window_width, window_heigth,
@@ -261,7 +263,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     
     // Culcurate text height
     RECT culc_node_rect = {left : parent_rect.left, top : parent_rect.top, right: parent_rect.right, bottom: parent_rect.bottom};
-    DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
+    DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
     
     // draw height
     draw_height = culc_node_rect.bottom + 1;
@@ -349,7 +351,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     
     // Culcurate text height
     RECT culc_node_rect = {left : parent_rect.left, top : parent_rect.top, right: parent_rect.right, bottom: parent_rect.bottom};
-    DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
+    DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
     
     // draw height
     int32_t draw_height = culc_node_rect.bottom + 1;
@@ -358,7 +360,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     {
       SetTextColor(hdc, color);
       SetBkMode(hdc , TRANSPARENT);
-      DrawText(hdc, text_utf16, -1, &culc_node_rect, drow_text_flag);
+      DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag);
     }
     
     // Delete font handle
@@ -412,4 +414,5 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* en
   stack[0].ival = rect.bottom + 1;
   
   return 0;
+}
 }

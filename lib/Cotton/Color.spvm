@@ -1,0 +1,14 @@
+package Cotton::Color {
+  red : byte;
+  green : byte;
+  blue : byte;
+  alpha : byte;
+  
+  sub new ($red : byte, $green : byte, $blue : byte, $alpha : byte) {
+    my $color = new Cotton::Color;
+    $color->{red} = $red;
+    $color->{green} = $green;
+    $color->{blue} = $blue;
+    $color->{alpha} = $alpha;
+  }
+}

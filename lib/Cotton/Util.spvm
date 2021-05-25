@@ -1,6 +1,7 @@
 package Cotton::Util : precompile {
   use SPVM::Regex;
   use SPVM::StringUtil;
+  use Cotton::Color;
 
   sub parse_css_color : int ($color_string : string) {
     
@@ -66,19 +67,34 @@ package Cotton::Util : precompile {
     }
     
     my $color_code3_re = SPVM::Regex->new("#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])");
-    my $color_code6_re = SPVM::Regex->new("#([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])");
+    my $color_code6_re = SPVM::Regex->new("#([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])([0-9a-fA-F][0-9a-fA-F])");
     my $rgb_re = SPVM::Regex->new("rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)");
     
+    my $color : Cotton::Color;
     my $rgb_value = 0;
     if ($color_code3_re->match($color_string, 0)) {
       my $captures = $color_code3_re->captures;
-      my $rgb_string = $captures->[0] . $captures->[0] . $captures->[1] . $captures->[1] . $captures->[2] . $captures->[2];
-      $rgb_value = SPVM::StringUtil->hex($rgb_string);
+      my $red_string = $captures->[0] . $captures->[0]
+      my $green_string =  $captures->[1] . $captures->[1];
+      my $blue_string = $captures->[2] . $captures->[2];
+      
+      my $red_value = SPVM::StringUtil->hex($red_string);
+      my $green_value = SPVM::StringUtil->hex($green_string);
+      my $blue_value = SPVM::StringUtil->hex($blue_string);
+      
+      $color = Cotton::Color->new((byte)$red_value, (byte)$green_value, (byte)$blue_value, -1);
     }
     elsif ($color_code6_re->match($color_string, 0)) {
       my $captures = $color_code6_re->captures;
-      my $rgb_string = $captures->[0];
-      $rgb_value = SPVM::StringUtil->hex($rgb_string);
+      my $red_string = $captures->[0];
+      my $green_string =  $captures->[1];
+      my $blue_string = $captures->[2];
+      
+      my $red_value = SPVM::StringUtil->hex($red_string);
+      my $green_value = SPVM::StringUtil->hex($green_string);
+      my $blue_value = SPVM::StringUtil->hex($blue_string);
+      
+      $color = Cotton::Color->new((byte)$red_value, (byte)$green_value, (byte)$blue_value, -1);
     }
     elsif ($rgb_re->match($color_string, 0)) {
       my $captures = $rgb_re->captures;
@@ -88,38 +104,32 @@ package Cotton::Util : precompile {
       my $blue_string = $captures->[2];
       
       my $red_value = SPVM::StringUtil->to_int($red_string);
+      if ($red_value < 0) {
+        $red_value = 0;
+      }
+      elsif ($red_value > 255) {
+        $red_value = 255;
+      }
       my $green_value = SPVM::StringUtil->to_int($green_string);
+      if ($green_value < 0) {
+        $green_value = 0;
+      }
+      elsif ($green_value > 255) {
+        $green_value = 255;
+      }
       my $blue_value = SPVM::StringUtil->to_int($blue_string);
+      if ($blue_value < 0) {
+        $blue_value = 0;
+      }
+      elsif ($blue_value > 255) {
+        $blue_value = 255;
+      }
       
-      $rgb_value = $red_value << 16 + $green_value << 8 + $blue_value;
+      $color = Cotton::Color->new((byte)$red_value, (byte)$green_value, (byte)$blue_value, -1);
     }
     else {
-      die "Invalid color format";
+      $color = Cotton::Color->new((byte)0xFF, (byte)0xFF, (byte)0xFF, -1);
     }
     
     return $rgb_value;
   }
-  
-=pod
-
-色名指定	数値指定	色名	16進数	10進数
- 	 	black	#000000	0,0,0
- 	 	silver	#C0C0C0	192,192,192
- 	 	gray	#808080	128,128,128
- 	 	white	#FFFFFF	255,255,255
- 	 	maroon	#800000	128,0,0
- 	 	red	#FF0000	255,0,0
- 	 	purple	#800080	128,0,128
- 	 	fuchsia	#FF00FF	255,0,255
- 	 	green	#008000	0,128,0
- 	 	lime	#00FF00	0,255,0
- 	 	olive	#808000	128,128,0
- 	 	yellow	#FFFF00	255,255,0
- 	 	navy	#000080	0,0,128
- 	 	blue	#0000FF	0,0,255
- 	 	teal	#008080	0,128,128
- 	 	aqua	#00FFFF	0,255,255
-
-=cut
-
-}
