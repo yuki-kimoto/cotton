@@ -297,9 +297,10 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
 
   // Draw block
   {
+    int32_t background_color = RGB(0x00, 0xAA, 0x77);
     HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
     SelectObject(hdc, hpen);
-    HBRUSH brash = CreateSolidBrush(RGB(0x00, 0xAA, 0x77));
+    HBRUSH brash = CreateSolidBrush(background_color);
     SelectObject(hdc, brash);
     Rectangle(hdc, draw_left, draw_top, draw_width - 1, draw_height - 1);
     DeleteObject(hpen);
@@ -323,7 +324,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     int32_t parent_height = parent_rect.bottom + 1;
     
     int32_t color = RGB(0xFF, 0x00, 0x00);
-    int32_t background_color = RGB(0x00, 0xAA, 0x77);
     
     // draw width
     int32_t draw_width = parent_width;
