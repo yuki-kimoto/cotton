@@ -1,14 +1,17 @@
 package Cotton::Color {
-  red : byte;
-  green : byte;
-  blue : byte;
-  alpha : byte;
+
+  has red : rw float;
+  has green : rw float;
+  has blue : rw float;
+  has alpha : rw float;
   
-  sub new ($red : byte, $green : byte, $blue : byte, $alpha : byte) {
+  sub new : Cotton::Color ($red : float, $green : float, $blue : float, $alpha : float) {
     my $color = new Cotton::Color;
     $color->{red} = $red;
     $color->{green} = $green;
     $color->{blue} = $blue;
     $color->{alpha} = $alpha;
+    
+    return $color;
   }
 }

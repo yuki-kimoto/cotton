@@ -4,10 +4,16 @@ package Cotton : precompile {
   use Cotton::Id;
   use Cotton::Classes;
   use SPVM::List;
+  use Cotton::Color;
   
-  sub rgb : int ($red : int, $green : int, $blue : int) {
-    my $rgb = $red << (8 * 2) + $green << 8 + $blue;
-    return $rgb;
+  sub rgb : Cotton::Color ($red : float, $green : float, $blue : float) {
+    my $color = Cotton::Color->new($red, $green, $blue, 1);
+    return $color;
+  }
+
+  sub rgba : Cotton::Color ($red : float, $green : float, $blue : float, $alpha : float) {
+    my $color = Cotton::Color->new($red, $green, $blue, $alpha);
+    return $color;
   }
   
   sub new_tag : Cotton::Node ($tag : string, $objects : object[] ...) {
