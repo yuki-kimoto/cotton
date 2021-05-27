@@ -1,5 +1,5 @@
 package Cotton::Color {
-
+  
   has red : rw float;
   has green : rw float;
   has blue : rw float;
@@ -13,5 +13,15 @@ package Cotton::Color {
     $color->{alpha} = $alpha;
     
     return $color;
+  }
+  
+  sub get_colors : float[] ($self : self) {
+    my $colors = new float[4];
+    $colors->[0] = $self->{red};
+    $colors->[1] = $self->{green};
+    $colors->[2] = $self->{blue};
+    $colors->[3] = $self->{alpha};
+    
+    return $colors;
   }
 }

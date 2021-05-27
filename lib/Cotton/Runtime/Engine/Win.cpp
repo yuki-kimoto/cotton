@@ -324,8 +324,32 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     // Plus 1 becuase Windows don't contain right and bottom pixcel
     int32_t parent_width = parent_rect.right + 1;
     int32_t parent_height = parent_rect.bottom + 1;
+
+    void* sv_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "color", "Cotton::Color", &e, __FILE__, __LINE__);
+    if (e) { return e; }
     
-    int32_t color = RGB(0xFF, 0x00, 0x00);
+    int32_t color;
+    if (sv_color) {
+      fprintf(stderr, "AAAAAAAA");
+      
+      float color_red = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      float color_green = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "green", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      float color_blue = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "blue", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      float color_alpha = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "alpha", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      color = RGB(color_red, color_green, color_blue);
+    }
+    else {
+      fprintf(stderr, "BBBBBBBBB");
+      color = RGB(0xFF, 0x00, 0x00);
+    }
     
     // draw width
     int32_t draw_width = parent_width;
@@ -366,7 +390,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     // Delete font handle
     DeleteObject(hFont);
   }
-
 
   return 0;
 }
