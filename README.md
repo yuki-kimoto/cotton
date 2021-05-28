@@ -15,6 +15,8 @@ Currently I'm try to implement DOM Rendering Engine.
 Cotton Game and Application Browser
 
   # Compile Cotton Web Brwoer, DEBUG
+  spvmcc --ccflags '-DUNICODE' --lddlflags '-lgdi32 -lstdc++ -ld2d1' -I lib -o Cotton Cotton::Browser::Win
+
   spvmcc --ccflags '-DUNICODE' --lddlflags '-lgdi32 -lstdc++' -I lib -o Cotton Cotton::Browser::Win
 
 # memo

@@ -1,7 +1,7 @@
 #include <spvm_native.h>
 
 #include <windows.h>
-#include <d2d1_1.h>
+#include <d2d1.h>
 
 #include <iostream>
 
@@ -108,6 +108,17 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       ID2D1HwndRenderTarget* pRenderTarget = NULL;
 
       {
+         {
+            HRESULT hResult = S_OK;
+            hResult = ::D2D1CreateFactory( D2D1_FACTORY_TYPE_MULTI_THREADED, &pD2d1Factory );
+            if ( FAILED( hResult ) ) {
+ 
+                // エラー
+                std::wcout << L"D2D1CreateFactory失敗" << std::endl;
+              return 1;
+            }
+          }
+        
           D2D1_SIZE_U oPixelSize = {
                 100
               , 100
@@ -122,11 +133,14 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
               ID2D1HwndRenderTargetの生成
           */
           HRESULT hResult = S_OK;
+    fprintf(stderr, "AAAAAAAAAAAAAA\n");
+    
           hResult = pD2d1Factory->CreateHwndRenderTarget(
                     oRenderTargetProperties
                   , oHwndRenderTargetProperties
                   , &pRenderTarget
               );
+    fprintf(stderr, "BBBBBBBBBB\n");
           if ( FAILED( hResult ) ) {
 
               // エラー
