@@ -82,26 +82,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
 
-    // Call Cotton::Runtime->paint_nodes
-    {
-      int32_t scope = env->enter_scope(env);
-      
-      struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
-      paint_info->hdc = hdc;
-      
-      void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
-      if (e) { return e; }
-      
-      stack[0].oval = sv_runtime;
-      stack[1].oval = sv_paint_info;
-      e = env->call_sub_by_name(env, "Cotton::Runtime", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
-      if (e) { return e; }
-
-
-      free(paint_info);
-      env->leave_scope(env, scope);
-    }
-    
     // Direct 2D 四角形
     {
       ID2D1Factory* pD2d1Factory = NULL;
@@ -120,8 +100,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           }
         
           D2D1_SIZE_U oPixelSize = {
-                100
-              , 100
+                800
+              , 800
           };
 
           D2D1_RENDER_TARGET_PROPERTIES oRenderTargetProperties = D2D1::RenderTargetProperties();
@@ -151,10 +131,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
             
       // ターゲットサイズの取得
       D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize();
-
-      // 描画開始
-      PAINTSTRUCT tPaintStruct;
-      ::BeginPaint( window_handle, &tPaintStruct );
+      
+      printf("DDDDDD %d %d\n", oTargetSize.width, oTargetSize.height);
 
       // 描画開始(Direct2D)
       pRenderTarget->BeginDraw();
@@ -168,7 +146,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       {
           pRenderTarget->CreateSolidColorBrush(
                     D2D1::ColorF(
-                            (float)( 30 / ( oTargetSize.height ) )        // R
+                            1        // R
                           , 0.0f                                          // G
                           , 0.0f                                          // B
                           , 1.0f                                          // A
@@ -179,31 +157,49 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
 
       if ( NULL != pBrush ) {
 
-          // 中心
-          D2D1_POINT_2F tCenter = D2D1::Point2F(
-                    oTargetSize.width  / 2
-                  , oTargetSize.height / 2
-              );
-
           // 描画矩形
           D2D1_RECT_F tRectF = D2D1::RectF(
-                    (float)( tCenter.x - 30 )
-                  , (float)( tCenter.y - 30 )
-                  , (float)( tCenter.x + 30 )
-                  , (float)( tCenter.y + 30 )
+                    (float)( 200 )
+                  , (float)( 200 )
+                  , (float)( 300 )
+                  , (float)( 300 )
               );
 
 
           // 線の幅
-          float fStrokeWidth = (float)( ( 30 / 10 ) % 3 + 1 );
+          float fStrokeWidth = 2;
 
           // 四角形の描画
           pRenderTarget->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
+          
+          printf("PPPPPPP");
 
           // ブラシの破棄
           pBrush->Release();
       }
+      pRenderTarget->EndDraw();
     }
+
+    // Call Cotton::Runtime->paint_nodes
+    {
+      int32_t scope = env->enter_scope(env);
+      
+      struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
+      paint_info->hdc = hdc;
+      
+      void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
+      if (e) { return e; }
+      
+      stack[0].oval = sv_runtime;
+      stack[1].oval = sv_paint_info;
+      e = env->call_sub_by_name(env, "Cotton::Runtime", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
+      if (e) { return e; }
+
+
+      free(paint_info);
+      env->leave_scope(env, scope);
+    }
+    
     
     // End paint
     EndPaint(window_handle , &ps);
