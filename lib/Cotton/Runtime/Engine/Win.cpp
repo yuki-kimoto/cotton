@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <d2d1_1.h>
 
+#include <iostream>
+
 extern "C" {
 int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, const char* string) {
   int32_t e;
@@ -95,9 +97,98 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       e = env->call_sub_by_name(env, "Cotton::Runtime", "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
       if (e) { return e; }
 
-      
+
       free(paint_info);
       env->leave_scope(env, scope);
+    }
+    
+    // Direct 2D 四角形
+    {
+      ID2D1Factory* pD2d1Factory = NULL;
+      ID2D1HwndRenderTarget* pRenderTarget = NULL;
+
+      {
+          D2D1_SIZE_U oPixelSize = {
+                100
+              , 100
+          };
+
+          D2D1_RENDER_TARGET_PROPERTIES oRenderTargetProperties = D2D1::RenderTargetProperties();
+
+          D2D1_HWND_RENDER_TARGET_PROPERTIES oHwndRenderTargetProperties = D2D1::HwndRenderTargetProperties( window_handle, oPixelSize );
+
+
+          /*
+              ID2D1HwndRenderTargetの生成
+          */
+          HRESULT hResult = S_OK;
+          hResult = pD2d1Factory->CreateHwndRenderTarget(
+                    oRenderTargetProperties
+                  , oHwndRenderTargetProperties
+                  , &pRenderTarget
+              );
+          if ( FAILED( hResult ) ) {
+
+              // エラー
+              std::wcout << L"CreateHwndRenderTarget失敗" << std::endl;
+              return 1;
+          }
+      }
+            
+      // ターゲットサイズの取得
+      D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize();
+
+      // 描画開始
+      PAINTSTRUCT tPaintStruct;
+      ::BeginPaint( window_handle, &tPaintStruct );
+
+      // 描画開始(Direct2D)
+      pRenderTarget->BeginDraw();
+
+      // 背景のクリア
+      D2D1_COLOR_F oBKColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+      pRenderTarget->Clear( oBKColor );
+            
+      // ブラシの生成
+      ID2D1SolidColorBrush* pBrush = NULL;
+      {
+          pRenderTarget->CreateSolidColorBrush(
+                    D2D1::ColorF(
+                            (float)( 30 / ( oTargetSize.height ) )        // R
+                          , 0.0f                                          // G
+                          , 0.0f                                          // B
+                          , 1.0f                                          // A
+                      )
+                  , &pBrush
+              );
+      }
+
+      if ( NULL != pBrush ) {
+
+          // 中心
+          D2D1_POINT_2F tCenter = D2D1::Point2F(
+                    oTargetSize.width  / 2
+                  , oTargetSize.height / 2
+              );
+
+          // 描画矩形
+          D2D1_RECT_F tRectF = D2D1::RectF(
+                    (float)( tCenter.x - 30 )
+                  , (float)( tCenter.y - 30 )
+                  , (float)( tCenter.x + 30 )
+                  , (float)( tCenter.y + 30 )
+              );
+
+
+          // 線の幅
+          float fStrokeWidth = (float)( ( 30 / 10 ) % 3 + 1 );
+
+          // 四角形の描画
+          pRenderTarget->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
+
+          // ブラシの破棄
+          pBrush->Release();
+      }
     }
     
     // End paint
