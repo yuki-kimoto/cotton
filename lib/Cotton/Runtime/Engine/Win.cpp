@@ -299,7 +299,31 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
 
   // Draw block
   {
-    int32_t background_color = RGB(0x00, 0xAA, 0x77);
+    void* sv_background_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "background_color", "Cotton::Color", &e, __FILE__, __LINE__);
+    if (e) { return e; }
+    
+    int32_t background_color;
+    if (sv_background_color) {
+      float background_color_red = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      float background_color_green = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "green", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      float background_color_blue = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "blue", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      float background_color_alpha = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "alpha", &e, __FILE__, __LINE__);
+      if (e) { return e; }
+
+      background_color = RGB(background_color_red, background_color_green, background_color_blue);
+      
+      fprintf(stderr, "PPPPPP");
+    }
+    else {
+      background_color = RGB(0x00, 0xAA, 0x77);
+    }
+
     HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
     SelectObject(hdc, hpen);
     HBRUSH brash = CreateSolidBrush(background_color);
@@ -330,8 +354,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     
     int32_t color;
     if (sv_color) {
-      fprintf(stderr, "AAAAAAAA");
-      
       float color_red = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
@@ -347,7 +369,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
       color = RGB(color_red, color_green, color_blue);
     }
     else {
-      fprintf(stderr, "BBBBBBBBB");
       color = RGB(0xFF, 0x00, 0x00);
     }
     

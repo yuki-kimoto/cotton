@@ -21,7 +21,7 @@ package Cotton::Browser::Win {
       );
 
       $body->set_color(rgb(0x00, 0x00, 0xFF));
-      $body->set_background_color(rgb(0x00, 0xAA, 0x77));
+      $body->set_background_color(rgb(0x00, 0x33, 0x44));
       
       # Create index page
       my $page = Cotton::Page->new;
