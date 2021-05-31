@@ -85,6 +85,9 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     // Direct 2D 四角形
     ID2D1Factory* pD2d1Factory = NULL;
     ID2D1HwndRenderTarget* pRenderTarget = NULL;
+    RECT rect;
+    GetClientRect(window_handle, &rect);
+
     {
 
       {
@@ -99,8 +102,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
             }
           }
           
-          RECT rect;
-          GetClientRect(window_handle, &rect);
           D2D1_SIZE_U oPixelSize = {(UINT32)(rect.right + 1), (UINT32)(rect.bottom + 1)};
 
           D2D1_RENDER_TARGET_PROPERTIES oRenderTargetProperties = D2D1::RenderTargetProperties();
@@ -145,9 +146,9 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       {
           pRenderTarget->CreateSolidColorBrush(
                     D2D1::ColorF(
-                            1        // R
-                          , 0.0f                                          // G
-                          , 0.0f                                          // B
+                            0        // R
+                          , 0                                          // G
+                          , 1.0f                                          // B
                           , 1.0f                                          // A
                       )
                   , &pBrush
@@ -158,9 +159,9 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
 
           // 描画矩形
           D2D1_RECT_F tRectF = D2D1::RectF(
-                    (float)( 200 )
+                    (float)( 0 )
                   , (float)( 200 )
-                  , (float)( 300 )
+                  , (float)( rect.right )
                   , (float)( 300 )
               );
 
