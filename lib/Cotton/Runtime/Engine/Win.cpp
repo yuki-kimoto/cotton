@@ -83,9 +83,9 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     HDC hdc = BeginPaint(window_handle, &ps);
 
     // Direct 2D 四角形
+    ID2D1Factory* pD2d1Factory = NULL;
+    ID2D1HwndRenderTarget* pRenderTarget = NULL;
     {
-      ID2D1Factory* pD2d1Factory = NULL;
-      ID2D1HwndRenderTarget* pRenderTarget = NULL;
 
       {
          {
@@ -98,11 +98,10 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
               return 1;
             }
           }
-        
-          D2D1_SIZE_U oPixelSize = {
-                800
-              , 800
-          };
+          
+          RECT rect;
+          GetClientRect(window_handle, &rect);
+          D2D1_SIZE_U oPixelSize = {(UINT32)(rect.right + 1), (UINT32)(rect.bottom + 1)};
 
           D2D1_RENDER_TARGET_PROPERTIES oRenderTargetProperties = D2D1::RenderTargetProperties();
 
@@ -177,8 +176,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           // ブラシの破棄
           pBrush->Release();
       }
-      pRenderTarget->EndDraw();
     }
+    pRenderTarget->EndDraw();
 
     // Call Cotton::Runtime->paint_nodes
     {
