@@ -161,7 +161,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           D2D1_RECT_F tRectF = D2D1::RectF(
                     (float)( 0 )
                   , (float)( 200 )
-                  , (float)( rect.right )
+                  , (float)( rect.right +1 )
                   , (float)( 300 )
               );
 
@@ -170,7 +170,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           float fStrokeWidth = 2;
 
           // 四角形の描画
-          pRenderTarget->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
+          pRenderTarget->FillRectangle(&tRectF, pBrush);
+          // pRenderTarget->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
           
           printf("PPPPPPP");
 
