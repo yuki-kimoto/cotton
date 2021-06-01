@@ -219,14 +219,18 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
                     テキストの描画
                 */
                 if ( NULL != pBrush && NULL != pTextFormat ) {
- 
+                    
+                    const char* text = "あいうえお";
+                    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+                    int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
+
                     std::wstring strText = L"Hello World!!";
  
                     // テキストの描画
-                    D2D1_RECT_F tRectF = D2D1::RectF( 0, 300, 600, 300);
+                    D2D1_RECT_F tRectF = D2D1::RectF( 600, 600, 1200, 300);
                     pRenderTarget->DrawText(
-                              strText.c_str()   // 文字列
-                            , strText.size()    // 文字数
+                              (const WCHAR*)text_utf16   // 文字列
+                            , text_utf16_length    // 文字数
                             , pTextFormat
                             , &tRectF
                             , pBrush
