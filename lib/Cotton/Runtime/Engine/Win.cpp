@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <d2d1.h>
+#include <dwrite.h>
 
 #include <iostream>
 
@@ -113,14 +114,12 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
               ID2D1HwndRenderTargetの生成
           */
           HRESULT hResult = S_OK;
-    fprintf(stderr, "AAAAAAAAAAAAAA\n");
     
           hResult = pD2d1Factory->CreateHwndRenderTarget(
                     oRenderTargetProperties
                   , oHwndRenderTargetProperties
                   , &pRenderTarget
               );
-    fprintf(stderr, "BBBBBBBBBB\n");
           if ( FAILED( hResult ) ) {
 
               // エラー
@@ -132,8 +131,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       // ターゲットサイズの取得
       D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize();
       
-      printf("DDDDDD %d %d\n", oTargetSize.width, oTargetSize.height);
-
       // 描画開始(Direct2D)
       pRenderTarget->BeginDraw();
 
@@ -173,14 +170,85 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           pRenderTarget->FillRectangle(&tRectF, pBrush);
           // pRenderTarget->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
           
-          printf("PPPPPPP");
-
           // ブラシの破棄
           pBrush->Release();
       }
     }
-    pRenderTarget->EndDraw();
 
+
+            /*
+                テキストの描画
+            */
+            {
+              IDWriteFactory* pDWFactory = NULL;
+              HRESULT  hResult = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &pDWFactory ) );
+
+              D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize();
+              
+                /*
+                    ブラシの生成
+                */
+                ID2D1SolidColorBrush* pBrush = NULL;
+                {
+                    pRenderTarget->CreateSolidColorBrush(
+                              D2D1::ColorF( D2D1::ColorF::Black )
+                            , &pBrush
+                        );
+                }
+ 
+ 
+                /*
+                    テキストフォーマットの生成
+                */
+                IDWriteTextFormat* pTextFormat = NULL;
+                {
+                    pDWFactory->CreateTextFormat(
+                                  L"Meiryo"
+                                , NULL
+                                , DWRITE_FONT_WEIGHT_NORMAL
+                                , DWRITE_FONT_STYLE_NORMAL
+                                , DWRITE_FONT_STRETCH_NORMAL
+                                , 128
+                                , L""
+                                ,&pTextFormat
+                            );
+                }
+ 
+ 
+                /*
+                    テキストの描画
+                */
+                if ( NULL != pBrush && NULL != pTextFormat ) {
+ 
+                    std::wstring strText = L"Hello World!!";
+ 
+                    // テキストの描画
+                    D2D1_RECT_F tRectF = D2D1::RectF( 0, 300, 600, 300);
+                    pRenderTarget->DrawText(
+                              strText.c_str()   // 文字列
+                            , strText.size()    // 文字数
+                            , pTextFormat
+                            , &tRectF
+                            , pBrush
+                            , D2D1_DRAW_TEXT_OPTIONS_NONE
+                        );
+                }
+ 
+                // テキストフォーマットの破棄
+                if ( NULL != pTextFormat ) {
+                    pTextFormat->Release();
+                }
+ 
+                // ブラシの破棄
+                if ( NULL != pBrush ) {
+                    pBrush->Release();
+                }
+                
+                pDWFactory->Release();
+            }
+
+    pRenderTarget->EndDraw();
+            
     // Call Cotton::Runtime->paint_nodes
     {
       int32_t scope = env->enter_scope(env);
