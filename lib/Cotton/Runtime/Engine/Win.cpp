@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <d2d1.h>
 #include <dwrite.h>
+#include <assert.h>
 
 #include <iostream>
 
@@ -120,80 +121,60 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
     renderer->Clear(viewport_init_background_color);
 
-    {
-      // ブラシの生成
-      ID2D1SolidColorBrush* pBrush = NULL;
-      {
-          renderer->CreateSolidColorBrush(
-                    D2D1::ColorF(
-                            0        // R
-                          , 0                                          // G
-                          , 1.0f                                          // B
-                          , 1.0f                                          // A
-                      )
-                  , &pBrush
-              );
-      }
+    // Create background brash
+    ID2D1SolidColorBrush* background_brush = NULL;
+    renderer->CreateSolidColorBrush(
+      D2D1::ColorF(0, 0, 1.0f, 1.0f),
+      &background_brush
+    );
+    assert(background_brush);
 
-      if ( NULL != pBrush ) {
-
-          // 描画矩形
-          D2D1_RECT_F tRectF = D2D1::RectF(
-                    (float)( 0 )
-                  , (float)( 200 )
-                  , (float)( viewport_rect.right +1 )
-                  , (float)( 300 )
-              );
+    // 描画矩形
+    D2D1_RECT_F tRectF = D2D1::RectF(
+              (float)( 0 )
+            , (float)( 200 )
+            , (float)( viewport_rect.right +1 )
+            , (float)( 300 )
+        );
 
 
-          // 線の幅
-          float fStrokeWidth = 2;
+    // 線の幅
+    float fStrokeWidth = 2;
 
-          // 四角形の描画
-          renderer->FillRectangle(&tRectF, pBrush);
-          // renderer->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
-          
-          // ブラシの破棄
-          pBrush->Release();
-      }
-    }
+    // 四角形の描画
+    renderer->FillRectangle(&tRectF, background_brush);
+    // renderer->DrawRectangle( &tRectF, background_brush, fStrokeWidth );
+    
+    // ブラシの破棄
+    background_brush->Release();
 
 
     /*
         テキストの描画
     */
     {
-      IDWriteFactory* pDWFactory = NULL;
-      HRESULT  com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &pDWFactory ) );
+      IDWriteFactory* direct_write_factory = NULL;
+      HRESULT  com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
 
-      /*
-          ブラシの生成
-      */
-      ID2D1SolidColorBrush* pBrush = NULL;
-      {
-          renderer->CreateSolidColorBrush(
-                    D2D1::ColorF( D2D1::ColorF::Black )
-                  , &pBrush
-              );
-      }
+      // Create text brush
+      ID2D1SolidColorBrush* text_brush = NULL;
+      renderer->CreateSolidColorBrush(
+        D2D1::ColorF(D2D1::ColorF::Black),
+        &text_brush
+      );
 
-
-      /*
-          テキストフォーマットの生成
-      */
-      IDWriteTextFormat* pTextFormat = NULL;
-      {
-          pDWFactory->CreateTextFormat(
-                        L"Meiryo"
-                      , NULL
-                      , DWRITE_FONT_WEIGHT_NORMAL
-                      , DWRITE_FONT_STYLE_NORMAL
-                      , DWRITE_FONT_STRETCH_NORMAL
-                      , 16
-                      , L""
-                      ,&pTextFormat
-                  );
-      }
+      // Create text format
+      IDWriteTextFormat* text_format = NULL;
+      direct_write_factory->CreateTextFormat(
+        L"Meiryo",
+        NULL,
+        DWRITE_FONT_WEIGHT_NORMAL,
+        DWRITE_FONT_STYLE_NORMAL,
+        DWRITE_FONT_STRETCH_NORMAL,
+        16,
+        L"",
+        &text_format
+      );
       
       D2D1_RECT_F tRectF = D2D1::RectF( 600, 600, 1200, 300);
 
@@ -203,14 +184,14 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
 
       IDWriteTextLayout* pTextLayout = NULL;
       
-      com_result = pDWFactory->CreateTextLayout(
-                    (const WCHAR*)text_utf16       // 文字列
-                  , text_utf16_length        // 文字列の幅
-                  , pTextFormat           // DWriteTextFormat
-                  , 600    // 枠の幅
-                  , 300    // 枠の高さ
-                  , &pTextLayout
-              );
+      com_result = direct_write_factory->CreateTextLayout(
+            (const WCHAR*)text_utf16       // 文字列
+          , text_utf16_length        // 文字列の幅
+          ,text_format           // DWriteTextFormat
+          , 600    // 枠の幅
+          , 300    // 枠の高さ
+          , &pTextLayout
+      );
 
 
       DWRITE_TEXT_METRICS tTextMetrics;
@@ -233,7 +214,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       /*
           テキストの描画
       */
-      if ( NULL != pBrush && NULL != pTextFormat ) {
+      if ( NULL != text_brush && NULL !=text_format ) {
           
           std::wstring strText = L"Hello World!!";
 
@@ -241,24 +222,24 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           renderer->DrawText(
                     (const WCHAR*)text_utf16   // 文字列
                   , text_utf16_length    // 文字数
-                  , pTextFormat
+                  ,text_format
                   , &tRectF
-                  , pBrush
+                  , text_brush
                   , D2D1_DRAW_TEXT_OPTIONS_NONE
               );
       }
 
       // テキストフォーマットの破棄
-      if ( NULL != pTextFormat ) {
-          pTextFormat->Release();
+      if ( NULL !=text_format ) {
+         text_format->Release();
       }
 
       // ブラシの破棄
-      if ( NULL != pBrush ) {
-          pBrush->Release();
+      if ( NULL != text_brush ) {
+          text_brush->Release();
       }
       
-      pDWFactory->Release();
+      direct_write_factory->Release();
     }
     
     // End draw
@@ -511,11 +492,11 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
 
     HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
     SelectObject(hdc, hpen);
-    HBRUSH brash = CreateSolidBrush(background_color);
-    SelectObject(hdc, brash);
+    HBRUSH brush = CreateSolidBrush(background_color);
+    SelectObject(hdc, brush);
     Rectangle(hdc, draw_left, draw_top, draw_width - 1, draw_height - 1);
     DeleteObject(hpen);
-    DeleteObject(brash);
+    DeleteObject(brush);
   }
   
   void* sv_text = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "text", "string", &e, __FILE__, __LINE__);
