@@ -129,7 +129,10 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       }
             
       // ターゲットサイズの取得
-      D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize();
+      D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize(); 
+      
+      printf("AAAAABBB %f %f\n", oTargetSize.width, oTargetSize.height);
+
       
       // 描画開始(Direct2D)
       pRenderTarget->BeginDraw();
@@ -208,7 +211,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
                                 , DWRITE_FONT_WEIGHT_NORMAL
                                 , DWRITE_FONT_STYLE_NORMAL
                                 , DWRITE_FONT_STRETCH_NORMAL
-                                , 128
+                                , 16
                                 , L""
                                 ,&pTextFormat
                             );
@@ -220,7 +223,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
                 */
                 if ( NULL != pBrush && NULL != pTextFormat ) {
                     
-                    const char* text = "あいうえお";
+                    const char* text = "あいうえおああああああああああああああああああああああああああああああああああああああああああああああああああああああああ";
                     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
                     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
@@ -403,7 +406,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     
     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
 
-    RECT parent_rect = {left : 0, top : 0, right: draw_width - 1};
+    RECT parent_rect = {.left = 0, .top = 0, .right = draw_width - 1};
 
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
@@ -436,7 +439,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     drow_text_flag |= DT_LEFT;
     
     // Culcurate text height
-    RECT culc_node_rect = {left : parent_rect.left, top : parent_rect.top, right: parent_rect.right, bottom: parent_rect.bottom};
+    RECT culc_node_rect = {.left = parent_rect.left, .top = parent_rect.top, .right = parent_rect.right, .bottom = parent_rect.bottom};
     DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
     
     // draw height
@@ -516,7 +519,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     
     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
 
-    RECT parent_rect = {left : draw_left, top : draw_top, right: draw_width - 1, bottom: draw_height - 1};
+    RECT parent_rect = {.left = draw_left, .top = draw_top, .right = draw_width - 1, .bottom = draw_height - 1};
 
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
@@ -569,7 +572,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     drow_text_flag |= DT_LEFT;
     
     // Culcurate text height
-    RECT culc_node_rect = {left : parent_rect.left, top : parent_rect.top, right: parent_rect.right, bottom: parent_rect.bottom};
+    RECT culc_node_rect = {.left = parent_rect.left, .top = parent_rect.top, .right = parent_rect.right, .bottom = parent_rect.bottom};
     DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
     
     // draw height
