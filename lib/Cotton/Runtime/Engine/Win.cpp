@@ -83,59 +83,47 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
 
+    // Result for COM. Direct 2D is COM.
+    HRESULT com_result = S_OK;
+    
+    // Create Direct2D factory
+    ID2D1Factory* d2_factory = NULL;
+    com_result = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2_factory);
+    if (FAILED( com_result)) {
+      fprintf(stderr, "Fail D2D1CreateFactory\n");
+      return 1;
+    }
+
     // Direct 2D 四角形
-    ID2D1Factory* pD2d1Factory = NULL;
     ID2D1HwndRenderTarget* pRenderTarget = NULL;
     RECT rect;
     GetClientRect(window_handle, &rect);
+    
+    D2D1_SIZE_U oPixelSize = {(UINT32)(rect.right + 1), (UINT32)(rect.bottom + 1)};
+
+    D2D1_RENDER_TARGET_PROPERTIES oRenderTargetProperties = D2D1::RenderTargetProperties();
+
+    D2D1_HWND_RENDER_TARGET_PROPERTIES oHwndRenderTargetProperties = D2D1::HwndRenderTargetProperties( window_handle, oPixelSize );
+
+    com_result = d2_factory->CreateHwndRenderTarget(
+              oRenderTargetProperties
+            , oHwndRenderTargetProperties
+            , &pRenderTarget
+        );
+    if ( FAILED( com_result ) ) {
+
+        // エラー
+        std::wcout << L"CreateHwndRenderTarget失敗" << std::endl;
+        return 1;
+    }
+        
+    // 描画開始(Direct2D)
+    pRenderTarget->BeginDraw();
 
     {
 
-      {
-         {
-            HRESULT hResult = S_OK;
-            hResult = ::D2D1CreateFactory( D2D1_FACTORY_TYPE_MULTI_THREADED, &pD2d1Factory );
-            if ( FAILED( hResult ) ) {
- 
-                // エラー
-                std::wcout << L"D2D1CreateFactory失敗" << std::endl;
-              return 1;
-            }
-          }
-          
-          D2D1_SIZE_U oPixelSize = {(UINT32)(rect.right + 1), (UINT32)(rect.bottom + 1)};
-
-          D2D1_RENDER_TARGET_PROPERTIES oRenderTargetProperties = D2D1::RenderTargetProperties();
-
-          D2D1_HWND_RENDER_TARGET_PROPERTIES oHwndRenderTargetProperties = D2D1::HwndRenderTargetProperties( window_handle, oPixelSize );
-
-
-          /*
-              ID2D1HwndRenderTargetの生成
-          */
-          HRESULT hResult = S_OK;
-    
-          hResult = pD2d1Factory->CreateHwndRenderTarget(
-                    oRenderTargetProperties
-                  , oHwndRenderTargetProperties
-                  , &pRenderTarget
-              );
-          if ( FAILED( hResult ) ) {
-
-              // エラー
-              std::wcout << L"CreateHwndRenderTarget失敗" << std::endl;
-              return 1;
-          }
-      }
-            
       // ターゲットサイズの取得
       D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize(); 
-      
-      printf("AAAAABBB %f %f\n", oTargetSize.width, oTargetSize.height);
-
-      
-      // 描画開始(Direct2D)
-      pRenderTarget->BeginDraw();
 
       // 背景のクリア
       D2D1_COLOR_F oBKColor = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -184,7 +172,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
             */
             {
               IDWriteFactory* pDWFactory = NULL;
-              HRESULT  hResult = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &pDWFactory ) );
+              HRESULT  com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &pDWFactory ) );
 
               D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize();
               
@@ -216,21 +204,48 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
                                 ,&pTextFormat
                             );
                 }
- 
- 
+                
+                D2D1_RECT_F tRectF = D2D1::RectF( 600, 600, 1200, 300);
+
+                const char* text = "あいうえおああああああああああああああああああああああああああああああああああああああああああああああああああああああああ";
+                const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+                int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
+
+                IDWriteTextLayout* pTextLayout = NULL;
+                
+                com_result = pDWFactory->CreateTextLayout(
+                              (const WCHAR*)text_utf16       // 文字列
+                            , text_utf16_length        // 文字列の幅
+                            , pTextFormat           // DWriteTextFormat
+                            , 600    // 枠の幅
+                            , 300    // 枠の高さ
+                            , &pTextLayout
+                        );
+
+
+                DWRITE_TEXT_METRICS tTextMetrics;
+
+                // Metricsの取得
+                pTextLayout->GetMetrics( &tTextMetrics );
+
+
+                D2D1_RECT_F tTextRectF;
+
+                tTextRectF = D2D1::RectF(
+                          tTextMetrics.left                         // left
+                        , tTextMetrics.top                          // top
+                        , tTextMetrics.left + tTextMetrics.width    // right
+                        , tTextMetrics.top  + tTextMetrics.height   // bottom
+                    );
+
                 /*
                     テキストの描画
                 */
                 if ( NULL != pBrush && NULL != pTextFormat ) {
                     
-                    const char* text = "あいうえおああああああああああああああああああああああああああああああああああああああああああああああああああああああああ";
-                    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
-                    int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
-
                     std::wstring strText = L"Hello World!!";
  
                     // テキストの描画
-                    D2D1_RECT_F tRectF = D2D1::RectF( 600, 600, 1200, 300);
                     pRenderTarget->DrawText(
                               (const WCHAR*)text_utf16   // 文字列
                             , text_utf16_length    // 文字数
