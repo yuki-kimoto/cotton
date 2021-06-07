@@ -89,50 +89,46 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     // Create Direct2D factory
     ID2D1Factory* d2_factory = NULL;
     com_result = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2_factory);
-    if (FAILED( com_result)) {
+    if (FAILED(com_result)) {
       fprintf(stderr, "Fail D2D1CreateFactory\n");
       return 1;
     }
 
-    // Direct 2D 四角形
-    ID2D1HwndRenderTarget* pRenderTarget = NULL;
-    RECT rect;
-    GetClientRect(window_handle, &rect);
+    // Viewport rect
+    RECT viewport_rect;
+    GetClientRect(window_handle, &viewport_rect);
     
-    D2D1_SIZE_U oPixelSize = {(UINT32)(rect.right + 1), (UINT32)(rect.bottom + 1)};
-
-    D2D1_RENDER_TARGET_PROPERTIES oRenderTargetProperties = D2D1::RenderTargetProperties();
-
-    D2D1_HWND_RENDER_TARGET_PROPERTIES oHwndRenderTargetProperties = D2D1::HwndRenderTargetProperties( window_handle, oPixelSize );
-
+    // Viewport size
+    D2D1_SIZE_U viewport_size = {(UINT32)(viewport_rect.right + 1), (UINT32)(viewport_rect.bottom + 1)};
+    
+    // Renderer
+    ID2D1HwndRenderTarget* renderer = NULL;
     com_result = d2_factory->CreateHwndRenderTarget(
-              oRenderTargetProperties
-            , oHwndRenderTargetProperties
-            , &pRenderTarget
-        );
-    if ( FAILED( com_result ) ) {
-
-        // エラー
-        std::wcout << L"CreateHwndRenderTarget失敗" << std::endl;
-        return 1;
+        D2D1::RenderTargetProperties(),
+        D2D1::HwndRenderTargetProperties(window_handle, viewport_size),
+        &renderer
+    );
+    if (FAILED(com_result) ) {
+      fprintf(stderr, "Fail CreateHwndRenderTarget\n");
+      return 1;
     }
         
-    // 描画開始(Direct2D)
-    pRenderTarget->BeginDraw();
+    // Start Draw
+    renderer->BeginDraw();
 
     {
 
       // ターゲットサイズの取得
-      D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize(); 
+      D2D1_SIZE_F oTargetSize = renderer->GetSize(); 
 
       // 背景のクリア
       D2D1_COLOR_F oBKColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-      pRenderTarget->Clear( oBKColor );
+      renderer->Clear( oBKColor );
             
       // ブラシの生成
       ID2D1SolidColorBrush* pBrush = NULL;
       {
-          pRenderTarget->CreateSolidColorBrush(
+          renderer->CreateSolidColorBrush(
                     D2D1::ColorF(
                             0        // R
                           , 0                                          // G
@@ -149,7 +145,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           D2D1_RECT_F tRectF = D2D1::RectF(
                     (float)( 0 )
                   , (float)( 200 )
-                  , (float)( rect.right +1 )
+                  , (float)( viewport_rect.right +1 )
                   , (float)( 300 )
               );
 
@@ -158,8 +154,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
           float fStrokeWidth = 2;
 
           // 四角形の描画
-          pRenderTarget->FillRectangle(&tRectF, pBrush);
-          // pRenderTarget->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
+          renderer->FillRectangle(&tRectF, pBrush);
+          // renderer->DrawRectangle( &tRectF, pBrush, fStrokeWidth );
           
           // ブラシの破棄
           pBrush->Release();
@@ -174,14 +170,14 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
               IDWriteFactory* pDWFactory = NULL;
               HRESULT  com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &pDWFactory ) );
 
-              D2D1_SIZE_F oTargetSize = pRenderTarget->GetSize();
+              D2D1_SIZE_F oTargetSize = renderer->GetSize();
               
                 /*
                     ブラシの生成
                 */
                 ID2D1SolidColorBrush* pBrush = NULL;
                 {
-                    pRenderTarget->CreateSolidColorBrush(
+                    renderer->CreateSolidColorBrush(
                               D2D1::ColorF( D2D1::ColorF::Black )
                             , &pBrush
                         );
@@ -246,7 +242,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
                     std::wstring strText = L"Hello World!!";
  
                     // テキストの描画
-                    pRenderTarget->DrawText(
+                    renderer->DrawText(
                               (const WCHAR*)text_utf16   // 文字列
                             , text_utf16_length    // 文字数
                             , pTextFormat
@@ -269,7 +265,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
                 pDWFactory->Release();
             }
 
-    pRenderTarget->EndDraw();
+    renderer->EndDraw();
             
     // Call Cotton::Runtime->paint_nodes
     {
