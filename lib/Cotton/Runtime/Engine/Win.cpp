@@ -121,34 +121,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
     renderer->Clear(viewport_init_background_color);
 
-    // Create background brash
-    ID2D1SolidColorBrush* background_brush = NULL;
-    renderer->CreateSolidColorBrush(
-      D2D1::ColorF(0, 0, 1.0f, 1.0f),
-      &background_brush
-    );
-    assert(background_brush);
-
-    // 描画矩形
-    D2D1_RECT_F tRectF = D2D1::RectF(
-              (float)( 0 )
-            , (float)( 200 )
-            , (float)( viewport_rect.right +1 )
-            , (float)( 300 )
-        );
-
-
-    // 線の幅
-    float fStrokeWidth = 2;
-
-    // 四角形の描画
-    renderer->FillRectangle(&tRectF, background_brush);
-    // renderer->DrawRectangle( &tRectF, background_brush, fStrokeWidth );
-    
-    // ブラシの破棄
-    background_brush->Release();
-
-
     /*
         テキストの描画
     */
@@ -159,7 +131,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       // Create text brush
       ID2D1SolidColorBrush* text_brush = NULL;
       renderer->CreateSolidColorBrush(
-        D2D1::ColorF(D2D1::ColorF::Black),
+        D2D1::ColorF(D2D1::ColorF::White),
         &text_brush
       );
 
@@ -176,8 +148,12 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
         &text_format
       );
       
-      D2D1_RECT_F tRectF = D2D1::RectF( 600, 600, 1200, 300);
-
+      
+      float block_left = 100.0f;
+      float block_right = 500.0f;
+      float block_width = block_left - block_right + 1;
+      float block_top = 300.0f;
+      
       const char* text = "あいうえおああああああああああああああああああああああああああああああああああああああああああああああああああああああああ";
       const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
       int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
@@ -188,8 +164,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
             (const WCHAR*)text_utf16       // 文字列
           , text_utf16_length        // 文字列の幅
           ,text_format           // DWriteTextFormat
-          , 600    // 枠の幅
-          , 300    // 枠の高さ
+          , (block_right - block_left + 1)    // 枠の幅
+          , 0    // 枠の高さ
           , &pTextLayout
       );
 
@@ -200,16 +176,53 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       pTextLayout->GetMetrics( &tTextMetrics );
 
 
-      D2D1_RECT_F tTextRectF;
+      D2D1_RECT_F text_rect;
 
-      tTextRectF = D2D1::RectF(
+      text_rect = D2D1::RectF(
                 tTextMetrics.left                         // left
               , tTextMetrics.top                          // top
               , tTextMetrics.left + tTextMetrics.width    // right
               , tTextMetrics.top  + tTextMetrics.height   // bottom
           );
       
-      printf("AAAAAA %f %f", tTextMetrics.width, tTextMetrics.height);
+      printf("AAAAAA %f %f %f %f", tTextMetrics.left, tTextMetrics.top, tTextMetrics.width, tTextMetrics.height);
+
+      // 描画矩形
+      D2D1_RECT_F block_rect = D2D1::RectF(
+        block_left,
+        block_top,
+        block_right,
+        block_top + tTextMetrics.height - 1
+      );
+
+      // Create background brash
+      ID2D1SolidColorBrush* background_brush = NULL;
+      renderer->CreateSolidColorBrush(
+        D2D1::ColorF(0, 0, 1.0f, 1.0f),
+        &background_brush
+      );
+      assert(background_brush);
+
+
+
+/*
+      // 描画矩形
+      D2D1_RECT_F block_rect = D2D1::RectF(
+        (float)(text_rect.left),
+        (float)(text_rect.top),
+        (float)(text_rect.right),
+        (float)(text_rect.bottom)
+      );
+*/
+
+      // 線の幅
+      float fStrokeWidth = 2;
+
+      // 四角形の描画
+      renderer->FillRectangle(&block_rect, background_brush);
+      
+      // ブラシの破棄
+      background_brush->Release();
 
       /*
           テキストの描画
@@ -223,7 +236,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
                     (const WCHAR*)text_utf16   // 文字列
                   , text_utf16_length    // 文字数
                   ,text_format
-                  , &tRectF
+                  , &block_rect
                   , text_brush
                   , D2D1_DRAW_TEXT_OPTIONS_NONE
               );
