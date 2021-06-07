@@ -87,8 +87,8 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     HRESULT com_result = S_OK;
     
     // Create Direct2D factory
-    ID2D1Factory* d2_factory = NULL;
-    com_result = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &d2_factory);
+    ID2D1Factory* renderer_factory = NULL;
+    com_result = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &renderer_factory);
     if (FAILED(com_result)) {
       fprintf(stderr, "Fail D2D1CreateFactory\n");
       return 1;
@@ -103,10 +103,10 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     
     // Renderer
     ID2D1HwndRenderTarget* renderer = NULL;
-    com_result = d2_factory->CreateHwndRenderTarget(
-        D2D1::RenderTargetProperties(),
-        D2D1::HwndRenderTargetProperties(window_handle, viewport_size),
-        &renderer
+    com_result = renderer_factory->CreateHwndRenderTarget(
+      D2D1::RenderTargetProperties(),
+      D2D1::HwndRenderTargetProperties(window_handle, viewport_size),
+      &renderer
     );
     if (FAILED(com_result) ) {
       fprintf(stderr, "Fail CreateHwndRenderTarget\n");
@@ -116,15 +116,11 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
     // Start Draw
     renderer->BeginDraw();
 
+    // Clear viewport
+    D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
+    renderer->Clear(viewport_init_background_color);
+
     {
-
-      // ターゲットサイズの取得
-      D2D1_SIZE_F oTargetSize = renderer->GetSize(); 
-
-      // 背景のクリア
-      D2D1_COLOR_F oBKColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-      renderer->Clear( oBKColor );
-            
       // ブラシの生成
       ID2D1SolidColorBrush* pBrush = NULL;
       {
@@ -170,99 +166,99 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
               IDWriteFactory* pDWFactory = NULL;
               HRESULT  com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &pDWFactory ) );
 
-              D2D1_SIZE_F oTargetSize = renderer->GetSize();
+              /*
+                  ブラシの生成
+              */
+              ID2D1SolidColorBrush* pBrush = NULL;
+              {
+                  renderer->CreateSolidColorBrush(
+                            D2D1::ColorF( D2D1::ColorF::Black )
+                          , &pBrush
+                      );
+              }
+
+
+              /*
+                  テキストフォーマットの生成
+              */
+              IDWriteTextFormat* pTextFormat = NULL;
+              {
+                  pDWFactory->CreateTextFormat(
+                                L"Meiryo"
+                              , NULL
+                              , DWRITE_FONT_WEIGHT_NORMAL
+                              , DWRITE_FONT_STYLE_NORMAL
+                              , DWRITE_FONT_STRETCH_NORMAL
+                              , 16
+                              , L""
+                              ,&pTextFormat
+                          );
+              }
               
-                /*
-                    ブラシの生成
-                */
-                ID2D1SolidColorBrush* pBrush = NULL;
-                {
-                    renderer->CreateSolidColorBrush(
-                              D2D1::ColorF( D2D1::ColorF::Black )
-                            , &pBrush
-                        );
-                }
- 
- 
-                /*
-                    テキストフォーマットの生成
-                */
-                IDWriteTextFormat* pTextFormat = NULL;
-                {
-                    pDWFactory->CreateTextFormat(
-                                  L"Meiryo"
-                                , NULL
-                                , DWRITE_FONT_WEIGHT_NORMAL
-                                , DWRITE_FONT_STYLE_NORMAL
-                                , DWRITE_FONT_STRETCH_NORMAL
-                                , 16
-                                , L""
-                                ,&pTextFormat
-                            );
-                }
-                
-                D2D1_RECT_F tRectF = D2D1::RectF( 600, 600, 1200, 300);
+              D2D1_RECT_F tRectF = D2D1::RectF( 600, 600, 1200, 300);
 
-                const char* text = "あいうえおああああああああああああああああああああああああああああああああああああああああああああああああああああああああ";
-                const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
-                int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
+              const char* text = "あいうえおああああああああああああああああああああああああああああああああああああああああああああああああああああああああ";
+              const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+              int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
-                IDWriteTextLayout* pTextLayout = NULL;
-                
-                com_result = pDWFactory->CreateTextLayout(
-                              (const WCHAR*)text_utf16       // 文字列
-                            , text_utf16_length        // 文字列の幅
-                            , pTextFormat           // DWriteTextFormat
-                            , 600    // 枠の幅
-                            , 300    // 枠の高さ
-                            , &pTextLayout
-                        );
+              IDWriteTextLayout* pTextLayout = NULL;
+              
+              com_result = pDWFactory->CreateTextLayout(
+                            (const WCHAR*)text_utf16       // 文字列
+                          , text_utf16_length        // 文字列の幅
+                          , pTextFormat           // DWriteTextFormat
+                          , 600    // 枠の幅
+                          , 300    // 枠の高さ
+                          , &pTextLayout
+                      );
 
 
-                DWRITE_TEXT_METRICS tTextMetrics;
+              DWRITE_TEXT_METRICS tTextMetrics;
 
-                // Metricsの取得
-                pTextLayout->GetMetrics( &tTextMetrics );
+              // Metricsの取得
+              pTextLayout->GetMetrics( &tTextMetrics );
 
 
-                D2D1_RECT_F tTextRectF;
+              D2D1_RECT_F tTextRectF;
 
-                tTextRectF = D2D1::RectF(
-                          tTextMetrics.left                         // left
-                        , tTextMetrics.top                          // top
-                        , tTextMetrics.left + tTextMetrics.width    // right
-                        , tTextMetrics.top  + tTextMetrics.height   // bottom
-                    );
+              tTextRectF = D2D1::RectF(
+                        tTextMetrics.left                         // left
+                      , tTextMetrics.top                          // top
+                      , tTextMetrics.left + tTextMetrics.width    // right
+                      , tTextMetrics.top  + tTextMetrics.height   // bottom
+                  );
+              
+              printf("AAAAAA %f %f", tTextMetrics.width, tTextMetrics.height);
 
-                /*
-                    テキストの描画
-                */
-                if ( NULL != pBrush && NULL != pTextFormat ) {
-                    
-                    std::wstring strText = L"Hello World!!";
- 
-                    // テキストの描画
-                    renderer->DrawText(
-                              (const WCHAR*)text_utf16   // 文字列
-                            , text_utf16_length    // 文字数
-                            , pTextFormat
-                            , &tRectF
-                            , pBrush
-                            , D2D1_DRAW_TEXT_OPTIONS_NONE
-                        );
-                }
- 
-                // テキストフォーマットの破棄
-                if ( NULL != pTextFormat ) {
-                    pTextFormat->Release();
-                }
- 
-                // ブラシの破棄
-                if ( NULL != pBrush ) {
-                    pBrush->Release();
-                }
-                
-                pDWFactory->Release();
+              /*
+                  テキストの描画
+              */
+              if ( NULL != pBrush && NULL != pTextFormat ) {
+                  
+                  std::wstring strText = L"Hello World!!";
+
+                  // テキストの描画
+                  renderer->DrawText(
+                            (const WCHAR*)text_utf16   // 文字列
+                          , text_utf16_length    // 文字数
+                          , pTextFormat
+                          , &tRectF
+                          , pBrush
+                          , D2D1_DRAW_TEXT_OPTIONS_NONE
+                      );
+              }
+
+              // テキストフォーマットの破棄
+              if ( NULL != pTextFormat ) {
+                  pTextFormat->Release();
+              }
+
+              // ブラシの破棄
+              if ( NULL != pBrush ) {
+                  pBrush->Release();
+              }
+              
+              pDWFactory->Release();
             }
 
     renderer->EndDraw();
