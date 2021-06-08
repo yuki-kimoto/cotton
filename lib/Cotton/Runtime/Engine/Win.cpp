@@ -40,6 +40,7 @@ static void alert(SPVM_ENV* env, const char* message) {
 struct COTTON_RUNTIME_PAINT_INFO {
   HDC hdc;
   HWND window_handle;
+  ID2D1HwndRenderTarget* renderer;
 };
 
 int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
@@ -263,6 +264,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
       struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
       paint_info->hdc = hdc;
       paint_info->window_handle = window_handle;
+      paint_info->renderer = renderer;
       
       void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
       if (e) { return e; }
@@ -505,6 +507,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
 
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
   HDC hdc = paint_info->hdc;
+  ID2D1HwndRenderTarget* renderer = paint_info->renderer;
 
   int32_t draw_left = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_left", &e, __FILE__, __LINE__);
   if (e) { return e; }
@@ -521,6 +524,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     if (e) { return e; }
     
     int32_t background_color;
+    D2D1::ColorF background_color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
     if (sv_background_color) {
       float background_color_red = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
@@ -534,21 +538,28 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
       float background_color_alpha = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "alpha", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      background_color = RGB(background_color_red, background_color_green, background_color_blue);
-      
-      fprintf(stderr, "PPPPPP");
+      background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
     }
     else {
-      background_color = RGB(0x00, 0xAA, 0x77);
+      background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 0);
     }
 
-    HPEN hpen = CreatePen(PS_SOLID , 0 , RGB(0x00, 0xAA, 0x77));
-    SelectObject(hdc, hpen);
-    HBRUSH brush = CreateSolidBrush(background_color);
-    SelectObject(hdc, brush);
-    Rectangle(hdc, draw_left, draw_top, draw_width - 1, draw_height - 1);
-    DeleteObject(hpen);
-    DeleteObject(brush);
+    // Create background brash
+    ID2D1SolidColorBrush* background_brush = NULL;
+    renderer->CreateSolidColorBrush(
+      background_color_f,
+      &background_brush
+    );
+    assert(background_brush);
+
+    // 描画矩形
+    D2D1_RECT_F block_rect = D2D1::RectF(draw_left, draw_top, draw_width - 1, draw_height - 1);
+
+    // 四角形の描画
+    renderer->FillRectangle(&block_rect, background_brush);
+    
+    // ブラシの破棄
+    background_brush->Release();
   }
   
   void* sv_text = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "text", "string", &e, __FILE__, __LINE__);
