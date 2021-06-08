@@ -278,7 +278,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
-    RECT parent_rect = {.left = 0, .top = 0, .right = draw_width - 1};
+    RECT parent_rect = {.left = 0, .top = 0, .right = draw_width};
 
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
@@ -359,6 +359,11 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
   int32_t draw_height = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_height", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
+  // Block rect
+  D2D1_RECT_F block_rect = D2D1::RectF(draw_left, draw_top, draw_width, draw_height);
+  
+  printf("EEEEE %f %f\n", block_rect.left, block_rect.right);
+
   // Draw block
   {
     void* sv_background_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "background_color", "Cotton::Color", &e, __FILE__, __LINE__);
@@ -393,9 +398,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     );
     assert(background_brush);
 
-    // 描画矩形
-    D2D1_RECT_F block_rect = D2D1::RectF(draw_left, draw_top, draw_width - 1, draw_height - 1);
-
     // 四角形の描画
     renderer->FillRectangle(&block_rect, background_brush);
     
@@ -413,12 +415,10 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
-    RECT parent_rect = {.left = draw_left, .top = draw_top, .right = draw_width - 1, .bottom = draw_height - 1};
-
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
-    int32_t parent_width = parent_rect.right + 1;
-    int32_t parent_height = parent_rect.bottom + 1;
+    int32_t parent_width = block_rect.right + 1;
+    int32_t parent_height = block_rect.bottom + 1;
 
     void* sv_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "color", "Cotton::Color", &e, __FILE__, __LINE__);
     if (e) { return e; }
@@ -488,7 +488,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     );
     
     // Draw text
-    D2D1_POINT_2F point = {.x = (float)parent_rect.left, .y = (float)parent_rect.top};
+    D2D1_POINT_2F point = {.x = (float)block_rect.left, .y = (float)block_rect.top};
     renderer->DrawTextLayout(point, text_layout, text_brush);
   }
 
@@ -513,6 +513,8 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env
   GetClientRect(window_handle, &rect);
 
   stack[0].ival = rect.right + 1;
+  
+  printf("DDDDDDDD %d\n", stack[0].ival);
 
   return 0;
 }
