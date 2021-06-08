@@ -42,7 +42,7 @@ struct COTTON_RUNTIME_PAINT_INFO {
   HWND window_handle;
 };
 
-int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
+int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
   SPVM_VALUE stack[256];
   int32_t e = 0;
   
@@ -256,9 +256,6 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       direct_write_factory->Release();
     }
     
-    // End draw
-    renderer->EndDraw();
-            
     // Call Cotton::Runtime->paint_nodes
     {
       int32_t scope = env->enter_scope(env);
@@ -280,7 +277,9 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       env->leave_scope(env, scope);
     }
     
-    
+    // End draw
+    renderer->EndDraw();
+            
     // End paint
     EndPaint(window_handle , &ps);
   }
@@ -312,7 +311,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       int32_t e = 0;
       
       // Draw node
-      e = Cotton_Runtime_paint(env, sv_self);
+      e = Cotton_Runtime_paint_window(env, sv_self);
       
       if (e) {
         alert(env, env->get_chars(env, env->get_exception(env)));
@@ -560,6 +559,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     const char* text = env->get_chars(env, sv_text);
     
     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+    int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
     RECT parent_rect = {.left = draw_left, .top = draw_top, .right = draw_width - 1, .bottom = draw_height - 1};
 
@@ -593,7 +593,37 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     
     // draw width
     int32_t draw_width = parent_width;
+
+    HRESULT com_result;
     
+    IDWriteFactory* direct_write_factory = NULL;
+    com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
+
+    // Create text format
+    IDWriteTextFormat* text_format = NULL;
+    direct_write_factory->CreateTextFormat(
+      L"Meiryo",
+      NULL,
+      DWRITE_FONT_WEIGHT_NORMAL,
+      DWRITE_FONT_STYLE_NORMAL,
+      DWRITE_FONT_STRETCH_NORMAL,
+      40,
+      L"",
+      &text_format
+    );
+
+    IDWriteTextLayout* pTextLayout = NULL;
+    
+    com_result = direct_write_factory->CreateTextLayout(
+          (const WCHAR*)text_utf16       // 文字列
+        , text_utf16_length        // 文字列の幅
+        ,text_format           // DWriteTextFormat
+        , draw_width    // 枠の幅
+        , 0    // 枠の高さ
+        , &pTextLayout
+    );
+
+
     // Font
     LOGFONT lfFont;
     lfFont.lfHeight     = 40;
