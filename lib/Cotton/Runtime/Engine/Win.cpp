@@ -451,7 +451,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     // draw height
     draw_height = culc_node_rect.bottom + 1;
 
-    /*
     HRESULT com_result;
     
     IDWriteFactory* direct_write_factory = NULL;
@@ -485,8 +484,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     pTextLayout->GetMetrics( &tTextMetrics );
     
     draw_height = tTextMetrics.height;
-    
-    */
   }
   
   stack[0].ival = draw_height;
@@ -583,6 +580,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     if (e) { return e; }
     
     int32_t color;
+    D2D1::ColorF color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
     if (sv_color) {
       float color_red = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
@@ -597,9 +595,11 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
       if (e) { return e; }
 
       color = RGB(color_red, color_green, color_blue);
+      color_f = D2D1::ColorF(color_red, color_green, color_blue, color_alpha);
     }
     else {
       color = RGB(0xFF, 0x00, 0x00);
+      color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);
     }
     
     // draw width
@@ -610,6 +610,13 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     IDWriteFactory* direct_write_factory = NULL;
     com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
 
+    // Create text brush
+    ID2D1SolidColorBrush* text_brush = NULL;
+    renderer->CreateSolidColorBrush(
+      color_f,
+      &text_brush
+    );
+      
     // Create text format
     IDWriteTextFormat* text_format = NULL;
     direct_write_factory->CreateTextFormat(
@@ -633,6 +640,10 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
         , 0    // 枠の高さ
         , &pTextLayout
     );
+    
+    D2D1_POINT_2F point = {.x = (float)parent_rect.left, .y = (float)parent_rect.top};
+    
+    renderer->DrawTextLayout(point, pTextLayout, text_brush);
 
 
     // Font
