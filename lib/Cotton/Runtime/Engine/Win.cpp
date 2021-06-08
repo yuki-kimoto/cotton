@@ -123,140 +123,6 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
     D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
     renderer->Clear(viewport_init_background_color);
 
-    /*
-        テキストの描画
-    */
-    {
-      IDWriteFactory* direct_write_factory = NULL;
-      HRESULT  com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
-
-      // Create text brush
-      ID2D1SolidColorBrush* text_brush = NULL;
-      renderer->CreateSolidColorBrush(
-        D2D1::ColorF(D2D1::ColorF::White),
-        &text_brush
-      );
-
-      // Create text format
-      IDWriteTextFormat* text_format = NULL;
-      direct_write_factory->CreateTextFormat(
-        L"Meiryo",
-        NULL,
-        DWRITE_FONT_WEIGHT_NORMAL,
-        DWRITE_FONT_STYLE_NORMAL,
-        DWRITE_FONT_STRETCH_NORMAL,
-        16,
-        L"",
-        &text_format
-      );
-      
-      
-      float block_left = 100.0f;
-      float block_right = 500.0f;
-      float block_width = block_left - block_right + 1;
-      float block_top = 300.0f;
-      
-      const char* text = "あいうえおああああああああああああああああああああああああああああああああああああああああああああああああああああああああ";
-      const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
-      int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
-
-      IDWriteTextLayout* pTextLayout = NULL;
-      
-      com_result = direct_write_factory->CreateTextLayout(
-            (const WCHAR*)text_utf16       // 文字列
-          , text_utf16_length        // 文字列の幅
-          ,text_format           // DWriteTextFormat
-          , (block_right - block_left + 1)    // 枠の幅
-          , 0    // 枠の高さ
-          , &pTextLayout
-      );
-
-
-      DWRITE_TEXT_METRICS tTextMetrics;
-
-      // Metricsの取得
-      pTextLayout->GetMetrics( &tTextMetrics );
-
-
-      D2D1_RECT_F text_rect;
-
-      text_rect = D2D1::RectF(
-                tTextMetrics.left                         // left
-              , tTextMetrics.top                          // top
-              , tTextMetrics.left + tTextMetrics.width    // right
-              , tTextMetrics.top  + tTextMetrics.height   // bottom
-          );
-      
-      printf("AAAAAA %f %f %f %f", tTextMetrics.left, tTextMetrics.top, tTextMetrics.width, tTextMetrics.height);
-
-      // 描画矩形
-      D2D1_RECT_F block_rect = D2D1::RectF(
-        block_left,
-        block_top,
-        block_right,
-        block_top + tTextMetrics.height - 1
-      );
-
-      // Create background brash
-      ID2D1SolidColorBrush* background_brush = NULL;
-      renderer->CreateSolidColorBrush(
-        D2D1::ColorF(0, 0, 1.0f, 1.0f),
-        &background_brush
-      );
-      assert(background_brush);
-
-
-
-/*
-      // 描画矩形
-      D2D1_RECT_F block_rect = D2D1::RectF(
-        (float)(text_rect.left),
-        (float)(text_rect.top),
-        (float)(text_rect.right),
-        (float)(text_rect.bottom)
-      );
-*/
-
-      // 線の幅
-      float fStrokeWidth = 2;
-
-      // 四角形の描画
-      renderer->FillRectangle(&block_rect, background_brush);
-      
-      // ブラシの破棄
-      background_brush->Release();
-
-      /*
-          テキストの描画
-      */
-      if ( NULL != text_brush && NULL !=text_format ) {
-          
-          std::wstring strText = L"Hello World!!";
-
-          // テキストの描画
-          renderer->DrawText(
-                    (const WCHAR*)text_utf16   // 文字列
-                  , text_utf16_length    // 文字数
-                  ,text_format
-                  , &block_rect
-                  , text_brush
-                  , D2D1_DRAW_TEXT_OPTIONS_NONE
-              );
-      }
-
-      // テキストフォーマットの破棄
-      if ( NULL !=text_format ) {
-         text_format->Release();
-      }
-
-      // ブラシの破棄
-      if ( NULL != text_brush ) {
-          text_brush->Release();
-      }
-      
-      direct_write_factory->Release();
-    }
-    
     // Call Cotton::Runtime->paint_nodes
     {
       int32_t scope = env->enter_scope(env);
@@ -428,9 +294,6 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     // Culcurate text height
     RECT culc_node_rect = {.left = parent_rect.left, .top = parent_rect.top, .right = parent_rect.right, .bottom = parent_rect.bottom};
     
-    // draw height
-    draw_height = culc_node_rect.bottom + 1;
-
     HRESULT com_result;
     
     IDWriteFactory* direct_write_factory = NULL;
@@ -448,22 +311,23 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
       L"",
       &text_format
     );
-
-    IDWriteTextLayout* pTextLayout = NULL;
     
+    // 
+    IDWriteTextLayout* text_layout = NULL;
     com_result = direct_write_factory->CreateTextLayout(
-          (const WCHAR*)text_utf16       // 文字列
-        , text_utf16_length        // 文字列の幅
-        ,text_format           // DWriteTextFormat
-        , draw_width    // 枠の幅
-        , 0    // 枠の高さ
-        , &pTextLayout
+      (const WCHAR*)text_utf16,
+      text_utf16_length,
+      text_format,
+      draw_width,
+      0,
+      &text_layout
     );
-
-    DWRITE_TEXT_METRICS tTextMetrics;
-    pTextLayout->GetMetrics( &tTextMetrics );
     
-    draw_height = tTextMetrics.height;
+    // Get text metrics
+    DWRITE_TEXT_METRICS text_metrics;
+    text_layout->GetMetrics( &text_metrics );
+    
+    draw_height = text_metrics.height;
   }
   
   stack[0].ival = draw_height;
@@ -584,19 +448,14 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     
     // draw width
     int32_t draw_width = parent_width;
-
+    
+    // COM result
     HRESULT com_result;
     
+    // DirectWrite factory
     IDWriteFactory* direct_write_factory = NULL;
     com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
 
-    // Create text brush
-    ID2D1SolidColorBrush* text_brush = NULL;
-    renderer->CreateSolidColorBrush(
-      color_f,
-      &text_brush
-    );
-      
     // Create text format
     IDWriteTextFormat* text_format = NULL;
     direct_write_factory->CreateTextFormat(
@@ -609,58 +468,28 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
       L"",
       &text_format
     );
-
-    IDWriteTextLayout* pTextLayout = NULL;
     
+    // Create text layout
+    IDWriteTextLayout* text_layout = NULL;
     com_result = direct_write_factory->CreateTextLayout(
           (const WCHAR*)text_utf16       // 文字列
         , text_utf16_length        // 文字列の幅
         ,text_format           // DWriteTextFormat
         , draw_width    // 枠の幅
         , 0    // 枠の高さ
-        , &pTextLayout
+        , &text_layout
+    );
+
+    // Create text brush
+    ID2D1SolidColorBrush* text_brush = NULL;
+    renderer->CreateSolidColorBrush(
+      color_f,
+      &text_brush
     );
     
-    D2D1_POINT_2F point = {.x = (float)parent_rect.left, .y = (float)parent_rect.top};
-    
-    renderer->DrawTextLayout(point, pTextLayout, text_brush);
-
-
-    // Font
-    LOGFONT lfFont;
-    lfFont.lfHeight     = 40;
-    lfFont.lfWidth = lfFont.lfEscapement =
-    lfFont.lfOrientation    = 0;
-    lfFont.lfWeight     = FW_BOLD;
-    lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-    lfFont.lfStrikeOut    = FALSE; 
-    lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-    lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-    lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-    lfFont.lfQuality    = DEFAULT_QUALITY;
-    lfFont.lfPitchAndFamily = 0;
-    lfFont.lfFaceName[0]    = '\0';
-    HFONT hFont = CreateFontIndirect(&lfFont);
-    SelectObject(hdc, hFont);
-    UINT drow_text_flag = DT_WORDBREAK;
-    drow_text_flag |= DT_LEFT;
-    
-    // Culcurate text height
-    RECT culc_node_rect = {.left = parent_rect.left, .top = parent_rect.top, .right = parent_rect.right, .bottom = parent_rect.bottom};
-    DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
-    
-    // draw height
-    int32_t draw_height = culc_node_rect.bottom + 1;
-
     // Draw text
-    {
-      SetTextColor(hdc, color);
-      SetBkMode(hdc , TRANSPARENT);
-      DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag);
-    }
-    
-    // Delete font handle
-    DeleteObject(hFont);
+    D2D1_POINT_2F point = {.x = (float)parent_rect.left, .y = (float)parent_rect.top};
+    renderer->DrawTextLayout(point, text_layout, text_brush);
   }
 
   return 0;
