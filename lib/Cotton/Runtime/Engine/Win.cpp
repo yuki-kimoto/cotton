@@ -39,6 +39,7 @@ static void alert(SPVM_ENV* env, const char* message) {
 
 struct COTTON_RUNTIME_PAINT_INFO {
   HDC hdc;
+  HWND window_handle;
 };
 
 int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
@@ -264,6 +265,7 @@ int32_t Cotton_Runtime_paint(SPVM_ENV* env, void* sv_self) {
       
       struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
       paint_info->hdc = hdc;
+      paint_info->window_handle = window_handle;
       
       void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
       if (e) { return e; }
