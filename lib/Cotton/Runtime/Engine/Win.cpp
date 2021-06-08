@@ -425,28 +425,8 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     // draw width
     int32_t draw_width = parent_width;
     
-    // Font
-    LOGFONT lfFont;
-    lfFont.lfHeight     = 40;
-    lfFont.lfWidth = lfFont.lfEscapement =
-    lfFont.lfOrientation    = 0;
-    lfFont.lfWeight     = FW_BOLD;
-    lfFont.lfItalic = lfFont.lfUnderline = FALSE;
-    lfFont.lfStrikeOut    = FALSE; 
-    lfFont.lfCharSet    = SHIFTJIS_CHARSET;
-    lfFont.lfOutPrecision   = OUT_DEFAULT_PRECIS;
-    lfFont.lfClipPrecision  = CLIP_DEFAULT_PRECIS;
-    lfFont.lfQuality    = DEFAULT_QUALITY;
-    lfFont.lfPitchAndFamily = 0;
-    lfFont.lfFaceName[0]    = '\0';
-    HFONT hFont = CreateFontIndirect(&lfFont);
-    SelectObject(hdc, hFont);
-    UINT drow_text_flag = DT_WORDBREAK;
-    drow_text_flag |= DT_LEFT;
-    
     // Culcurate text height
     RECT culc_node_rect = {.left = parent_rect.left, .top = parent_rect.top, .right = parent_rect.right, .bottom = parent_rect.bottom};
-    DrawText(hdc, (LPCWSTR)text_utf16, -1, &culc_node_rect, drow_text_flag | DT_CALCRECT);
     
     // draw height
     draw_height = culc_node_rect.bottom + 1;
