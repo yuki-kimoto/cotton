@@ -409,6 +409,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     const char* text = env->get_chars(env, sv_text);
     
     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+    int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
     RECT parent_rect = {.left = 0, .top = 0, .right = draw_width - 1};
 
@@ -448,6 +449,43 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, 
     
     // draw height
     draw_height = culc_node_rect.bottom + 1;
+
+    /*
+    HRESULT com_result;
+    
+    IDWriteFactory* direct_write_factory = NULL;
+    com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
+
+    // Create text format
+    IDWriteTextFormat* text_format = NULL;
+    direct_write_factory->CreateTextFormat(
+      L"Meiryo",
+      NULL,
+      DWRITE_FONT_WEIGHT_NORMAL,
+      DWRITE_FONT_STYLE_NORMAL,
+      DWRITE_FONT_STRETCH_NORMAL,
+      40,
+      L"",
+      &text_format
+    );
+
+    IDWriteTextLayout* pTextLayout = NULL;
+    
+    com_result = direct_write_factory->CreateTextLayout(
+          (const WCHAR*)text_utf16       // 文字列
+        , text_utf16_length        // 文字列の幅
+        ,text_format           // DWriteTextFormat
+        , draw_width    // 枠の幅
+        , 0    // 枠の高さ
+        , &pTextLayout
+    );
+
+    DWRITE_TEXT_METRICS tTextMetrics;
+    pTextLayout->GetMetrics( &tTextMetrics );
+    
+    draw_height = tTextMetrics.height;
+    
+    */
   }
   
   stack[0].ival = draw_height;
