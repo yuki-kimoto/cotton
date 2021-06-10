@@ -370,7 +370,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     if (e) { return e; }
     
     int32_t background_color;
-    D2D1::ColorF background_color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
+    D2D1::ColorF background_color_f = {0};
     if (sv_background_color) {
       float background_color_red = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
@@ -387,6 +387,7 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
     }
     else {
+      printf("GGGGGGGGGG\n");
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 0);
     }
 
@@ -397,7 +398,9 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
       &background_brush
     );
     assert(background_brush);
-
+    
+    printf("FFFFFFFFFF %d %d %d %d\n", draw_left, draw_top, draw_width, draw_height);
+    
     // 四角形の描画
     renderer->FillRectangle(&block_rect, background_brush);
     
