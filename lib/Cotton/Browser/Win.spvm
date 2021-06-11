@@ -8,6 +8,8 @@ package Cotton::Browser::Win {
   use Cotton::Runtime::Engine::Win;
   use Cotton::Runtime;
   
+  use Cotton::Color;
+  
   sub main : int ($args : string[]) {
     my $app = Cotton::App->new;
     
@@ -16,10 +18,18 @@ package Cotton::Browser::Win {
     
     # Add index page
     {
+      my $div1 = div("あああああ");
+      $div1->set_color(rgb(0x00, 0x00, 0xFF));
+      $div1->set_background_color(rgb(0x00, 0x33, 0x44));
+      
+      my $div2 = div("いいいいい");
+      $div2->set_color(rgb(0x00, 0x00, 0xFF));
+      $div2->set_background_color(rgb(0x00, 0x33, 0x44));
+      
       my $body = body(
-        "あいうえおあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"
+        $div1,
+        $div2
       );
-
       $body->set_color(rgb(0x00, 0x00, 0xFF));
       $body->set_background_color(rgb(0x00, 0x33, 0x44));
       

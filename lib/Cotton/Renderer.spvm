@@ -21,6 +21,10 @@ package Cotton::Renderer {
     {
       my $body = $page->body;
       
+      $body->{draw_left} = 0;
+      $body->{draw_top} = 0;
+      $body->{draw_width} = $viewport_width;
+      
       my $nodes = $self->convert_dom_to_excution_order($app, $body);
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
@@ -116,7 +120,6 @@ package Cotton::Renderer {
     }
 
     my $nodes = (Cotton::Node[])$node_list->to_array;
-    
     
     sort_object($nodes, 0, scalar @$nodes, sub : int ($self : self, $object1 : object, $object2 : object) {
       my $node1 = (Cotton::Node)$object1;
