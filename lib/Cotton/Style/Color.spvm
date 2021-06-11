@@ -1,12 +1,12 @@
-package Cotton::Color {
+package Cotton::Style::Color {
   
   has red : rw float;
   has green : rw float;
   has blue : rw float;
   has alpha : rw float;
   
-  sub new : Cotton::Color ($red : float, $green : float, $blue : float, $alpha : float) {
-    my $color = new Cotton::Color;
+  sub new : Cotton::Style::Color ($red : float, $green : float, $blue : float, $alpha : float) {
+    my $color = new Cotton::Style::Color;
     $color->{red} = $red;
     $color->{green} = $green;
     $color->{blue} = $blue;

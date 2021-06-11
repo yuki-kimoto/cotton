@@ -8,7 +8,7 @@ package Cotton::Browser::Win {
   use Cotton::Runtime::Engine::Win;
   use Cotton::Runtime;
   
-  use Cotton::Color;
+  use Cotton::Style::Color;
   
   sub main : int ($args : string[]) {
     my $app = Cotton::App->new;

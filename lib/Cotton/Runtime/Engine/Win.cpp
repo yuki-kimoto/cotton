@@ -366,22 +366,22 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
 
   // Draw block
   {
-    void* sv_background_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "background_color", "Cotton::Color", &e, __FILE__, __LINE__);
+    void* sv_background_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "background_color", "Cotton::Style::Color", &e, __FILE__, __LINE__);
     if (e) { return e; }
     
     int32_t background_color;
     D2D1::ColorF background_color_f = {0};
     if (sv_background_color) {
-      float background_color_red = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
+      float background_color_red = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float background_color_green = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "green", &e, __FILE__, __LINE__);
+      float background_color_green = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "green", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float background_color_blue = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "blue", &e, __FILE__, __LINE__);
+      float background_color_blue = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "blue", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float background_color_alpha = env->get_field_float_by_name(env, sv_background_color, "Cotton::Color", "alpha", &e, __FILE__, __LINE__);
+      float background_color_alpha = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "alpha", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
@@ -423,22 +423,22 @@ int32_t SPNATIVE__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_V
     int32_t parent_width = block_rect.right + 1;
     int32_t parent_height = block_rect.bottom + 1;
 
-    void* sv_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "color", "Cotton::Color", &e, __FILE__, __LINE__);
+    void* sv_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "color", "Cotton::Style::Color", &e, __FILE__, __LINE__);
     if (e) { return e; }
     
     int32_t color;
     D2D1::ColorF color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
     if (sv_color) {
-      float color_red = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "red", &e, __FILE__, __LINE__);
+      float color_red = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float color_green = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "green", &e, __FILE__, __LINE__);
+      float color_green = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "green", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float color_blue = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "blue", &e, __FILE__, __LINE__);
+      float color_blue = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "blue", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float color_alpha = env->get_field_float_by_name(env, sv_color, "Cotton::Color", "alpha", &e, __FILE__, __LINE__);
+      float color_alpha = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "alpha", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
       color = RGB(color_red, color_green, color_blue);
