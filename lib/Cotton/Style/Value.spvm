@@ -1,5 +1,6 @@
 package Cotton::Style::Value {
   use Cotton::Style::Util;
+  use Cotton::Style::Style::UnitNumber;
   
   private enum {
     INHERIT,
@@ -42,7 +43,7 @@ package Cotton::Style::Value {
     return $self;
   }
 
-  sub new_unit : Cotton::Style::Value ($unit : Cotton::Style::Unit) {
+  sub new_unit : Cotton::Style::Value ($unit : Cotton::Style::UnitNumber) {
     my $self = new Cotton::Style::Value;
     
     $self->{type} = UNIT();

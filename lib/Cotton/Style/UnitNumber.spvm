@@ -1,9 +1,9 @@
-package Cotton::Style::Unit {
+package Cotton::Style::UnitNumber {
   enum {
     PIXCEL,
     PERCENT,
   }
   
-  has value : number;
+  has number : number;
   has unit : int;
 }
