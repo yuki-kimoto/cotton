@@ -5,9 +5,7 @@ Cotton is a example of SPVM application on Windows.
 # Compile cotton
 
   # Compile Cotton Web Brwoer, DEBUG
-  spvmcc --ccflags '-DUNICODE' --lddlflags '-lgdi32 -lstdc++ -ld2d1 -lDwrite' -I lib -o Cotton Cotton::Browser::Win
-
-  spvmcc -f -o cotton.exe -c cotton.config -I lib/SPVM Cotton::Browser::Win
+  spvmcc -o cotton -c cotton.config -I lib/SPVM Cotton::Browser::Win
 
 # Old
 
