@@ -1,0 +1,27 @@
+class Cotton::Runtime {
+  use Unicode;
+  use List;
+  use Cotton::Interface;
+  use Cotton::PaintInfo;
+  use Cotton::Node;
+  use Cotton::Renderer;
+  
+  has interface : rw Cotton::Interface;
+  has app : rw Cotton::App;
+  
+  static method new : Cotton::Runtime ($options : object[]) {
+    my $options_h = Hash->new($options);
+    
+    my $self = new Cotton::Runtime;
+    
+    $self->{interface} = Cotton::Interface->new;
+
+    return $self;
+  }
+  
+  method paint_nodes : void($paint_info : Cotton::PaintInfo) {
+    my $renderer = Cotton::Renderer->new;
+    
+    $renderer->paint_nodes($self, $paint_info);
+  }
+}

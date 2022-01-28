@@ -1,0 +1,179 @@
+class Cotton : precompile {
+  use Cotton::Node;
+  use Cotton::Style;
+  use Cotton::Id;
+  use Cotton::Classes;
+  use List;
+  use Cotton::Style::Color;
+  
+  static method rgb : Cotton::Style::Color ($red : float, $green : float, $blue : float) {
+    my $color = Cotton::Style::Color->new($red, $green, $blue, 1);
+    return $color;
+  }
+
+  static method rgba : Cotton::Style::Color ($red : float, $green : float, $blue : float, $alpha : float) {
+    my $color = Cotton::Style::Color->new($red, $green, $blue, $alpha);
+    return $color;
+  }
+  
+  static method new_tag : Cotton::Node ($tag : string, $objects : object[] ...) {
+    
+    my $node = new Cotton::Node;
+    
+    my $style_count = 0;
+    my $id_count = 0;
+    my $classes_count = 0;
+    my $text_count = 0;
+    
+    my $child_node_list = List->new([]);
+    
+    my $objects_length = @$objects;
+    for (my $i = 0; $i < $objects_length; $i++) {
+      my $object = $objects->[$i];
+      
+      if ($object isa string) {
+        if ($text_count > 0) {
+          die "Specify only one text";
+        }
+        
+        $node->{text} = (string)$object;
+        
+        $text_count++;
+      }
+      elsif ($object isa Cotton::Style) {
+        if ($style_count > 0) {
+          die "Specify only one style";
+        }
+        
+        my $style = (Cotton::Style)$object;
+        
+        $node->{style} = $style->{value};
+        
+        $style_count++;
+      }
+      elsif ($object isa Cotton::Id) {
+        if ($id_count > 0) {
+          die "Specify only one class";
+        }
+        
+        my $id = (Cotton::Id)$object;
+        $node->{id} = $id->{value};
+        
+        $id_count++;
+      }
+      elsif ($object isa Cotton::Classes) {
+        if ($id_count > 0) {
+          die "Specify only one id";
+        }
+        
+        my $classes = (Cotton::Classes)$object;
+        $node->{classes} = $classes->{value};
+      
+        $classes_count++;
+      }
+      elsif ($object isa Cotton::Node) {
+        $child_node_list->push((Cotton::Node)$object);
+      }
+      else {
+        die "Invalid argument";
+      }
+    }
+    
+    my $child_node_list_length = $child_node_list->length;
+    for (my $i = 0; $i < $child_node_list_length; $i++) {
+      my $child_node = (Cotton::Node)$child_node_list->get($i);
+      
+      if ($i == 0) {
+        $node->{first} = $child_node;
+        $child_node->{moresib} = 1;
+      }
+      
+      if ($i < $child_node_list_length - 1) {
+        my $next_child_node = (Cotton::Node)$child_node_list->get($i + 1);
+        $child_node->{sibparent} = $next_child_node;
+        $child_node->{moresib} = 1;
+      }
+      elsif ($i == $child_node_list_length - 1) {
+        $child_node->{sibparent} = $node;
+        $node->{last} = $child_node;
+      }
+    }
+    
+    return $node;
+  }
+  
+  static method body : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("body", $objects);
+  }
+
+  static method h1 : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("h1", $objects);
+  }
+
+  static method h2 : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("h2", $objects);
+  }
+
+  static method h3 : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("h3", $objects);
+  }
+
+  static method h4 : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("h4", $objects);
+  }
+
+  static method h5 : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("h5", $objects);
+  }
+
+  static method h6 : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("h6", $objects);
+  }
+
+  static method div : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("div", $objects);
+  }
+  
+  static method span : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("span", $objects);
+  }
+
+  static method ul : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("ul", $objects);
+  }
+
+  static method ol : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("ol", $objects);
+  }
+
+  static method li : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("li", $objects);
+  }
+  static method a : Cotton::Node ($objects : object[] ...) {
+    return &new_tag("a", $objects);
+  }
+
+  static method id : Cotton::Id ($id_value : string) {
+    my $id = new Cotton::Id;
+    
+    $id->{value} = $id_value;
+    
+    return $id;
+  }
+  
+  static method class : Cotton::Classes ($class_values : string[] ...) {
+    
+    my $classes = new Cotton::Classes;
+    $classes->{value} = $class_values;
+    
+    return $classes;
+  }
+
+  static method style : Cotton::Style ($style_key_values : object[]) {
+    my $style_key_values_h = Hash->new($style_key_values);
+    my $style = new Cotton::Style;
+    $style->{value} = $style_key_values_h;
+    
+    return $style;
+  }
+}

@@ -1,0 +1,54 @@
+class Cotton::Style::Value {
+  use Cotton::Style::Util;
+  use Cotton::Style::Style::UnitNumber;
+  
+  private enum {
+    INHERIT,
+    AUTO,
+    COLOR,
+    UNIT,
+  }
+  
+  has type : int;
+  has value : object;
+  
+  static method new : Cotton::Style::Value () {
+    my $self = new Cotton::Style::Value;
+    
+    return $self;
+  }
+  
+  static method new_inherit : Cotton::Style::Value () {
+    my $self = new Cotton::Style::Value;
+    
+    $self->{type} = INHERIT();
+    
+    return $self;
+  }
+  
+  static method new_auto : Cotton::Style::Value () {
+    my $self = new Cotton::Style::Value;
+    
+    $self->{type} = AUTO();
+    
+    return $self;
+  }
+
+  static method new_color : Cotton::Style::Value ($color : Cotton::Color) {
+    my $self = new Cotton::Style::Value;
+    
+    $self->{type} = COLOR();
+    $self->{value} = $color;
+    
+    return $self;
+  }
+
+  static method new_unit : Cotton::Style::Value ($unit : Cotton::Style::UnitNumber) {
+    my $self = new Cotton::Style::Value;
+    
+    $self->{type} = UNIT();
+    $self->{value} = $unit;
+    
+    return $self;
+  }
+}

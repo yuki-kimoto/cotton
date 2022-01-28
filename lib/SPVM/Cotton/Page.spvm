@@ -1,0 +1,11 @@
+class Cotton::Page {
+  has path : rw string;
+  has title : rw string;
+  has body : rw Cotton::Node;
+  
+  static method new : Cotton::Page () {
+    my $page = new Cotton::Page;
+    
+    return $page;
+  }
+}

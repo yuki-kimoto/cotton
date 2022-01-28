@@ -1,0 +1,17 @@
+class Cotton::Interface {
+  use Cotton::Interface::I_paint_node;
+  use Cotton::Interface::I_get_viewport_width;
+  use Cotton::Interface::I_get_viewport_height;
+  use Cotton::Interface::I_run_app;
+  use Cotton::Interface::I_calc_text_height;
+  
+  has paint_node : rw Cotton::Interface::I_paint_node;
+  has get_viewport_width : rw Cotton::Interface::I_get_viewport_width;
+  has get_viewport_height : rw Cotton::Interface::I_get_viewport_height;
+  has run_app : rw Cotton::Interface::I_run_app;
+  has calc_text_height : rw Cotton::Interface::I_calc_text_height;
+  
+  static method new : Cotton::Interface () {
+    return new Cotton::Interface;
+  }
+}

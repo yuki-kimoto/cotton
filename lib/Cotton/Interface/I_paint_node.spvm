@@ -1,6 +1,0 @@
-package Cotton::Interface::I_paint_node : callback_t {
-  use Cotton::App;
-  use Cotton::Node;
-  
-  sub : void ($self : self, $paint_info : object, $node : Cotton::Node);
-}

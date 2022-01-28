@@ -1,0 +1,27 @@
+class Cotton::Style::Color {
+  
+  has red : rw float;
+  has green : rw float;
+  has blue : rw float;
+  has alpha : rw float;
+  
+  static method new : Cotton::Style::Color ($red : float, $green : float, $blue : float, $alpha : float) {
+    my $color = new Cotton::Style::Color;
+    $color->{red} = $red;
+    $color->{green} = $green;
+    $color->{blue} = $blue;
+    $color->{alpha} = $alpha;
+    
+    return $color;
+  }
+  
+  method get_colors : float[] () {
+    my $colors = new float[4];
+    $colors->[0] = $self->{red};
+    $colors->[1] = $self->{green};
+    $colors->[2] = $self->{blue};
+    $colors->[3] = $self->{alpha};
+    
+    return $colors;
+  }
+}

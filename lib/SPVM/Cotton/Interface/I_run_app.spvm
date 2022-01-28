@@ -1,0 +1,5 @@
+class Cotton::Interface::I_run_app : callback_t {
+  use Cotton::App;
+  
+  method : void ($app : Cotton::App);
+}

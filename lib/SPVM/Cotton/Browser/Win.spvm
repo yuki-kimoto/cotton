@@ -1,0 +1,56 @@
+class Cotton::Browser::Win {
+  use Cotton::App;
+  use Cotton::Node;
+  use Cotton as Ct;
+  use List;
+  use Cotton::Page;
+  
+  use Cotton::Runtime::Engine::Win;
+  use Cotton::Runtime;
+  
+  use Cotton::Style::Color;
+  
+  static method main : int ($start_file : string, $args : string[]) {
+    my $app = Cotton::App->new;
+    
+    # Application name
+    $app->set_name("コットン");
+    
+    # Add index page
+    {
+      my $div1 = Ct->div("あああああ");
+      $div1->set_color(Ct->rgb(0x00, 0x00, 0xFF));
+      $div1->set_background_color(Ct->rgb(0x00, 0x33, 0x44));
+      
+      my $div2 = Ct->div("いいいいい");
+      $div2->set_color(Ct->rgb(0x00, 0x00, 0xFF));
+      $div2->set_background_color(Ct->rgb(0x00, 0x33, 0x44));
+      
+      my $body = Ct->body(
+        $div1,
+        $div2
+      );
+      $body->set_color(Ct->rgb(0x00, 0x00, 0xFF));
+      $body->set_background_color(Ct->rgb(0x00, 0x33, 0x44));
+      
+      # Create index page
+      my $page = Cotton::Page->new;
+      $page->set_path("/");
+      $page->set_body($body);
+      $app->push_page($page);
+
+      # Set current page;
+      $app->set_current_page($page);
+    }
+    
+    # Create runtime
+    my $runtime = Cotton::Runtime->new({});
+    
+    # Create engine
+    my $engine = Cotton::Runtime::Engine::Win->new({});
+    $engine->setup_runtime($runtime);
+    
+    # Execute application
+    $runtime->interface->run_app->($app);
+  }
+}

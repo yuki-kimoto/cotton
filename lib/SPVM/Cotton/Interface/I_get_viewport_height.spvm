@@ -1,0 +1,3 @@
+class Cotton::Interface::I_get_viewport_height : callback_t {
+  method : int ();
+}
