@@ -14,23 +14,23 @@ int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, const char* stri
   
   void* sv_string = env->new_string_nolen(env, string);
   
-  void* sv_string_u16 = NULL;
+  void* sv_string_utf8_to_utf16 = NULL;
   {
     stack[0].oval = sv_string;
-    e = env->call_class_method_by_name(env, "Unicode", "u16", "short[](string)", stack, __FILE__, __LINE__);
+    e = env->call_class_method_by_name(env, "Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
     if (e) { return NULL; }
-    sv_string_u16 = stack[0].oval;
+    sv_string_utf8_to_utf16 = stack[0].oval;
   }
   
-  int16_t* string_u16 = env->get_elems_short(env, sv_string_u16);
+  int16_t* string_utf8_to_utf16 = env->get_elems_short(env, sv_string_utf8_to_utf16);
   
-  return string_u16;
+  return string_utf8_to_utf16;
 }
 
 void COTTON_RUNTIME_ENGINE_WIN_alert(SPVM_ENV* env, const char* message) {
-  int16_t* message_u16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, message);
+  int16_t* message_utf8_to_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, message);
   
-  MessageBoxW(NULL, (LPCWSTR)message_u16, TEXT("Alert"), MB_OK);
+  MessageBoxW(NULL, (LPCWSTR)message_utf8_to_utf16, TEXT("Alert"), MB_OK);
 }
 
 static void alert(SPVM_ENV* env, const char* message) {
@@ -68,16 +68,16 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
       sv_app_name = stack[0].oval;
     }
     
-    void* sv_app_name_u16 = NULL;
+    void* sv_app_name_utf8_to_utf16 = NULL;
     {
       stack[0].oval = sv_app_name;
-      e = env->call_class_method_by_name(env, "Unicode", "u16", "short[](string)", stack, __FILE__, __LINE__);
+      e = env->call_class_method_by_name(env, "Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
       if (e) { return e; }
-      sv_app_name_u16 = stack[0].oval;
+      sv_app_name_utf8_to_utf16 = stack[0].oval;
     }
-    int16_t* app_name_u16 = env->get_elems_short(env, sv_app_name_u16);
+    int16_t* app_name_utf8_to_utf16 = env->get_elems_short(env, sv_app_name_utf8_to_utf16);
     
-    SetWindowTextW(window_handle, (LPCWSTR)app_name_u16);
+    SetWindowTextW(window_handle, (LPCWSTR)app_name_utf8_to_utf16);
   }
   
   // Draw parent area
