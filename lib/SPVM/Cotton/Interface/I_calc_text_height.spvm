@@ -1,5 +1,0 @@
-class Cotton::Interface::I_calc_text_height : callback_t {
-  use Cotton::App;
-  
-  method : int ($paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]);
-}

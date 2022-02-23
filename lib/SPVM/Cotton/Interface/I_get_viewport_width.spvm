@@ -1,3 +1,0 @@
-class Cotton::Interface::I_get_viewport_width : callback_t {
-  method : int ();
-}

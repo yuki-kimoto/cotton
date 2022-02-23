@@ -50,7 +50,6 @@ class Cotton::Browser::Win {
     
     # Create engine
     my $engine = Cotton::Runtime::Engine::Win->new({});
-    $engine->setup_runtime($runtime);
     
     # API
     my $cotton_api_win = Cotton::API::Win->new;

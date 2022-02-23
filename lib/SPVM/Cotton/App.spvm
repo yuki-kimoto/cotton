@@ -1,7 +1,6 @@
 class Cotton::App : precompile {
   use Unicode;
   use List;
-  use Cotton::Interface;
   use Cotton::PaintInfo;
   use Cotton::Node;
   use Cotton::Renderer;

@@ -1,12 +1,10 @@
 class Cotton::Runtime {
   use Unicode;
   use List;
-  use Cotton::Interface;
   use Cotton::PaintInfo;
   use Cotton::Node;
   use Cotton::Renderer;
   
-  has interface : rw Cotton::Interface;
   has app : rw Cotton::App;
   has api : rw Cotton::API;
   static method new : Cotton::Runtime ($options : object[]) {
@@ -14,8 +12,6 @@ class Cotton::Runtime {
     
     my $self = new Cotton::Runtime;
     
-    $self->{interface} = Cotton::Interface->new;
-
     return $self;
   }
   
