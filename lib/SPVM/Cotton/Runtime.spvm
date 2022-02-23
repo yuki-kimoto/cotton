@@ -8,7 +8,7 @@ class Cotton::Runtime {
   
   has interface : rw Cotton::Interface;
   has app : rw Cotton::App;
-  
+  has api : rw Cotton::API;
   static method new : Cotton::Runtime ($options : object[]) {
     my $options_h = Hash->new($options);
     

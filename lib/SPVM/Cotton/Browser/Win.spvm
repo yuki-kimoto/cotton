@@ -7,6 +7,8 @@ class Cotton::Browser::Win {
   
   use Cotton::Runtime::Engine::Win;
   use Cotton::Runtime;
+
+  use Cotton::API::Win;
   
   use Cotton::Style::Color;
   
@@ -50,6 +52,12 @@ class Cotton::Browser::Win {
     my $engine = Cotton::Runtime::Engine::Win->new({});
     $engine->setup_runtime($runtime);
     
+    # API
+    my $cotton_api_win = Cotton::API::Win->new;
+    $cotton_api_win->set_engine($engine);
+    $cotton_api_win->set_runtime($runtime);
+    $runtime->set_api($cotton_api_win);
+
     # Execute application
     $runtime->interface->run_app->($app);
   }

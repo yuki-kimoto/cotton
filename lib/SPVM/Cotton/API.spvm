@@ -1,54 +1,11 @@
-class Cotton::API {
-  implement Cotton::Interface2;
-  
+class Cotton::API : interface_t {
   use Cotton::App;
   use Cotton::Node;
+  use Cotton::PaintInfo;
   
-  has engine : rw Cotton::Runtime::Engine::Win;
-  has runtime : rw Cotton::Runtime;
-  
-  static method new : Cotton::API () {
-    return new Cotton::API;
-  }
-  
-  method get_viewport_height : int () {
-    
-    my $engine = $self->engine;
-    
-    return $engine->get_viewport_height;
-  }
-  
-  method get_viewport_width : int () {
-
-    my $engine = $self->engine;
-
-    return $engine->get_viewport_width;
-  }
-  
-  method paint_node : void ($paint_info : object, $node : Cotton::Node) {
-
-    my $engine = $self->engine;
-
-    $engine->paint_node($paint_info, $node);
-  }
-  
-  method run_app : void ($app : Cotton::App) {
-    my $runtime = $self->runtime;
-    my $engine = $self->engine;
-
-    $runtime->set_app($app);
-    
-    $engine->set_runtime($runtime);
-    $engine->set_app($app);
-    
-    $engine->create_main_window;
-    
-    $engine->run;
-  }
-  
-  method calc_text_height : int ($paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]) {
-    my $engine = $self->engine;
-    
-    return $engine->calc_text_height($paint_info, $text, $width, $font_styles);
-  }
+  method get_viewport_height : int ();
+  method get_viewport_width : int ();
+  method paint_node : void ($paint_info : object, $node : Cotton::Node);
+  method run_app : void ($app : Cotton::App);
+  method calc_text_height : int ($paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]);
 }
