@@ -3,10 +3,13 @@ class Cotton::Runtime::Engine::Win {
   use List;
   use Cotton::App;
   use Cotton::Runtime::Engine::Win::WindowHandle;
+  use Cotton::API;
+  use Cotton::Interface2;
   
   has app : rw Cotton::App;
   has runtime : rw Cotton::Runtime;
   has window_handle : Cotton::Runtime::Engine::Win::WindowHandle;
+  has api : rw Cotton::Interface2;
   
   static method new : Cotton::Runtime::Engine::Win($options : object[]) {
     my $self = new Cotton::Runtime::Engine::Win;
@@ -43,6 +46,12 @@ class Cotton::Runtime::Engine::Win {
     $runtime->interface->set_calc_text_height([$engine : Cotton::Runtime::Engine::Win] method : int ($paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]) {
       return $engine->calc_text_height($paint_info, $text, $width, $font_styles);
     });
+    
+    # API
+    my $cotton_api = Cotton::API->new;
+    $cotton_api->set_engine($self);
+    $cotton_api->set_runtime($runtime);
+    $self->set_api($cotton_api);
   }
 
   native method create_main_window : void ();
