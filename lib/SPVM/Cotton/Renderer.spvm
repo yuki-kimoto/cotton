@@ -15,8 +15,8 @@ class Cotton::Renderer {
     
     my $page = $app->current_page;
     
-    my $viewport_width = $runtime->interface->get_viewport_width->();
-    my $viewport_height = $runtime->interface->get_viewport_height->();
+    my $viewport_width = $runtime->api->get_viewport_width();
+    my $viewport_height = $runtime->api->get_viewport_height();
     
     {
       my $body = $page->body;
@@ -31,11 +31,11 @@ class Cotton::Renderer {
         $node->{draw_left} = 0;
         $node->{draw_top} = 0;
         $node->{draw_width} = $viewport_width;
-        my $draw_height = $runtime->interface->calc_text_height->($paint_info, $node->{text}, $viewport_width, undef);
+        my $draw_height = $runtime->api->calc_text_height($paint_info, $node->{text}, $viewport_width, undef);
         
         $node->{draw_height} = $draw_height;
         
-        $runtime->interface->paint_node->($paint_info, $node);
+        $runtime->api->paint_node($paint_info, $node);
       }
     }
 
@@ -66,7 +66,7 @@ class Cotton::Renderer {
       for (my $i = 0; $i < $node_list_length; $i++) {
         my $node = (Cotton::Node)$node_list->get($i);
         warn "AAAAAAA";
-        $runtime->interface->paint_node->($paint_info, $node);
+        $runtime->api->paint_node($paint_info, $node);
       }
     }
   }

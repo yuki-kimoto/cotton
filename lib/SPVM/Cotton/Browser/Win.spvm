@@ -59,6 +59,6 @@ class Cotton::Browser::Win {
     $runtime->set_api($cotton_api_win);
 
     # Execute application
-    $runtime->interface->run_app->($app);
+    $runtime->api->run_app($app);
   }
 }
