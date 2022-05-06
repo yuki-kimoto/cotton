@@ -1,5 +1,5 @@
 class Cotton::API::Win {
-  implement Cotton::API;
+  interface Cotton::API;
   
   use Cotton::App;
   use Cotton::Node;
