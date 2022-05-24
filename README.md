@@ -9,4 +9,4 @@ Cotton is a example of SPVM application on Windows.
 
 # Environment
 
-Need "Windows 10 SDK"
+Need to download "Windows 10 SDK" to use Direct3D 12
