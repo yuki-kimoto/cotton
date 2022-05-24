@@ -255,6 +255,49 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
   env->set_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
   if (e) { return e; }
   
+  {
+    {
+      // Swap chain descriptor
+      DXGI_SWAP_CHAIN_DESC sd;
+      ZeroMemory( &sd, sizeof( sd ) );
+      sd.BufferCount = 1;
+      sd.BufferDesc.Width = 640;
+      sd.BufferDesc.Height = 480;
+      sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+      sd.BufferDesc.RefreshRate.Numerator = 60;
+      sd.BufferDesc.RefreshRate.Denominator = 1;
+      sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+      sd.OutputWindow = window_handle;
+      sd.SampleDesc.Count = 1;
+      sd.SampleDesc.Quality = 0;
+      sd.Windowed = TRUE;
+
+      D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
+      UINT               numFeatureLevelsRequested = 1;
+      D3D_FEATURE_LEVEL  FeatureLevelsSupported;
+      
+      // Create a device and a swap chane
+      HRESULT hr;
+      IDXGISwapChain* g_pSwapChain;
+      ID3D11Device* g_pd3dDevice;
+      ID3D11DeviceContext* g_pImmediateContext;
+      if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
+                      D3D_DRIVER_TYPE_HARDWARE, 
+                      NULL, 
+                      0,
+                      &FeatureLevelsRequested, 
+                      numFeatureLevelsRequested, 
+                      D3D11_SDK_VERSION, 
+                      &sd, 
+                      &g_pSwapChain, 
+                      &g_pd3dDevice, 
+                      &FeatureLevelsSupported,
+                      &g_pImmediateContext )))
+      {
+          return hr;
+      }    
+    }
+  }
   return 0;
 }
 
