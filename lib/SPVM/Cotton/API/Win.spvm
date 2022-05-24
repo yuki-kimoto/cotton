@@ -1,5 +1,5 @@
 class Cotton::API::Win {
-  implement Cotton::API;
+  interface Cotton::API;
   
   use Cotton::App;
   use Cotton::Node;
@@ -8,7 +8,13 @@ class Cotton::API::Win {
   has runtime : rw Cotton::Runtime;
   
   static method new : Cotton::API::Win () {
-    return new Cotton::API::Win;
+    warn "EEEE";
+    
+    my $win = new Cotton::API::Win;
+    
+    warn "FFFFFF";
+    
+    return $win;
   }
   
   method get_viewport_height : int () {

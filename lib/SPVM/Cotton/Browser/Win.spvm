@@ -51,11 +51,18 @@ class Cotton::Browser::Win {
     # Create engine
     my $engine = Cotton::Runtime::Engine::Win->new({});
     
+    
+    print("AAAAAAAAA");
+    
     # API
     my $cotton_api_win = Cotton::API::Win->new;
+    print("PPPP");
+    print("QQQQ");
     $cotton_api_win->set_engine($engine);
+    print("RRRR");
     $cotton_api_win->set_runtime($runtime);
     $runtime->set_api($cotton_api_win);
+
 
     # Execute application
     $runtime->api->run_app($app);
