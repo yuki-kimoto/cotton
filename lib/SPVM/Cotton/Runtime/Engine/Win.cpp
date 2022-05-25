@@ -198,9 +198,16 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__run(SPVM_ENV* env, SPVM_VALUE* stack
   
   // Get and dispatch message
   MSG message;
-  while(GetMessage(&message , NULL , 0 , 0)) {
-    TranslateMessage(&message);
-    DispatchMessage(&message);
+  while (1) {
+    if (PeekMessage(&message , NULL , 0 , 0, PM_NOREMOVE)) {
+      if (GetMessage(&message , NULL , 0 , 0)) {
+        TranslateMessage(&message);
+        DispatchMessage(&message);
+      }
+      else {
+        break;
+      }
+    }
   }
   
   return 0;
