@@ -590,8 +590,45 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
                       &FeatureLevelsSupported,
                       &g_pImmediateContext )))
       {
-          return hr;
-      }    
+        return hr;
+      }
+      
+      // Vertex buffer
+      ID3D11Buffer*      g_pVertexBuffer;
+      
+      // Supply the actual vertex data.
+      float verticesCombo[] = {
+        
+        0.0f, 0.5f, 0.5f,
+        0.0f, 0.0f, 0.5f,
+        
+        0.5f, -0.5f, 0.5f,
+        0.5f, 0.0f, 0.0f,
+        
+        -0.5f, -0.5f, 0.5f,
+        0.0f, 0.5f, 0.0f,
+      };
+
+      // Buffer description
+      D3D11_BUFFER_DESC bufferDesc;
+      bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
+      bufferDesc.ByteWidth        = (sizeof( float ) * 3) * 3;
+      bufferDesc.BindFlags        = D3D11_BIND_VERTEX_BUFFER;
+      bufferDesc.CPUAccessFlags   = 0;
+      bufferDesc.MiscFlags        = 0;
+      
+      // Vertex data
+      D3D11_SUBRESOURCE_DATA InitData;
+      InitData.pSysMem = verticesCombo;
+      InitData.SysMemPitch = 0;
+      InitData.SysMemSlicePitch = 0;
+      
+      // Create vertex buffer
+      hr = g_pd3dDevice->CreateBuffer( &bufferDesc, &InitData, &g_pVertexBuffer );
+      
+      if (FAILED(hr)) {
+        return hr;
+      }
     }
   }
   return 0;
