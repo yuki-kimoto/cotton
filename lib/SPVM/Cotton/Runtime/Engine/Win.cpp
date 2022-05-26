@@ -214,101 +214,6 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__run(SPVM_ENV* env, SPVM_VALUE* stack
   return 0;
 }
 
-int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
-  
-  void* sv_self = stack[0].oval;
-  
-  int32_t e = 0;
-  
-  HINSTANCE instance_handle = GetModuleHandle(NULL);
-  
-  // Register Window Class
-  WNDCLASS winc;
-  winc.style = CS_HREDRAW | CS_VREDRAW;
-  winc.lpfnWndProc = COTTON_RUNTIME_ENGINE_WIN_WndProc;
-  winc.cbClsExtra = winc.cbWndExtra = 0;
-  winc.hInstance = instance_handle;
-  winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
-  winc.hCursor = LoadCursor(NULL , IDC_ARROW);
-  winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-  winc.lpszMenuName = NULL;
-  winc.lpszClassName = TEXT("main_window");
-  if (!RegisterClass(&winc)) { return env->die(env, "Can't register window class"); };
-
-  // Create Main Window
-  const int16_t* window_class_name = (const int16_t*)TEXT("main_window");
-  const int16_t* window_title = NULL;
-  DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
-  int window_x = CW_USEDEFAULT;
-  int window_y = CW_USEDEFAULT;
-  int window_width = CW_USEDEFAULT;
-  int window_heigth = CW_USEDEFAULT;
-  HWND window_parent_window_handle = NULL;
-  HMENU window_id = NULL;
-  void** wm_create_args = (void**)calloc(2, sizeof(void*));
-  wm_create_args[0] = env;
-  wm_create_args[1] = sv_self;
-  void* window_wm_create_lparam = (void*)wm_create_args;
-  HWND window_handle = CreateWindow(
-      (LPCWSTR)window_class_name, (LPCWSTR)window_title,
-      window_style,
-      window_x, window_y,
-      window_width, window_heigth,
-      window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
-  );
-  
-  void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
-  if (e) { return e; }
-  
-  env->set_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
-  if (e) { return e; }
-  
-  {
-    {
-      // Swap chain descriptor
-      DXGI_SWAP_CHAIN_DESC sd;
-      ZeroMemory( &sd, sizeof( sd ) );
-      sd.BufferCount = 1;
-      sd.BufferDesc.Width = 640;
-      sd.BufferDesc.Height = 480;
-      sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-      sd.BufferDesc.RefreshRate.Numerator = 60;
-      sd.BufferDesc.RefreshRate.Denominator = 1;
-      sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-      sd.OutputWindow = window_handle;
-      sd.SampleDesc.Count = 1;
-      sd.SampleDesc.Quality = 0;
-      sd.Windowed = TRUE;
-
-      D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
-      UINT               numFeatureLevelsRequested = 1;
-      D3D_FEATURE_LEVEL  FeatureLevelsSupported;
-      
-      // Create a device and a swap chane
-      HRESULT hr;
-      IDXGISwapChain* g_pSwapChain;
-      ID3D11Device* g_pd3dDevice;
-      ID3D11DeviceContext* g_pImmediateContext;
-      if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
-                      D3D_DRIVER_TYPE_HARDWARE, 
-                      NULL, 
-                      0,
-                      &FeatureLevelsRequested, 
-                      numFeatureLevelsRequested, 
-                      D3D11_SDK_VERSION, 
-                      &sd, 
-                      &g_pSwapChain, 
-                      &g_pd3dDevice, 
-                      &FeatureLevelsSupported,
-                      &g_pImmediateContext )))
-      {
-          return hr;
-      }    
-    }
-  }
-  return 0;
-}
-
 int32_t SPVM__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t e;
@@ -596,4 +501,100 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* env, S
   
   return 0;
 }
+
+int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  void* sv_self = stack[0].oval;
+  
+  int32_t e = 0;
+  
+  HINSTANCE instance_handle = GetModuleHandle(NULL);
+  
+  // Register Window Class
+  WNDCLASS winc;
+  winc.style = CS_HREDRAW | CS_VREDRAW;
+  winc.lpfnWndProc = COTTON_RUNTIME_ENGINE_WIN_WndProc;
+  winc.cbClsExtra = winc.cbWndExtra = 0;
+  winc.hInstance = instance_handle;
+  winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
+  winc.hCursor = LoadCursor(NULL , IDC_ARROW);
+  winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+  winc.lpszMenuName = NULL;
+  winc.lpszClassName = TEXT("main_window");
+  if (!RegisterClass(&winc)) { return env->die(env, "Can't register window class"); };
+
+  // Create Main Window
+  const int16_t* window_class_name = (const int16_t*)TEXT("main_window");
+  const int16_t* window_title = NULL;
+  DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+  int window_x = CW_USEDEFAULT;
+  int window_y = CW_USEDEFAULT;
+  int window_width = CW_USEDEFAULT;
+  int window_heigth = CW_USEDEFAULT;
+  HWND window_parent_window_handle = NULL;
+  HMENU window_id = NULL;
+  void** wm_create_args = (void**)calloc(2, sizeof(void*));
+  wm_create_args[0] = env;
+  wm_create_args[1] = sv_self;
+  void* window_wm_create_lparam = (void*)wm_create_args;
+  HWND window_handle = CreateWindow(
+      (LPCWSTR)window_class_name, (LPCWSTR)window_title,
+      window_style,
+      window_x, window_y,
+      window_width, window_heigth,
+      window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
+  );
+  
+  void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  
+  env->set_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
+  if (e) { return e; }
+  
+  {
+    {
+      // Swap chain descriptor
+      DXGI_SWAP_CHAIN_DESC sd;
+      ZeroMemory( &sd, sizeof( sd ) );
+      sd.BufferCount = 1;
+      sd.BufferDesc.Width = 640;
+      sd.BufferDesc.Height = 480;
+      sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+      sd.BufferDesc.RefreshRate.Numerator = 60;
+      sd.BufferDesc.RefreshRate.Denominator = 1;
+      sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+      sd.OutputWindow = window_handle;
+      sd.SampleDesc.Count = 1;
+      sd.SampleDesc.Quality = 0;
+      sd.Windowed = TRUE;
+
+      D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
+      UINT               numFeatureLevelsRequested = 1;
+      D3D_FEATURE_LEVEL  FeatureLevelsSupported;
+      
+      // Create a device and a swap chane
+      HRESULT hr;
+      IDXGISwapChain* g_pSwapChain;
+      ID3D11Device* g_pd3dDevice;
+      ID3D11DeviceContext* g_pImmediateContext;
+      if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
+                      D3D_DRIVER_TYPE_HARDWARE, 
+                      NULL, 
+                      0,
+                      &FeatureLevelsRequested, 
+                      numFeatureLevelsRequested, 
+                      D3D11_SDK_VERSION, 
+                      &sd, 
+                      &g_pSwapChain, 
+                      &g_pd3dDevice, 
+                      &FeatureLevelsSupported,
+                      &g_pImmediateContext )))
+      {
+          return hr;
+      }    
+    }
+  }
+  return 0;
+}
+
 }
