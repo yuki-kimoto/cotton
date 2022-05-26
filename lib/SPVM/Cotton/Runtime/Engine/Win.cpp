@@ -502,6 +502,11 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* env, S
   return 0;
 }
 
+struct Vertex {
+        float pos[ 3 ];
+        float col[ 4 ];
+};
+ 
 int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* sv_self = stack[0].oval;
@@ -597,16 +602,11 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
       ID3D11Buffer*      g_pVertexBuffer;
       
       // Supply the actual vertex data.
-      float verticesCombo[] = {
-        
-        0.0f, 0.5f, 0.5f,
-        0.0f, 0.0f, 0.5f,
-        
-        0.5f, -0.5f, 0.5f,
-        0.5f, 0.0f, 0.0f,
-        
-        -0.5f, -0.5f, 0.5f,
-        0.0f, 0.5f, 0.0f,
+      Vertex g_VertexList[] = {
+        { { -0.5f,  0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { {  0.5f, -0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+        { { -0.5f, -0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { {  0.5f,  0.5f, 0.5f }, { 1.0f, 1.0f, 0.0f, 1.0f } }
       };
 
       // Buffer description
@@ -619,7 +619,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
       
       // Vertex data
       D3D11_SUBRESOURCE_DATA InitData;
-      InitData.pSysMem = verticesCombo;
+      InitData.pSysMem = g_VertexList;
       InitData.SysMemPitch = 0;
       InitData.SysMemSlicePitch = 0;
       
