@@ -5,6 +5,7 @@ class Cotton::Renderer {
   use Cotton as Ct;
   
   use Fn;
+  use Sort;
   
   static method new : Cotton::Renderer () {
     return new Cotton::Renderer;
@@ -121,7 +122,7 @@ class Cotton::Renderer {
 
     my $nodes = (Cotton::Node[])$node_list->to_array;
     
-    Fn->sort_object($nodes, 0, scalar @$nodes, method : int ($object1 : object, $object2 : object) {
+    Sort->sort_object($nodes, 0, scalar @$nodes, method : int ($object1 : object, $object2 : object) {
       my $node1 = (Cotton::Node)$object1;
       my $node2 = (Cotton::Node)$object2;
       

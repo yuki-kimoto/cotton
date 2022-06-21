@@ -10,33 +10,32 @@
 #include <iostream>
 
 extern "C" {
-int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, const char* string) {
+int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* string) {
   int32_t e;
-  SPVM_VALUE stack[256];
   
-  void* sv_string = env->new_string_nolen(env, string);
+  void* sv_string =  env->new_string_nolen(env, stack, string);
   
   void* sv_string_utf8_to_utf16 = NULL;
   {
     stack[0].oval = sv_string;
-    e = env->call_class_method_by_name(env, "Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+    e = env->call_class_method_by_name(env, stack, "Unicode", "utf8_to_utf16", "short[](string)", __FILE__, __LINE__);
     if (e) { return NULL; }
     sv_string_utf8_to_utf16 = stack[0].oval;
   }
   
-  int16_t* string_utf8_to_utf16 = env->get_elems_short(env, sv_string_utf8_to_utf16);
+  int16_t* string_utf8_to_utf16 = env->get_elems_short(env, stack, sv_string_utf8_to_utf16);
   
   return string_utf8_to_utf16;
 }
 
-void COTTON_RUNTIME_ENGINE_WIN_alert(SPVM_ENV* env, const char* message) {
-  int16_t* message_utf8_to_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, message);
+void COTTON_RUNTIME_ENGINE_WIN_alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
+  int16_t* message_utf8_to_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, stack, message);
   
   MessageBoxW(NULL, (LPCWSTR)message_utf8_to_utf16, TEXT("Alert"), MB_OK);
 }
 
-static void alert(SPVM_ENV* env, const char* message) {
-  COTTON_RUNTIME_ENGINE_WIN_alert(env, message);
+static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
+  COTTON_RUNTIME_ENGINE_WIN_alert(env, stack, message);
 }
 
 struct COTTON_RUNTIME_PAINT_INFO {
@@ -45,27 +44,26 @@ struct COTTON_RUNTIME_PAINT_INFO {
   ID2D1HwndRenderTarget* renderer;
 };
 
-int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
-  SPVM_VALUE stack[256];
+int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
   int32_t e = 0;
   
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  void* sv_runtime = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "runtime", "Cotton::Runtime", &e, __FILE__, __LINE__);
+  void* sv_runtime = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "runtime", "Cotton::Runtime", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
-  HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
+  HWND window_handle = (HWND)env->get_pointer(env, stack, sv_window_handle);
   
   // Draw page title
   {
     void* sv_app_name = NULL;
     {
       stack[0].oval = sv_app;
-      e = env->call_instance_method_by_name(env, sv_app, "name", "string(self)", stack, __FILE__, __LINE__);
+      e = env->call_instance_method_by_name(env, stack,  sv_app, "name", "string(self)", __FILE__, __LINE__);
       if (e) { return e; }
       sv_app_name = stack[0].oval;
     }
@@ -73,11 +71,11 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
     void* sv_app_name_utf8_to_utf16 = NULL;
     {
       stack[0].oval = sv_app_name;
-      e = env->call_class_method_by_name(env, "Unicode", "utf8_to_utf16", "short[](string)", stack, __FILE__, __LINE__);
+      e = env->call_class_method_by_name(env, stack, "Unicode", "utf8_to_utf16", "short[](string)", __FILE__, __LINE__);
       if (e) { return e; }
       sv_app_name_utf8_to_utf16 = stack[0].oval;
     }
-    int16_t* app_name_utf8_to_utf16 = env->get_elems_short(env, sv_app_name_utf8_to_utf16);
+    int16_t* app_name_utf8_to_utf16 = env->get_elems_short(env, stack, sv_app_name_utf8_to_utf16);
     
     SetWindowTextW(window_handle, (LPCWSTR)app_name_utf8_to_utf16);
   }
@@ -127,24 +125,24 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
 
     // Call Cotton::Runtime->paint_nodes
     {
-      int32_t scope = env->enter_scope(env);
+      int32_t scope = env->enter_scope(env, stack);
       
       struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
       paint_info->hdc = hdc;
       paint_info->window_handle = window_handle;
       paint_info->renderer = renderer;
       
-      void* sv_paint_info = env->new_pointer_by_name(env, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
+      void* sv_paint_info = env->new_pointer_by_name(env, stack, "Cotton::PaintInfo", paint_info, &e, __FILE__, __LINE__);
       if (e) { return e; }
       
       stack[0].oval = sv_runtime;
       stack[1].oval = sv_paint_info;
-      e = env->call_instance_method_by_name(env, sv_runtime, "paint_nodes", "void(self,Cotton::PaintInfo)", stack, __FILE__, __LINE__);
+      e = env->call_instance_method_by_name(env, stack, sv_runtime, "paint_nodes", "void(self,Cotton::PaintInfo)", __FILE__, __LINE__);
       if (e) { return e; }
 
 
       free(paint_info);
-      env->leave_scope(env, scope);
+      env->leave_scope(env, stack, scope);
     }
     
     // End draw
@@ -160,6 +158,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, void* sv_self) {
 LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static SPVM_ENV* env;
+  static SPVM_VALUE* stack;
   static void* sv_self;
   
   switch (message) {
@@ -172,8 +171,9 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = (SPVM_ENV*)wm_create_args[0];
       sv_self = (void*)wm_create_args[1];
+      stack = (SPVM_VALUE*)wm_create_args[2];
 
-      // COTTON_RUNTIME_ENGINE_WIN_alert(env, "ハローワールド");
+      // COTTON_RUNTIME_ENGINE_WIN_alert(env, stack, "ハローワールド");
 
       return 0;
     }
@@ -181,10 +181,10 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       int32_t e = 0;
       
       // Draw node
-      e = Cotton_Runtime_paint_window(env, sv_self);
+      e = Cotton_Runtime_paint_window(env, stack, sv_self);
       
       if (e) {
-        alert(env, env->get_chars(env, env->get_exception(env)));
+        alert(env, stack, env->get_chars(env, stack, env->get_exception(env, stack)));
         PostQuitMessage(0);
         return 0;
       }
@@ -224,15 +224,15 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, SPVM
   int32_t draw_width = stack[3].ival;
   void* sv_font_styles = stack[4].oval;
 
-  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
+  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, sv_paint_info);
   HDC hdc = paint_info->hdc;
   
   int32_t draw_height = 0;
   if (sv_text) {
     // Render block which has text
-    const char* text = env->get_chars(env, sv_text);
+    const char* text = env->get_chars(env, stack, sv_text);
     
-    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
     RECT parent_rect = {.left = 0, .top = 0, .right = draw_width};
@@ -300,20 +300,20 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE
   void* sv_paint_info = stack[1].oval;
   void* sv_node = stack[2].oval;
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, sv_paint_info);
+  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, sv_paint_info);
   HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
 
-  int32_t draw_left = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_left", &e, __FILE__, __LINE__);
+  int32_t draw_left = env->get_field_int_by_name(env, stack, sv_node, "Cotton::Node", "draw_left", &e, __FILE__, __LINE__);
   if (e) { return e; }
-  int32_t draw_top = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_top", &e, __FILE__, __LINE__);
+  int32_t draw_top = env->get_field_int_by_name(env, stack, sv_node, "Cotton::Node", "draw_top", &e, __FILE__, __LINE__);
   if (e) { return e; }
-  int32_t draw_width = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_width", &e, __FILE__, __LINE__);
+  int32_t draw_width = env->get_field_int_by_name(env, stack, sv_node, "Cotton::Node", "draw_width", &e, __FILE__, __LINE__);
   if (e) { return e; }
-  int32_t draw_height = env->get_field_int_by_name(env, sv_node, "Cotton::Node", "draw_height", &e, __FILE__, __LINE__);
+  int32_t draw_height = env->get_field_int_by_name(env, stack, sv_node, "Cotton::Node", "draw_height", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
   // Block rect
@@ -323,22 +323,22 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE
 
   // Draw block
   {
-    void* sv_background_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "background_color", "Cotton::Style::Color", &e, __FILE__, __LINE__);
+    void* sv_background_color = env->get_field_object_by_name(env, stack, sv_node, "Cotton::Node", "background_color", "Cotton::Style::Color", &e, __FILE__, __LINE__);
     if (e) { return e; }
     
     int32_t background_color;
     D2D1::ColorF background_color_f = {0};
     if (sv_background_color) {
-      float background_color_red = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "red", &e, __FILE__, __LINE__);
+      float background_color_red = env->get_field_float_by_name(env, stack,  sv_background_color, "Cotton::Style::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float background_color_green = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "green", &e, __FILE__, __LINE__);
+      float background_color_green = env->get_field_float_by_name(env, stack,  sv_background_color, "Cotton::Style::Color", "green", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float background_color_blue = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "blue", &e, __FILE__, __LINE__);
+      float background_color_blue = env->get_field_float_by_name(env, stack,  sv_background_color, "Cotton::Style::Color", "blue", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float background_color_alpha = env->get_field_float_by_name(env, sv_background_color, "Cotton::Style::Color", "alpha", &e, __FILE__, __LINE__);
+      float background_color_alpha = env->get_field_float_by_name(env, stack,  sv_background_color, "Cotton::Style::Color", "alpha", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
@@ -365,14 +365,14 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE
     background_brush->Release();
   }
   
-  void* sv_text = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "text", "string", &e, __FILE__, __LINE__);
+  void* sv_text = env->get_field_object_by_name(env, stack, sv_node, "Cotton::Node", "text", "string", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   if (sv_text) {
     // Render block which has text
-    const char* text = env->get_chars(env, sv_text);
+    const char* text = env->get_chars(env, stack, sv_text);
     
-    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, text);
+    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
     // Get parent width and heigth
@@ -380,22 +380,22 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE
     int32_t parent_width = block_rect.right + 1;
     int32_t parent_height = block_rect.bottom + 1;
 
-    void* sv_color = env->get_field_object_by_name(env, sv_node, "Cotton::Node", "color", "Cotton::Style::Color", &e, __FILE__, __LINE__);
+    void* sv_color = env->get_field_object_by_name(env, stack, sv_node, "Cotton::Node", "color", "Cotton::Style::Color", &e, __FILE__, __LINE__);
     if (e) { return e; }
     
     int32_t color;
     D2D1::ColorF color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
     if (sv_color) {
-      float color_red = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "red", &e, __FILE__, __LINE__);
+      float color_red = env->get_field_float_by_name(env, stack,  sv_color, "Cotton::Style::Color", "red", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float color_green = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "green", &e, __FILE__, __LINE__);
+      float color_green = env->get_field_float_by_name(env, stack,  sv_color, "Cotton::Style::Color", "green", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float color_blue = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "blue", &e, __FILE__, __LINE__);
+      float color_blue = env->get_field_float_by_name(env, stack,  sv_color, "Cotton::Style::Color", "blue", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
-      float color_alpha = env->get_field_float_by_name(env, sv_color, "Cotton::Style::Color", "alpha", &e, __FILE__, __LINE__);
+      float color_alpha = env->get_field_float_by_name(env, stack,  sv_color, "Cotton::Style::Color", "alpha", &e, __FILE__, __LINE__);
       if (e) { return e; }
 
       color = RGB(color_red, color_green, color_blue);
@@ -461,13 +461,13 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env, SP
   
   void* sv_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
-  HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
+  HWND window_handle = (HWND)env->get_pointer(env, stack, sv_window_handle);
   
   RECT rect;
   GetClientRect(window_handle, &rect);
@@ -486,13 +486,13 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* env, S
 
   void* sv_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", &e, __FILE__, __LINE__);
   if (e) { return e; }
 
-  void* sv_app = env->get_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
+  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "app", "Cotton::App", &e, __FILE__, __LINE__);
   if (e) { return e; }
   
-  HWND window_handle = (HWND)env->get_pointer(env, sv_window_handle);
+  HWND window_handle = (HWND)env->get_pointer(env, stack, sv_window_handle);
   
   RECT rect;
   GetClientRect(window_handle, &rect);
@@ -526,7 +526,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
   winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName = TEXT("main_window");
-  if (!RegisterClass(&winc)) { return env->die(env, "Can't register window class"); };
+  if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register window class"); };
 
   // Create Main Window
   const int16_t* window_class_name = (const int16_t*)TEXT("main_window");
@@ -538,9 +538,10 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
   int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
-  void** wm_create_args = (void**)calloc(2, sizeof(void*));
+  void** wm_create_args = (void**)calloc(3, sizeof(void*));
   wm_create_args[0] = env;
   wm_create_args[1] = sv_self;
+  wm_create_args[2] = stack;
   void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
       (LPCWSTR)window_class_name, (LPCWSTR)window_title,
@@ -550,10 +551,10 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
       window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
-  void* sv_window_handle = env->new_pointer_by_name(env, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
+  void* sv_window_handle = env->new_pointer_by_name(env, stack, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &e, __FILE__, __LINE__);
   if (e) { return e; }
   
-  env->set_field_object_by_name(env, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
+  env->set_field_object_by_name(env, stack, sv_self, "Cotton::Runtime::Engine::Win", "window_handle", "Cotton::Runtime::Engine::Win::WindowHandle", sv_window_handle, &e, __FILE__, __LINE__);
   if (e) { return e; }
   
   {
