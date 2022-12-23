@@ -63,7 +63,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
     void* sv_app_name = NULL;
     {
       stack[0].oval = sv_app;
-      e = env->call_instance_method_by_name(env, stack,  sv_app, "name", 1, __FILE__, __LINE__);
+      e = env->call_instance_method_by_name(env, stack, "name", 1, __FILE__, __LINE__);
       if (e) { return e; }
       sv_app_name = stack[0].oval;
     }
@@ -137,7 +137,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
       
       stack[0].oval = sv_runtime;
       stack[1].oval = sv_paint_info;
-      e = env->call_instance_method_by_name(env, stack, sv_runtime, "paint_nodes", 2, __FILE__, __LINE__);
+      e = env->call_instance_method_by_name(env, stack, "paint_nodes", 2, __FILE__, __LINE__);
       if (e) { return e; }
 
 
