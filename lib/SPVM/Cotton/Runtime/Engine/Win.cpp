@@ -132,7 +132,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
       paint_info->window_handle = window_handle;
       paint_info->renderer = renderer;
       
-      void* sv_paint_info = env->new_pointer_by_name(env, stack, "Cotton::PaintInfo", paint_info, &e, __func__, __FILE__, __LINE__);
+      void* sv_paint_info = env->new_pointer_object_by_name(env, stack, "Cotton::PaintInfo", paint_info, &e, __func__, __FILE__, __LINE__);
       if (e) { return e; }
       
       stack[0].oval = sv_runtime;
@@ -551,7 +551,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
       window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
-  void* sv_window_handle = env->new_pointer_by_name(env, stack, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &e, __func__, __FILE__, __LINE__);
+  void* sv_window_handle = env->new_pointer_object_by_name(env, stack, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &e, __func__, __FILE__, __LINE__);
   if (e) { return e; }
   
   env->set_field_object_by_name(env, stack, sv_self, "window_handle", sv_window_handle, &e, __func__, __FILE__, __LINE__);
