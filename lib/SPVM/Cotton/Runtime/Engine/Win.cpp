@@ -18,7 +18,7 @@ int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, SPVM_VALUE* stac
   void* sv_string_utf8_to_utf16 = NULL;
   {
     stack[0].oval = sv_string;
-    e = env->call_class_method_by_name(env, stack, "Unicode", "utf8_to_utf16", 1, __func__, __FILE__, __LINE__);
+    env->call_class_method_by_name(env, stack, "Unicode", "utf8_to_utf16", 1, &e, __func__, __FILE__, __LINE__);
     if (e) { return NULL; }
     sv_string_utf8_to_utf16 = stack[0].oval;
   }
@@ -63,7 +63,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
     void* sv_app_name = NULL;
     {
       stack[0].oval = sv_app;
-      e = env->call_instance_method_by_name(env, stack, "name", 1, __func__, __FILE__, __LINE__);
+      env->call_instance_method_by_name(env, stack, "name", 1, &e, __func__, __FILE__, __LINE__);
       if (e) { return e; }
       sv_app_name = stack[0].oval;
     }
@@ -71,7 +71,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
     void* sv_app_name_utf8_to_utf16 = NULL;
     {
       stack[0].oval = sv_app_name;
-      e = env->call_class_method_by_name(env, stack, "Unicode", "utf8_to_utf16", 1, __func__, __FILE__, __LINE__);
+      env->call_class_method_by_name(env, stack, "Unicode", "utf8_to_utf16", 1, &e, __func__, __FILE__, __LINE__);
       if (e) { return e; }
       sv_app_name_utf8_to_utf16 = stack[0].oval;
     }
@@ -137,7 +137,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
       
       stack[0].oval = sv_runtime;
       stack[1].oval = sv_paint_info;
-      e = env->call_instance_method_by_name(env, stack, "paint_nodes", 2, __func__, __FILE__, __LINE__);
+      env->call_instance_method_by_name(env, stack, "paint_nodes", 2, &e, __func__, __FILE__, __LINE__);
       if (e) { return e; }
 
 

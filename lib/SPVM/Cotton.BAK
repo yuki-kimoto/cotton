@@ -16,7 +16,7 @@ class Cotton : precompile {
     return $color;
   }
   
-  static method new_tag : Cotton::Node ($tag : string, $objects : object[]) {
+  static method new_tag : Cotton::Node ($tag : string, $objects : object[] ...) {
     
     my $node = new Cotton::Node;
     
@@ -102,54 +102,54 @@ class Cotton : precompile {
     return $node;
   }
   
-  static method body : Cotton::Node ($objects : object[]) {
+  static method body : Cotton::Node ($objects : object[] ...) {
     return &new_tag("body", $objects);
   }
 
-  static method h1 : Cotton::Node ($objects : object[]) {
+  static method h1 : Cotton::Node ($objects : object[] ...) {
     return &new_tag("h1", $objects);
   }
 
-  static method h2 : Cotton::Node ($objects : object[]) {
+  static method h2 : Cotton::Node ($objects : object[] ...) {
     return &new_tag("h2", $objects);
   }
 
-  static method h3 : Cotton::Node ($objects : object[]) {
+  static method h3 : Cotton::Node ($objects : object[] ...) {
     return &new_tag("h3", $objects);
   }
 
-  static method h4 : Cotton::Node ($objects : object[]) {
+  static method h4 : Cotton::Node ($objects : object[] ...) {
     return &new_tag("h4", $objects);
   }
 
-  static method h5 : Cotton::Node ($objects : object[]) {
+  static method h5 : Cotton::Node ($objects : object[] ...) {
     return &new_tag("h5", $objects);
   }
 
-  static method h6 : Cotton::Node ($objects : object[]) {
+  static method h6 : Cotton::Node ($objects : object[] ...) {
     return &new_tag("h6", $objects);
   }
 
-  static method div : Cotton::Node ($objects : object[]) {
+  static method div : Cotton::Node ($objects : object[] ...) {
     return &new_tag("div", $objects);
   }
   
-  static method span : Cotton::Node ($objects : object[]) {
+  static method span : Cotton::Node ($objects : object[] ...) {
     return &new_tag("span", $objects);
   }
 
-  static method ul : Cotton::Node ($objects : object[]) {
+  static method ul : Cotton::Node ($objects : object[] ...) {
     return &new_tag("ul", $objects);
   }
 
-  static method ol : Cotton::Node ($objects : object[]) {
+  static method ol : Cotton::Node ($objects : object[] ...) {
     return &new_tag("ol", $objects);
   }
 
-  static method li : Cotton::Node ($objects : object[]) {
+  static method li : Cotton::Node ($objects : object[] ...) {
     return &new_tag("li", $objects);
   }
-  static method a : Cotton::Node ($objects : object[]) {
+  static method a : Cotton::Node ($objects : object[] ...) {
     return &new_tag("a", $objects);
   }
 
@@ -161,7 +161,7 @@ class Cotton : precompile {
     return $id;
   }
   
-  static method class : Cotton::Classes ($class_values : string[]) {
+  static method class : Cotton::Classes ($class_values : string[] ...) {
     
     my $classes = new Cotton::Classes;
     $classes->{value} = $class_values;
