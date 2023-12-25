@@ -25,14 +25,6 @@ class Cotton::Style::Value {
     return $self;
   }
   
-  static method new_auto : Cotton::Style::Value () {
-    my $self = new Cotton::Style::Value;
-    
-    $self->{type} = AUTO();
-    
-    return $self;
-  }
-
   static method new_color : Cotton::Style::Value ($color : Cotton::Color) {
     my $self = new Cotton::Style::Value;
     
