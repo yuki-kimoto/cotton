@@ -1,6 +1,5 @@
 class Cotton::Style::Value {
   use Cotton::Style::Util;
-  use Cotton::Style::Style::UnitNumber;
   
   private enum {
     INHERIT,
@@ -39,15 +38,6 @@ class Cotton::Style::Value {
     
     $self->{type} = COLOR();
     $self->{value} = $color;
-    
-    return $self;
-  }
-
-  static method new_unit : Cotton::Style::Value ($unit : Cotton::Style::UnitNumber) {
-    my $self = new Cotton::Style::Value;
-    
-    $self->{type} = UNIT();
-    $self->{value} = $unit;
     
     return $self;
   }
