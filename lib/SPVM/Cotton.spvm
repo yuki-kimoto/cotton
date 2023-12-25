@@ -5,6 +5,7 @@ class Cotton : precompile {
   use Cotton::Classes;
   use List;
   use Cotton::Style::Color;
+  use Encode;
   
   static method rgb : Cotton::Style::Color ($red : float, $green : float, $blue : float) {
     my $color = Cotton::Style::Color->new($red, $green, $blue, 1);
