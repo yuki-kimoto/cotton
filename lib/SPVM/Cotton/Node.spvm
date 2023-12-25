@@ -27,7 +27,6 @@ class Cotton::Node {
   has sibparent : rw Cotton::Node;
   has moresib : rw byte;
   has tag : rw string;
-  has id : rw string;
   has style : rw Hash;
   has text : rw string;
   has color : rw Cotton::Style::Color;
