@@ -16,21 +16,4 @@ class Cotton::Style::Value {
     
     return $self;
   }
-  
-  static method new_inherit : Cotton::Style::Value () {
-    my $self = new Cotton::Style::Value;
-    
-    $self->{type} = INHERIT();
-    
-    return $self;
-  }
-  
-  static method new_color : Cotton::Style::Value ($color : Cotton::Color) {
-    my $self = new Cotton::Style::Value;
-    
-    $self->{type} = COLOR();
-    $self->{value} = $color;
-    
-    return $self;
-  }
 }
