@@ -38,7 +38,6 @@ class Cotton::Node {
   has z_index : rw int;
   
   has paint_info_strings : string[];
-  has paint_info_doubles : double[];
   
   static method new : Cotton::Node () {
     return new Cotton::Node;
