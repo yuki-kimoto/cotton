@@ -9,9 +9,11 @@ class Cotton : precompile {
     return $color;
   }
   
-  static method new_tag : Cotton::Node ($tag : string, $objects : object[]) {
+  static method new_tag : Cotton::Node ($tag_name : string, $objects : object[]) {
     
     my $node = new Cotton::Node;
+    
+    $node->{tag_name} = $tag_name;
     
     my $text_count = 0;
     
