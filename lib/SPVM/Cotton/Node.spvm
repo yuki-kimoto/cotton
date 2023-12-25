@@ -37,8 +37,6 @@ class Cotton::Node {
   has execution_order_before_z_index_sort : rw int;
   has z_index : rw int;
   
-  has paint_info_strings : string[];
-  
   static method new : Cotton::Node () {
     return new Cotton::Node;
   }
