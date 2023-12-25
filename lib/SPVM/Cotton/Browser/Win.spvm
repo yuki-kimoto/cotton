@@ -10,8 +10,6 @@ class Cotton::Browser::Win {
 
   use Cotton::API::Win;
   
-  use Cotton::Style::Color;
-  
   static method main : int ($start_file : string, $args : string[]) {
     my $app = Cotton::App->new;
     

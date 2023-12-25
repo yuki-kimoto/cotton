@@ -11,11 +11,6 @@ class Cotton : precompile {
     my $color = Cotton::Style::Color->new($red, $green, $blue, 1);
     return $color;
   }
-
-  static method rgba : Cotton::Style::Color ($red : float, $green : float, $blue : float, $alpha : float) {
-    my $color = Cotton::Style::Color->new($red, $green, $blue, $alpha);
-    return $color;
-  }
   
   static method new_tag : Cotton::Node ($tag : string, $objects : object[]) {
     
