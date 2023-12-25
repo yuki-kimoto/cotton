@@ -1,5 +1,4 @@
 class Cotton::Runtime {
-  use Unicode;
   use List;
   use Cotton::PaintInfo;
   use Cotton::Node;

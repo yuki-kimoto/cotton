@@ -1,5 +1,4 @@
 class Cotton::Runtime::Engine::Win {
-  use Unicode;
   use List;
   use Cotton::App;
   use Cotton::Runtime::Engine::Win::WindowHandle;
