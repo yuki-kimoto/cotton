@@ -2,7 +2,6 @@ class Cotton : precompile {
   use Cotton::Node;
   use Cotton::Style;
   use Cotton::Id;
-  use Cotton::Classes;
   use List;
   use Cotton::Style::Color;
   use Encode;
@@ -18,7 +17,6 @@ class Cotton : precompile {
     
     my $style_count = 0;
     my $id_count = 0;
-    my $classes_count = 0;
     my $text_count = 0;
     
     my $child_node_list = List->new([]);
@@ -56,16 +54,6 @@ class Cotton : precompile {
         $node->{id} = $id->{value};
         
         $id_count++;
-      }
-      elsif ($object isa Cotton::Classes) {
-        if ($id_count > 0) {
-          die "Specify only one id";
-        }
-        
-        my $classes = (Cotton::Classes)$object;
-        $node->{classes} = $classes->{value};
-      
-        $classes_count++;
       }
       elsif ($object isa Cotton::Node) {
         $child_node_list->push((Cotton::Node)$object);
@@ -157,14 +145,6 @@ class Cotton : precompile {
     return $id;
   }
   
-  static method class : Cotton::Classes ($class_values : string[]) {
-    
-    my $classes = new Cotton::Classes;
-    $classes->{value} = $class_values;
-    
-    return $classes;
-  }
-
   static method style : Cotton::Style ($style_key_values : object[]) {
     my $style_key_values_h = Hash->new($style_key_values);
     my $style = new Cotton::Style;

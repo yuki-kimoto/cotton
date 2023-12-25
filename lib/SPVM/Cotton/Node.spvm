@@ -29,7 +29,6 @@ class Cotton::Node {
   has tag : rw string;
   has id : rw string;
   has style : rw Hash;
-  has classes : rw string[];
   has text : rw string;
   has color : rw Cotton::Style::Color;
   has background_color : rw Cotton::Style::Color;
