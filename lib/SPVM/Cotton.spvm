@@ -11,39 +11,14 @@ class Cotton : precompile {
   
   static method text : Cotton::Node ($text : string) {
     
-    my $new_node = Cotton::Node->new(Cotton::Node->TYPE_TEXT_NODE);
-    
-    $new_node->{style} = Hash->new;
-    
-    my $text_buffer = StringBuffer->new;
-    
-    $text_buffer->push($text);
-    
-    $new_node->{text} = $text_buffer;
+    my $new_node = Cotton::Node->new_text($text);
     
     return $new_node;
   }
   
-  static method tag : Cotton::Node ($tag_name : string, $nodes : Cotton::Node[], $attributes : object[] = undef) {
+  static method tag : Cotton::Node ($tag_name : string, $nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
     
-    my $new_node = Cotton::Node->new(Cotton::Node->TYPE_ELEMENT_NODE);
-    
-    $new_node->{tag_name} = $tag_name;
-    
-    $new_node->{nodes} = List->new($nodes);
-    
-    {
-      my $attributes = Hash->new($attributes);
-      
-      $new_node->{attributes} = $attributes;
-      
-      my $style = $new_node->{attributes}->delete("style");
-      
-      {
-        my $style = Hash->new((object[])$style);
-        $new_node->{style} = $style;
-      }
-    }
+    my $new_node = Cotton::Node->new_element($tag_name, $nodes, $attributes);
     
     return $new_node;
   }
