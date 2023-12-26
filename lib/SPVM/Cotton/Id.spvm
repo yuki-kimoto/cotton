@@ -1,4 +1,0 @@
-class Cotton::Id {
-  allow Cotton;
-  has value : string;
-}
