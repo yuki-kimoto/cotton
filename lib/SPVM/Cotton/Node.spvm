@@ -21,8 +21,6 @@ class Cotton::Node {
   has draw_top : rw int;
   has draw_width : rw int;
   has draw_height : rw int;
-  has execution_order_before_z_index_sort : rw int;
-  has z_index : rw int;
   
   static method new : Cotton::Node () {
     
