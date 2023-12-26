@@ -10,7 +10,7 @@
 #include <iostream>
 
 extern "C" {
-int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* string) {
+int16_t* COTTON_RUNTIME_ENGINE_WIN_encode_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* string) {
   int32_t error_id = 0;
   
   void* sv_string =  env->new_string_nolen(env, stack, string);
@@ -29,7 +29,7 @@ int16_t* COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(SPVM_ENV* env, SPVM_VALUE* stac
 }
 
 void COTTON_RUNTIME_ENGINE_WIN_alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
-  int16_t* message_utf8_to_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, stack, message);
+  int16_t* message_utf8_to_utf16 = COTTON_RUNTIME_ENGINE_WIN_encode_utf16(env, stack, message);
   
   MessageBoxW(NULL, (LPCWSTR)message_utf8_to_utf16, TEXT("Alert"), MB_OK);
 }
@@ -232,7 +232,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, SPVM
     // Render block which has text
     const char* text = env->get_chars(env, stack, sv_text);
     
-    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, stack, text);
+    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
     RECT parent_rect = {.left = 0, .top = 0, .right = draw_width};
@@ -379,7 +379,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE
     
     const char* text = env->get_chars(env, stack, sv_text_string);
     
-    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, stack, text);
+    const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
 
     // Get parent width and heigth
