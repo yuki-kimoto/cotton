@@ -1,4 +1,4 @@
 class Cotton::Style {
   allow Cotton;
-  has value : Hash;
+  
 }
