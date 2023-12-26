@@ -56,11 +56,6 @@ class Cotton::Node {
       }
     }
     
-    # TODO: not needed
-    my $text = StringBuffer->new;
-    
-    $self->{text} = $text;
-    
     return $self;
   }
   
