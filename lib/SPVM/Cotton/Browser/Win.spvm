@@ -17,11 +17,11 @@ class Cotton::Browser::Win {
     
     # Add index page
     {
-      my $div1 = Cotton->div(["あああああ"]);
+      my $div1 = Cotton->text("あああああ");
       $div1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
-      my $div2 = Cotton->div(["いいいいい"]);
+      my $div2 = Cotton->text("いいいいい");
       $div2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
