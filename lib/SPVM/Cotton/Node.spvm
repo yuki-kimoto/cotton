@@ -32,6 +32,8 @@ class Cotton::Node {
   
   has style : ro Hash of string;
   
+  has parent : Cotton::Node;
+  
   has color : rw Cotton::Style::Color;
   has background_color : rw Cotton::Style::Color;
   has draw_left : rw int;
