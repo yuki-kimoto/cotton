@@ -1,7 +1,6 @@
 class Cotton::Browser::Win {
   use Cotton::App;
   use Cotton::Node;
-  use Cotton as Ct;
   use List;
   use Cotton::Page;
   
@@ -18,20 +17,20 @@ class Cotton::Browser::Win {
     
     # Add index page
     {
-      my $div1 = Ct->div(["あああああ"]);
-      $div1->set_color(Ct->rgb(0x00, 0x00, 0xFF));
-      $div1->set_background_color(Ct->rgb(0x00, 0x33, 0x44));
+      my $div1 = Cotton->div(["あああああ"]);
+      $div1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
+      $div1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
-      my $div2 = Ct->div(["いいいいい"]);
-      $div2->set_color(Ct->rgb(0x00, 0x00, 0xFF));
-      $div2->set_background_color(Ct->rgb(0x00, 0x33, 0x44));
+      my $div2 = Cotton->div(["いいいいい"]);
+      $div2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
+      $div2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
-      my $body = Ct->body([
+      my $body = Cotton->body([
         $div1,
         $div2
       ]);
-      $body->set_color(Ct->rgb(0x00, 0x00, 0xFF));
-      $body->set_background_color(Ct->rgb(0x00, 0x33, 0x44));
+      $body->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
+      $body->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
       # Create index page
       my $page = Cotton::Page->new;
@@ -49,15 +48,9 @@ class Cotton::Browser::Win {
     # Create engine
     my $engine = Cotton::Runtime::Engine::Win->new({});
     
-    
-    print("AAAAAAAAA");
-    
     # API
     my $cotton_api_win = Cotton::API::Win->new;
-    print("PPPP");
-    print("QQQQ");
     $cotton_api_win->set_engine($engine);
-    print("RRRR");
     $cotton_api_win->set_runtime($runtime);
     $runtime->set_api($cotton_api_win);
 
