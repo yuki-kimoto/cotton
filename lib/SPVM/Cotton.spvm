@@ -17,7 +17,7 @@ class Cotton : precompile {
     
     my $text_count = 0;
     
-    my $child_node_list = List->new([]);
+    my $child_nodes_list = List->new([]);
     
     my $objects_length = @$objects;
     for (my $i = 0; $i < $objects_length; $i++) {
@@ -33,32 +33,14 @@ class Cotton : precompile {
         $text_count++;
       }
       elsif ($object isa Cotton::Node) {
-        $child_node_list->push((Cotton::Node)$object);
+        $child_nodes_list->push((Cotton::Node)$object);
       }
       else {
         die "Invalid argument";
       }
     }
     
-    my $child_node_list_length = $child_node_list->length;
-    for (my $i = 0; $i < $child_node_list_length; $i++) {
-      my $child_node = (Cotton::Node)$child_node_list->get($i);
-      
-      if ($i == 0) {
-        $node->{first} = $child_node;
-        $child_node->{moresib} = 1;
-      }
-      
-      if ($i < $child_node_list_length - 1) {
-        my $next_child_node = (Cotton::Node)$child_node_list->get($i + 1);
-        $child_node->{sibparent} = $next_child_node;
-        $child_node->{moresib} = 1;
-      }
-      elsif ($i == $child_node_list_length - 1) {
-        $child_node->{sibparent} = $node;
-        $node->{last} = $child_node;
-      }
-    }
+    $node->{nodes} = $child_nodes_list;
     
     return $node;
   }
