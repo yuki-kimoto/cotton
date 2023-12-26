@@ -19,8 +19,10 @@ class Cotton::Browser::Win {
     {
       my $text1 = Cotton->text("あああああ");
       $text1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
+      $text1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
       my $div1 = Cotton->div([$text1]);
+      
       $div1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
