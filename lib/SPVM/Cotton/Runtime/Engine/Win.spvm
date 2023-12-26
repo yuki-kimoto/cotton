@@ -8,10 +8,7 @@ class Cotton::Runtime::Engine::Win {
   has window_handle : Cotton::Runtime::Engine::Win::WindowHandle;
   
   static method new : Cotton::Runtime::Engine::Win($options : object[]) {
-    warn "CCCCCCCC";
     my $self = new Cotton::Runtime::Engine::Win;
-
-    warn "DDDDDDDD";
     
     return $self;
   }

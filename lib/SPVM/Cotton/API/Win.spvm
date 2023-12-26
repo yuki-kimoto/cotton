@@ -8,11 +8,8 @@ class Cotton::API::Win {
   has runtime : rw Cotton::Runtime;
   
   static method new : Cotton::API::Win () {
-    warn "EEEE";
     
     my $win = new Cotton::API::Win;
-    
-    warn "FFFFFF";
     
     return $win;
   }

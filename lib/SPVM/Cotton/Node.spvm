@@ -6,13 +6,15 @@ class Cotton::Node {
   use Hash;
   use StringList;
   use Cotton::Style::Color;
+  use StringBuffer;
   
   has tag_name : rw string;
+  has text : ro StringBuffer;
+  
   has first : rw Cotton::Node;
   has last : rw Cotton::Node;
   has sibparent : rw Cotton::Node;
   has moresib : rw byte;
-  has text : rw string;
   has color : rw Cotton::Style::Color;
   has background_color : rw Cotton::Style::Color;
   has draw_left : rw int;
@@ -23,6 +25,13 @@ class Cotton::Node {
   has z_index : rw int;
   
   static method new : Cotton::Node () {
-    return new Cotton::Node;
+    
+    my $self = new Cotton::Node;
+    
+    my $text = StringBuffer->new;
+    
+    $self->{text} = $text;
+    
+    return $self;
   }
 }

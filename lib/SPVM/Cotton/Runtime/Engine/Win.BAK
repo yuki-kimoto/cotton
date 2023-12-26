@@ -369,8 +369,15 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE
   if (e) { return e; }
   
   if (sv_text) {
+    
     // Render block which has text
-    const char* text = env->get_chars(env, stack, sv_text);
+    
+    stack[0].oval = sv_text;
+    env->call_instance_method_by_name(env, stack, "to_string", 0, &e, __func__, __FILE__, __LINE__);
+    if (e) { return e; }
+    void* sv_text_string = stack[0].oval;
+    
+    const char* text = env->get_chars(env, stack, sv_text_string);
     
     const int16_t* text_utf16 = COTTON_RUNTIME_ENGINE_WIN_utf8_to_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;

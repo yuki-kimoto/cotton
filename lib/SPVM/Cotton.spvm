@@ -11,7 +11,7 @@ class Cotton : precompile {
   
   static method new_tag : Cotton::Node ($tag_name : string, $objects : object[]) {
     
-    my $node = new Cotton::Node;
+    my $node = Cotton::Node->new;
     
     $node->{tag_name} = $tag_name;
     
@@ -28,7 +28,7 @@ class Cotton : precompile {
           die "Specify only one text";
         }
         
-        $node->{text} = (string)$object;
+        $node->{text}->push((string)$object);
         
         $text_count++;
       }
