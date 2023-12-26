@@ -26,7 +26,7 @@ class Cotton::Renderer {
       $body->{draw_top} = 0;
       $body->{draw_width} = $viewport_width;
       
-      my $nodes = $self->convert_dom_to_excution_order($app, $body);
+      my $nodes = [$body, $body->first];
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
         $node->{draw_left} = 0;
@@ -74,81 +74,4 @@ class Cotton::Renderer {
       }
     }
   }
-
-  method convert_dom_to_excution_order : Cotton::Node[] ($app : Cotton::App, $root_node : Cotton::Node) {
-    
-    my $execution_order_before_z_index_sort = 0;
-    
-    # convert_dom_to_excution_order
-    my $node_list = List->new(new Cotton::Node[0]);
-    my $cur_node = $root_node;
-    my $finish = 0;
-    while ($cur_node) {
-      # [START]Preorder traversal position
-      $cur_node->{execution_order_before_z_index_sort} = $execution_order_before_z_index_sort;
-      $execution_order_before_z_index_sort++;
-      $node_list->push($cur_node);
-      
-      # [END]Preorder traversal position
-      
-      if ($cur_node->first) {
-        $cur_node = $cur_node->first;
-      }
-      else {
-        while (1) {
-          # [START]Postorder traversal position
-          # [END]Postorder traversal position
-          
-          if ($cur_node == $root_node) {
-
-            # Finish
-            $finish = 1;
-            
-            last;
-          }
-          
-          # Next sibling
-          if ($cur_node->moresib) {
-            $cur_node = $cur_node->sibparent;
-            last;
-          }
-          # Next is parent
-          else {
-            $cur_node = $cur_node->sibparent;
-          }
-        }
-        if ($finish) {
-          last;
-        }
-      }
-    }
-
-    my $nodes = (Cotton::Node[])$node_list->to_array;
-    
-    Sort->sort_object($nodes, method : int ($object1 : object, $object2 : object) {
-      my $node1 = (Cotton::Node)$object1;
-      my $node2 = (Cotton::Node)$object2;
-      
-      if ($node1->z_index > $node2->z_index) {
-        return 1;
-      }
-      elsif ($node1->z_index < $node2->z_index) {
-        return -1;
-      }
-      else {
-        if ($node1->execution_order_before_z_index_sort > $node1->execution_order_before_z_index_sort) {
-          return 1;
-        }
-        elsif ($node1->execution_order_before_z_index_sort < $node1->execution_order_before_z_index_sort) {
-          return -1;
-        }
-        else {
-          return 0;
-        }
-      }
-    });
-    
-    return $nodes;
-  }
-
 }
