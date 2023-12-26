@@ -35,3 +35,4 @@ class Cotton::Node {
     return $self;
   }
 }
+
