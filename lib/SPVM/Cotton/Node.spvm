@@ -41,10 +41,22 @@ class Cotton::Node {
   has draw_width : rw int;
   has draw_height : rw int;
   
-  static method new : Cotton::Node () {
+  static method new : Cotton::Node ($type : int, $nodes : Cotton::Node[] = undef) {
     
     my $self = new Cotton::Node;
     
+    $self->{type} = $type;
+    
+    $self->{nodes} = List->new($nodes);
+    
+    if ($nodes) {
+      for my $node (@$nodes) {
+        $node->{parent} = $self;
+        weaken $node->{parent};
+      }
+    }
+    
+    # TODO: not needed
     my $text = StringBuffer->new;
     
     $self->{text} = $text;
