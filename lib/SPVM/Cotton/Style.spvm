@@ -1,4 +1,37 @@
 class Cotton::Style {
   allow Cotton;
   
+  use Cotton::Style::Color;
+  use Regex;
+  use Fn;
+  
+  static method parse_color : Cotton::Style::Color ($color_string : string) {
+    
+    unless ($color_string) {
+      die "\$color_string must be defined.";
+    }
+    
+    my $color = (Cotton::Style::Color)undef;
+    if (my $match = Regex->new("^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$")->match($color_string)) {
+      my $red_string = $match->cap1;
+      
+      my $green_string = $match->cap2;
+      
+      my $blue_string = $match->cap3;
+      
+      my $red = Fn->to_int($red_string);
+      
+      my $green = Fn->to_int($green_string);
+      
+      my $blue = Fn->to_int($blue_string);
+      
+      $color = Cotton::Style::Color->new($red, $green, $blue);
+    }
+    else {
+      die "\$color_string is an invalid argument.";
+    }
+    
+    return $color;
+  }
+  
 }

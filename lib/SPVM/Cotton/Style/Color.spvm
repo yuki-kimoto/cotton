@@ -5,7 +5,7 @@ class Cotton::Style::Color {
   has blue : rw float;
   has alpha : rw float;
   
-  static method new : Cotton::Style::Color ($red : float, $green : float, $blue : float, $alpha : float) {
+  static method new : Cotton::Style::Color ($red : float, $green : float, $blue : float, $alpha : float = 0) {
     my $color = new Cotton::Style::Color;
     $color->{red} = $red;
     $color->{green} = $green;
