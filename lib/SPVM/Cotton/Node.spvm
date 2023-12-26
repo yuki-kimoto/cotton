@@ -28,6 +28,10 @@ class Cotton::Node {
   
   has nodes : ro List of Cotton::Node;
   
+  has attributes : ro Hash of string;
+  
+  has style : ro Hash of string;
+  
   has color : rw Cotton::Style::Color;
   has background_color : rw Cotton::Style::Color;
   has draw_left : rw int;

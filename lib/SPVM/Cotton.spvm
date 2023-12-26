@@ -9,70 +9,81 @@ class Cotton : precompile {
     return $color;
   }
   
-  static method tag : Cotton::Node ($tag_name : string, $objects : Cotton::Node[]) {
+  static method tag : Cotton::Node ($tag_name : string, $nodes : Cotton::Node[], $attributes : object[] = undef) {
     
-    my $node = Cotton::Node->new;
+    my $new_node = Cotton::Node->new;
     
-    $node->{tag_name} = $tag_name;
+    $new_node->{type} = Cotton::Node->TYPE_ELEMENT_NODE;
     
-    my $text_count = 0;
+    $new_node->{tag_name} = $tag_name;
     
-    my $child_nodes_list = List->new($objects);
+    $new_node->{nodes} = List->new($nodes);
     
-    $node->{nodes} = $child_nodes_list;
+    {
+      my $attributes = Hash->new($attributes);
+      
+      $new_node->{attributes} = $attributes;
+      
+      my $style = $new_node->{attributes}->delete("style");
+      
+      {
+        my $style = Hash->new((object[])$style);
+        $new_node->{style} = $style;
+      }
+    }
     
-    return $node;
+    return $new_node;
   }
   
-  static method body : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("body", $objects);
+  static method body : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("body", $nodes);
   }
 
-  static method h1 : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("h1", $objects);
+  static method h1 : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("h1", $nodes);
   }
 
-  static method h2 : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("h2", $objects);
+  static method h2 : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("h2", $nodes);
   }
 
-  static method h3 : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("h3", $objects);
+  static method h3 : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("h3", $nodes);
   }
 
-  static method h4 : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("h4", $objects);
+  static method h4 : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("h4", $nodes);
   }
 
-  static method h5 : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("h5", $objects);
+  static method h5 : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("h5", $nodes);
   }
 
-  static method h6 : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("h6", $objects);
+  static method h6 : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("h6", $nodes);
   }
 
-  static method div : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("div", $objects);
+  static method div : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("div", $nodes);
   }
   
-  static method span : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("span", $objects);
+  static method span : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("span", $nodes);
   }
 
-  static method ul : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("ul", $objects);
+  static method ul : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("ul", $nodes);
   }
 
-  static method ol : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("ol", $objects);
+  static method ol : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("ol", $nodes);
   }
 
-  static method li : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("li", $objects);
+  static method li : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("li", $nodes);
   }
-  static method a : Cotton::Node ($objects : Cotton::Node[]) {
-    return &tag("a", $objects);
+  static method a : Cotton::Node ($nodes : Cotton::Node[], $attributes : object[] = undef) {
+    return &tag("a", $nodes);
   }
   
   static method text : Cotton::Node ($text : string) {
