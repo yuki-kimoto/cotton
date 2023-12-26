@@ -1,4 +1,0 @@
-class Cotton::Classes {
-  allow Cotton;
-  has value : string[];
-}
