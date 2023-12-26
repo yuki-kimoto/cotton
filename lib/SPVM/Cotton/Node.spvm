@@ -8,6 +8,20 @@ class Cotton::Node {
   use Cotton::Style::Color;
   use StringBuffer;
   
+  enum {
+    TYPE_ELEMENT_NODE = 1,
+    TYPE_ATTRIBUTE_NODE = 2,
+    TYPE_TEXT_NODE = 3,
+    TYPE_CDATA_SECTION_NODE = 4,
+    TYPE_PROCESSING_INSTRUCTION_NODE = 7,
+    TYPE_COMMENT_NODE = 8,
+    TYPE_DOCUMENT_NODE = 9,
+    TYPE_DOCUMENT_TYPE_NODE = 10,
+    TYPE_DOCUMENT_FRAGMENT_NODE = 11,
+  }
+  
+  has type : ro int;
+  
   has tag_name : rw string;
   
   has text : ro StringBuffer;

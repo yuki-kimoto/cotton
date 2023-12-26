@@ -96,4 +96,22 @@ class Cotton : precompile {
     return &tag("a", $objects);
   }
   
+  static method text : Cotton::Node ($text : string) {
+    
+    unless ($text) {
+      die "\$text must be defined.";
+    }
+    
+    my $new_node = Cotton::Node->new;
+    
+    $new_node->{type} = Cotton::Node->TYPE_TEXT_NODE;
+    
+    my $text_buffer = StringBuffer->new;
+    
+    $text_buffer->push($text);
+    
+    $new_node->{text} = $text_buffer;
+    
+    return $new_node;
+  }
 }
