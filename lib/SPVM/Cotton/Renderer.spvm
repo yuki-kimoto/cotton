@@ -26,7 +26,7 @@ class Cotton::Renderer {
       $body->{draw_top} = 0;
       $body->{draw_width} = $viewport_width;
       
-      my $nodes = [$body, (Cotton::Node)$body->nodes->get(0)];
+      my $nodes = [$body, (Cotton::Node)$body->nodes->get(0), $body->nodes->get(0)->(Cotton::Node)->nodes->get(0)->(Cotton::Node)];
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
         $node->{draw_left} = 0;
