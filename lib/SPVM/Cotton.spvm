@@ -88,13 +88,11 @@ class Cotton : precompile {
   
   static method text : Cotton::Node ($text : string) {
     
-    unless ($text) {
-      die "\$text must be defined.";
-    }
-    
     my $new_node = Cotton::Node->new;
     
     $new_node->{type} = Cotton::Node->TYPE_TEXT_NODE;
+    
+    $new_node->{style} = Hash->new;
     
     my $text_buffer = StringBuffer->new;
     
@@ -104,4 +102,5 @@ class Cotton : precompile {
     
     return $new_node;
   }
+  
 }
