@@ -7,6 +7,7 @@ class Cotton::Node {
   use StringList;
   use Cotton::Style::Color;
   use StringBuffer;
+  use Cotton::Style;
   
   enum {
     TYPE_ELEMENT_NODE = 1,
@@ -35,10 +36,15 @@ class Cotton::Node {
   has parent : Cotton::Node;
   
   has color : rw Cotton::Style::Color;
+  
   has background_color : rw Cotton::Style::Color;
+  
   has draw_left : rw int;
+  
   has draw_top : rw int;
+  
   has draw_width : rw int;
+  
   has draw_height : rw int;
   
   static method new : Cotton::Node ($type : int, $nodes : Cotton::Node[] = undef) {
@@ -100,6 +106,21 @@ class Cotton::Node {
     $self->{text} = $text_buffer;
     
     return $self;
+  }
+  
+  method style_get_color : Cotton::Style::Color () {
+    
+    my $style = $self->{style};
+    
+    my $color_string = $style->get_string("color");
+    
+    my $color = (Cotton::Style::Color)undef;
+    
+    if ($color_string) {
+      $color = Cotton::Style->parse_color($color_string);
+    }
+    
+    return $color;
   }
 }
 
