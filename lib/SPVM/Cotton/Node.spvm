@@ -30,7 +30,7 @@ class Cotton::Node {
   
   has nodes : ro List of Cotton::Node;
   
-  has attributes2 : Cotton::Attributes;
+  has attributes : Cotton::Attributes;
   
   has style : rw Cotton::Style;
   
@@ -78,7 +78,7 @@ class Cotton::Node {
     
     my $attributes = Cotton::Attributes->new($attribute_pairs);
     
-    $self->{attributes2} = $attributes;
+    $self->{attributes} = $attributes;
     
     my $style_pairs = (object[])$attributes->attributes_h->delete("style");
     
