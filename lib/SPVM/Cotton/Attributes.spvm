@@ -1,8 +1,12 @@
 class Cotton::Attributes {
   allow Cotton;
   
+  use Cotton::Style;
+  
   # Fields
   has attributes_h : ro Hash of string;
+  
+  has styles : Cotton::Style;
   
   # Class Methods
   static method new : Cotton::Attributes ($attribute_pairs : object[] = undef) {
