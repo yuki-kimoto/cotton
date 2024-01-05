@@ -23,8 +23,12 @@ class Cotton::Browser::Win {
       
       my $div1 = Cotton->div([$text1]);
       
-      $div1->style->set("color", "#0x0000FF");
-      $div1->style->set("background-color", "#0x003344");
+      my $style1 = Cotton::Style->new({
+        "color" => "#0x0000FF",
+        "background-color" => "#0x003344"
+      });
+      
+      $div1->set_style2($style1);
       
       $div1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
@@ -35,8 +39,12 @@ class Cotton::Browser::Win {
       
       my $div2 = Cotton->div([$text2]);
       
-      $div2->style->set("color", "#0x0000FF");
-      $div2->style->set("background-color", "#0x003344");
+      my $style2 = Cotton::Style->new({
+        "color" => "#0x0000FF",
+        "background-color" => "#0x003344"
+      });
+      
+      $div1->set_style2($style2);
       
       $div2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));

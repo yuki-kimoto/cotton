@@ -34,9 +34,7 @@ class Cotton::Node {
   
   has attributes2 : Cotton::Attributes;
   
-  has style : ro Hash of string;
-  
-  has style2 : ro Cotton::Style;
+  has style2 : rw Cotton::Style;
   
   has parent : Cotton::Node;
   
@@ -85,12 +83,9 @@ class Cotton::Node {
       
       $self->{attributes} = $attributes;
       
-      my $style = $self->{attributes}->delete("style");
+      my $style = (object[])$self->{attributes}->delete("style");
       
-      {
-        my $style = Hash->new((object[])$style);
-        $self->{style} = $style;
-      }
+      $self->{style2} = Cotton::Style->new($style);
     }
     
     return $self;

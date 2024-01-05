@@ -8,6 +8,16 @@ class Cotton::Style {
   # Fields
   has data : ro Hash of string;
   
+  # Class Methods
+  static method new : Cotton::Style ($styles : object[] = undef) {
+    
+    my $self = new Cotton::Style;
+    
+    $self->{data} = Hash->new($styles);
+    
+    return $self;
+  }
+  
   # Instance Methods
   method parse_color : Cotton::Style::Color () {
     
