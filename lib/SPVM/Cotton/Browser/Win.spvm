@@ -21,9 +21,10 @@ class Cotton::Browser::Win {
       $text1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $text1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
-      my $div1 = Cotton->div({style => {"color" => "#0x0000FF", "background-color" => "#0x003344"}}, [
-        $text1
-      ]);
+      my $div1 = Cotton->div([$text1], {style => {
+        "color" => "#0x0000FF",
+        "background-color" => "#0x003344"
+      }});
       
       $div1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
@@ -32,14 +33,15 @@ class Cotton::Browser::Win {
       $text2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $text2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
-      my $div2 = Cotton->div({style => {"color" => "#0x0000FF", "background-color" => "#0x003344"}}, [
-        $text2
-      ]);
+      my $div2 = Cotton->div([$text2], {style => {
+        "color" => "#0x0000FF",
+        "background-color" => "#0x003344"
+      }});
       
       $div2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
       
-      my $body = Cotton->body(undef, [
+      my $body = Cotton->body([
         $div1,
         $div2
       ]);
@@ -51,7 +53,7 @@ class Cotton::Browser::Win {
       $page->set_path("/");
       $page->set_body($body);
       $app->push_page($page);
-      
+
       # Set current page;
       $app->set_current_page($page);
     }
