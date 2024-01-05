@@ -32,8 +32,6 @@ class Cotton::Node {
   
   has attributes : Cotton::Attributes;
   
-  has style : rw Cotton::Style;
-  
   has parent : Cotton::Node;
   
   has color : rw Cotton::Style::Color;
@@ -82,7 +80,9 @@ class Cotton::Node {
     
     my $style_pairs = (object[])$attributes->attributes_h->delete("style");
     
-    $self->{style} = Cotton::Style->new($style_pairs);
+    my $style = Cotton::Style->new($style_pairs);
+    
+    $attributes->{style} = $style;
     
     return $self;
   }
@@ -104,5 +104,13 @@ class Cotton::Node {
     return $self;
   }
   
+  # Instance Methods
+  method style : Cotton::Style () {
+    return $self->{attributes}->{style};
+  }
+  
+  method set_style : void ($style : Cotton::Style) {
+    $self->{attributes}->{style} = $style;
+  }
 }
 

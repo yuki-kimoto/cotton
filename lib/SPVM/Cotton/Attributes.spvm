@@ -1,5 +1,6 @@
 class Cotton::Attributes {
   allow Cotton;
+  allow Cotton::Node;
   
   use Cotton::Style;
   
