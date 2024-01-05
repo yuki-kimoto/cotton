@@ -6,14 +6,14 @@ class Cotton::Style {
   use Fn;
   
   # Fields
-  has data : ro Hash of string;
+  has styles_h : ro Hash of string;
   
   # Class Methods
-  static method new : Cotton::Style ($styles : object[] = undef) {
+  static method new : Cotton::Style ($style_pairs : object[] = undef) {
     
     my $self = new Cotton::Style;
     
-    $self->{data} = Hash->new($styles);
+    $self->{styles_h} = Hash->new($style_pairs);
     
     return $self;
   }
@@ -21,9 +21,9 @@ class Cotton::Style {
   # Instance Methods
   method parse_color : Cotton::Style::Color () {
     
-    my $style_data = $self->{data};
+    my $styles_h = $self->{styles_h};
     
-    my $color_string = $style_data->get_string("color");
+    my $color_string = $styles_h->get_string("color");
     
     unless ($color_string) {
       return undef;

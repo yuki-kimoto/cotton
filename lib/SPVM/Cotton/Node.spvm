@@ -30,8 +30,6 @@ class Cotton::Node {
   
   has nodes : ro List of Cotton::Node;
   
-  has attributes : ro Hash of string;
-  
   has attributes2 : Cotton::Attributes;
   
   has style : rw Cotton::Style;
@@ -68,7 +66,7 @@ class Cotton::Node {
     return $self;
   }
   
-  static method new_element : Cotton::Node ($tag_name : string, $nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
+  static method new_element : Cotton::Node ($tag_name : string, $nodes : Cotton::Node[] = undef, $attribute_pairs : object[] = undef) {
     
     unless ($tag_name) {
       die "\$tag_namet must be defined.";
@@ -78,15 +76,13 @@ class Cotton::Node {
     
     $self->{tag_name} = $tag_name;
     
-    {
-      my $attributes = Hash->new($attributes);
-      
-      $self->{attributes} = $attributes;
-      
-      my $style_pairs = (object[])$self->{attributes}->delete("style");
-      
-      $self->{style} = Cotton::Style->new($style_pairs);
-    }
+    my $attributes = Cotton::Attributes->new($attribute_pairs);
+    
+    $self->{attributes2} = $attributes;
+    
+    my $style_pairs = (object[])$attributes->attributes_h->delete("style");
+    
+    $self->{style} = Cotton::Style->new($style_pairs);
     
     return $self;
   }
