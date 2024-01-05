@@ -5,10 +5,18 @@ class Cotton::Style {
   use Regex;
   use Fn;
   
-  static method parse_color : Cotton::Style::Color ($color_string : string) {
+  # Fields
+  has data : ro Hash of string;
+  
+  # Instance Methods
+  method parse_color : Cotton::Style::Color () {
+    
+    my $style_data = $self->{data};
+    
+    my $color_string = $style_data->get_string("color");
     
     unless ($color_string) {
-      die "\$color_string must be defined.";
+      return undef;
     }
     
     my $color = (Cotton::Style::Color)undef;
@@ -28,10 +36,9 @@ class Cotton::Style {
       $color = Cotton::Style::Color->new($red, $green, $blue);
     }
     else {
-      die "\$color_string is an invalid argument.";
+      return undef;
     }
     
     return $color;
   }
-  
 }

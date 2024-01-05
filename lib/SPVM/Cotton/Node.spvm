@@ -33,6 +33,8 @@ class Cotton::Node {
   
   has style : ro Hash of string;
   
+  has style2 : ro Cotton::Style;
+  
   has parent : Cotton::Node;
   
   has color : rw Cotton::Style::Color;
@@ -108,19 +110,5 @@ class Cotton::Node {
     return $self;
   }
   
-  method style_get_color : Cotton::Style::Color () {
-    
-    my $style = $self->{style};
-    
-    my $color_string = $style->get_string("color");
-    
-    my $color = (Cotton::Style::Color)undef;
-    
-    if ($color_string) {
-      $color = Cotton::Style->parse_color($color_string);
-    }
-    
-    return $color;
-  }
 }
 
