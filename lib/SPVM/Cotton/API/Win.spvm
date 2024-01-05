@@ -2,7 +2,7 @@ class Cotton::API::Win {
   interface Cotton::API;
   
   use Cotton::App;
-  use Cotton::Node;
+  use Eg::Node;
   
   has engine : rw Cotton::Runtime::Engine::Win;
   has runtime : rw Cotton::Runtime;
@@ -28,7 +28,7 @@ class Cotton::API::Win {
     return $engine->get_viewport_width;
   }
   
-  method paint_node : void ($paint_info : object, $node : Cotton::Node) {
+  method paint_node : void ($paint_info : object, $node : Eg::Node) {
 
     my $engine = $self->engine;
 

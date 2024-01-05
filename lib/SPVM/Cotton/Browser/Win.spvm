@@ -1,6 +1,6 @@
 class Cotton::Browser::Win {
   use Cotton::App;
-  use Cotton::Node;
+  use Eg::Node;
   use List;
   use Cotton::Page;
   
@@ -17,36 +17,36 @@ class Cotton::Browser::Win {
     
     # Add index page
     {
-      my $text1 = Cotton->text("あああああ");
-      $text1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
-      $text1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
+      my $text1 = Eg->text("あああああ");
+      $text1->set_color(Eg->rgb(0x00, 0x00, 0xFF));
+      $text1->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
       
-      my $div1 = Cotton->div([$text1], {style => {
+      my $div1 = Eg->div([$text1], {style => {
         "color" => "#0x0000FF",
         "background-color" => "#0x003344"
       }});
       
-      $div1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
-      $div1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
+      $div1->set_color(Eg->rgb(0x00, 0x00, 0xFF));
+      $div1->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
       
-      my $text2 = Cotton->text("いいいいい");
-      $text2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
-      $text2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
+      my $text2 = Eg->text("いいいいい");
+      $text2->set_color(Eg->rgb(0x00, 0x00, 0xFF));
+      $text2->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
       
-      my $div2 = Cotton->div([$text2], {style => {
+      my $div2 = Eg->div([$text2], {style => {
         "color" => "#0x0000FF",
         "background-color" => "#0x003344"
       }});
       
-      $div2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
-      $div2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
+      $div2->set_color(Eg->rgb(0x00, 0x00, 0xFF));
+      $div2->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
       
-      my $body = Cotton->body([
+      my $body = Eg->body([
         $div1,
         $div2
       ]);
-      $body->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
-      $body->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
+      $body->set_color(Eg->rgb(0x00, 0x00, 0xFF));
+      $body->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
       
       # Create index page
       my $page = Cotton::Page->new;

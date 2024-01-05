@@ -1,7 +1,7 @@
 class Cotton::App : precompile {
   use List;
   use Cotton::PaintInfo;
-  use Cotton::Node;
+  use Eg::Node;
   use Cotton::Renderer;
   
   has name : rw string;

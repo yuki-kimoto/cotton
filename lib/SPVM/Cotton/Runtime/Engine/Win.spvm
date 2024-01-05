@@ -19,7 +19,7 @@ class Cotton::Runtime::Engine::Win {
 
   native method get_viewport_height : int ();
 
-  native method paint_node : void ($paint_info : object, $node : Cotton::Node);
+  native method paint_node : void ($paint_info : object, $node : Eg::Node);
 
   native method calc_text_height : int ($paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   

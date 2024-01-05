@@ -1,7 +1,7 @@
 class Cotton::Runtime {
   use List;
   use Cotton::PaintInfo;
-  use Cotton::Node;
+  use Eg::Node;
   use Cotton::Renderer;
   
   has app : rw Cotton::App;

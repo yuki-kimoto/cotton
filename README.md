@@ -2,7 +2,11 @@
 
 Cotton is a example of SPVM application on Windows.
 
-# Compile cotton
+# Required Modules Installation
+
+  cpanm --installdeps .
+
+# Executable File Generating
 
   # Compile Cotton - development mode
   spvmcc -o cotton -c cotton.config -I lib/SPVM Cotton::Browser::Win

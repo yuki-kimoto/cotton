@@ -1,0 +1,22 @@
+class Eg::Style::Color {
+  
+  # Fidles
+  has red : rw float;
+  
+  has green : rw float;
+  
+  has blue : rw float;
+  
+  has alpha : rw float;
+  
+  # Class Methods
+  static method new : Eg::Style::Color ($red : float, $green : float, $blue : float, $alpha : float = 0) {
+    my $color = new Eg::Style::Color;
+    $color->{red} = $red;
+    $color->{green} = $green;
+    $color->{blue} = $blue;
+    $color->{alpha} = $alpha;
+    
+    return $color;
+  }
+}

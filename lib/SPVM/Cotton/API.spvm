@@ -1,11 +1,11 @@
 class Cotton::API : interface_t {
   use Cotton::App;
-  use Cotton::Node;
+  use Eg::Node;
   use Cotton::PaintInfo;
   
   required method get_viewport_height : int ();
   method get_viewport_width : int ();
-  method paint_node : void ($paint_info : object, $node : Cotton::Node);
+  method paint_node : void ($paint_info : object, $node : Eg::Node);
   method run_app : void ($app : Cotton::App);
   method calc_text_height : int ($paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]);
 }

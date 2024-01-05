@@ -1,7 +1,7 @@
 class Cotton::Page {
   has path : rw string;
   has title : rw string;
-  has body : rw Cotton::Node;
+  has body : rw Eg::Node;
   
   static method new : Cotton::Page () {
     my $page = new Cotton::Page;
