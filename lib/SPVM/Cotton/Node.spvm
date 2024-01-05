@@ -8,6 +8,7 @@ class Cotton::Node {
   use Cotton::Style::Color;
   use StringBuffer;
   use Cotton::Style;
+  use Cotton::Attributes;
   
   enum {
     TYPE_ELEMENT_NODE = 1,
@@ -30,6 +31,8 @@ class Cotton::Node {
   has nodes : ro List of Cotton::Node;
   
   has attributes : ro Hash of string;
+  
+  has attributes2 : Cotton::Attributes;
   
   has style : ro Hash of string;
   

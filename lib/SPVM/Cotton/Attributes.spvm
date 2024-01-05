@@ -1,0 +1,11 @@
+class Cotton::Attributes {
+  allow Cotton;
+  
+  use Cotton::Style;
+  
+  # Fields
+  has data : ro Hash of string;
+  
+  has style : ro Cotton::Style;
+  
+}
