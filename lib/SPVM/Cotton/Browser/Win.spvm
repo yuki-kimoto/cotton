@@ -28,7 +28,7 @@ class Cotton::Browser::Win {
         "background-color" => "#0x003344"
       });
       
-      $div1->set_style2($style1);
+      $div1->set_style($style1);
       
       $div1->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div1->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));
@@ -44,7 +44,7 @@ class Cotton::Browser::Win {
         "background-color" => "#0x003344"
       });
       
-      $div1->set_style2($style2);
+      $div1->set_style($style2);
       
       $div2->set_color(Cotton->rgb(0x00, 0x00, 0xFF));
       $div2->set_background_color(Cotton->rgb(0x00, 0x33, 0x44));

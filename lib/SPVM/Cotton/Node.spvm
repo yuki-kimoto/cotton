@@ -34,7 +34,7 @@ class Cotton::Node {
   
   has attributes2 : Cotton::Attributes;
   
-  has style2 : rw Cotton::Style;
+  has style : rw Cotton::Style;
   
   has parent : Cotton::Node;
   
@@ -83,9 +83,9 @@ class Cotton::Node {
       
       $self->{attributes} = $attributes;
       
-      my $style = (object[])$self->{attributes}->delete("style");
+      my $style_pairs = (object[])$self->{attributes}->delete("style");
       
-      $self->{style2} = Cotton::Style->new($style);
+      $self->{style} = Cotton::Style->new($style_pairs);
     }
     
     return $self;
