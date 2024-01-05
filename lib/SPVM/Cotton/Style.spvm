@@ -18,12 +18,7 @@ class Cotton::Style {
     return $self;
   }
   
-  # Instance Methods
-  method parse_color : Cotton::Style::Color () {
-    
-    my $style_h = $self->{style_h};
-    
-    my $color_string = $style_h->get_string("color");
+  static method parse_color_string : Cotton::Style::Color ($color_string : string) {
     
     unless ($color_string) {
       return undef;
@@ -51,4 +46,37 @@ class Cotton::Style {
     
     return $color;
   }
+  
+  # Instance Methods
+  method parse_color : Cotton::Style::Color () {
+    
+    my $style_h = $self->{style_h};
+    
+    my $color_string = $style_h->get_string("color");
+    
+    unless ($color_string) {
+      return undef;
+    }
+    
+    my $color = &parse_color_string($color_string);
+    
+    return $color;
+  }
+  
+  method parse_background_color : Cotton::Style::Color () {
+    
+    my $style_h = $self->{style_h};
+    
+    my $background_color_string = $style_h->get_string("background-color");
+    
+    unless ($background_color_string) {
+      return undef;
+    }
+    
+    my $background_color = &parse_color_string($background_color_string);
+    
+    return $background_color;
+  }
+  
+  
 }
