@@ -64,7 +64,7 @@ class Cotton::Node {
     return $self;
   }
   
-  static method new_element : Cotton::Node ($tag_name : string, $nodes : Cotton::Node[] = undef, $attribute_pairs : object[] = undef) {
+  static method new_element : Cotton::Node ($tag_name : string, $attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
     
     unless ($tag_name) {
       die "\$tag_namet must be defined.";

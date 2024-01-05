@@ -16,62 +16,62 @@ class Cotton : precompile {
     return $new_node;
   }
   
-  static method tag : Cotton::Node ($tag_name : string, $nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
+  static method tag : Cotton::Node ($tag_name : string, $attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
     
-    my $new_node = Cotton::Node->new_element($tag_name, $nodes, $attributes);
+    my $new_node = Cotton::Node->new_element($tag_name, $attribute_pairs, $nodes);
     
     return $new_node;
   }
   
-  static method body : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("body", $nodes);
-  }
-
-  static method h1 : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("h1", $nodes);
-  }
-
-  static method h2 : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("h2", $nodes);
-  }
-
-  static method h3 : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("h3", $nodes);
-  }
-
-  static method h4 : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("h4", $nodes);
-  }
-
-  static method h5 : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("h5", $nodes);
-  }
-
-  static method h6 : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("h6", $nodes);
-  }
-
-  static method div : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("div", $nodes);
+  static method body : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("body", $attribute_pairs, $nodes);
   }
   
-  static method span : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("span", $nodes);
+  static method h1 : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("h1", $attribute_pairs, $nodes);
   }
-
-  static method ul : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("ul", $nodes);
+  
+  static method h2 : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("h2", $attribute_pairs, $nodes);
   }
-
-  static method ol : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("ol", $nodes);
+  
+  static method h3 : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("h3", $attribute_pairs, $nodes);
   }
-
-  static method li : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("li", $nodes);
+  
+  static method h4 : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("h4", $attribute_pairs, $nodes);
   }
-  static method a : Cotton::Node ($nodes : Cotton::Node[] = undef, $attributes : object[] = undef) {
-    return &tag("a", $nodes);
+  
+  static method h5 : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("h5", $attribute_pairs, $nodes);
+  }
+  
+  static method h6 : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("h6", $attribute_pairs, $nodes);
+  }
+  
+  static method div : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("div", $attribute_pairs, $nodes);
+  }
+  
+  static method span : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("span", $attribute_pairs, $nodes);
+  }
+  
+  static method ul : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("ul", $attribute_pairs, $nodes);
+  }
+  
+  static method ol : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("ol", $attribute_pairs, $nodes);
+  }
+  
+  static method li : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("li", $attribute_pairs, $nodes);
+  }
+  static method a : Cotton::Node ($attribute_pairs : object[] = undef, $nodes : Cotton::Node[] = undef) {
+    return &tag("a", $attribute_pairs, $nodes);
   }
   
 }
