@@ -6,7 +6,7 @@ class Cotton::Attributes {
   # Fields
   has attributes_h : ro Hash of string;
   
-  has styles : Cotton::Style;
+  has style : Cotton::Style;
   
   # Class Methods
   static method new : Cotton::Attributes ($attribute_pairs : object[] = undef) {
