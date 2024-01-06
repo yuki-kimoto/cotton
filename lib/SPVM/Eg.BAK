@@ -45,22 +45,22 @@ class Eg : precompile {
   }
   
   static method body_ : Eg::Node ($attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
-    return &tag("body", $nodes);
+    return &tag_("body",$attributes, $nodes);
   }
   
   static method div_ : Eg::Node ($attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
-    return &tag("div", $nodes);
+    return &tag_("div",$attributes, $nodes);
   }
   
   static method ul_ : Eg::Node ($attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
-    return &tag("ul", $nodes);
+    return &tag_("ul",$attributes, $nodes);
   }
   
   static method li_ : Eg::Node ($attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
-    return &tag("li", $nodes);
+    return &tag_("li",$attributes, $nodes);
   }
   static method a_ : Eg::Node ($attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
-    return &tag("a", $nodes);
+    return &tag_("a",$attributes, $nodes);
   }
   
   # Deprecated Methods
