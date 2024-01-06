@@ -21,10 +21,10 @@ class Cotton::Browser::Win {
       $text1->set_color(Eg->rgb(0x00, 0x00, 0xFF));
       $text1->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
       
-      my $div1 = Eg->div([$text1], {style => {
+      my $div1 = Eg->div_({style => {
         "color" => "#0x0000FF",
         "background-color" => "#0x003344"
-      }});
+      }}, [$text1]);
       
       $div1->set_color(Eg->rgb(0x00, 0x00, 0xFF));
       $div1->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
@@ -33,10 +33,10 @@ class Cotton::Browser::Win {
       $text2->set_color(Eg->rgb(0x00, 0x00, 0xFF));
       $text2->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
       
-      my $div2 = Eg->div([$text2], {style => {
+      my $div2 = Eg->div_({style => {
         "color" => "#0x0000FF",
         "background-color" => "#0x003344"
-      }});
+      }}, [$text2]);
       
       $div2->set_color(Eg->rgb(0x00, 0x00, 0xFF));
       $div2->set_background_color(Eg->rgb(0x00, 0x33, 0x44));
