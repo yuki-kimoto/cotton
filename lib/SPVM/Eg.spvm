@@ -11,11 +11,24 @@ class Eg : precompile {
     return $new_node;
   }
   
-  static method tag : Eg::Node ($tag_name : string, $nodes : Eg::Node[] = undef, $attributes : object[] = undef) {
+  static method tag : Eg::Node ($tag_name : string, $nodes_or_text : object of Eg::Node[]|string = undef) {
     
-    my $new_node = Eg::Node->new_element($tag_name, $attributes, $nodes);
+    my $nodes = (Eg::Node[])undef;
+    if ($nodes_or_text) {
+      if ($nodes_or_text is_type string) {
+        $nodes = [Eg::Node->new_text((string)$nodes_or_text)];
+      }
+      elsif ($nodes_or_text is_type Eg::Node[]) {
+        $nodes = (Eg::Node[])$nodes_or_text;
+      }
+      else {
+        die "The type of \$nodes_or_text must be Eg::Node or string.";
+      }
+    }
     
-    return $new_node;
+    my $new_element_node = Eg::Node->new_element($tag_name, undef, $nodes);
+    
+    return $new_element_node;
   }
   
   static method body : Eg::Node ($nodes : Eg::Node[] = undef) {
@@ -37,11 +50,24 @@ class Eg : precompile {
     return &tag("a", $nodes);
   }
   
-  static method tag_ : Eg::Node ($tag_name : string, $attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
+  static method tag_ : Eg::Node ($tag_name : string, $attributes : object[] = undef, $nodes_or_text : object of Eg::Node[]|string = undef) {
     
-    my $new_node = Eg::Node->new_element($tag_name, $attributes, $nodes);
+    my $nodes = (Eg::Node[])undef;
+    if ($nodes_or_text) {
+      if ($nodes_or_text is_type string) {
+        $nodes = [Eg::Node->new_text((string)$nodes_or_text)];
+      }
+      elsif ($nodes_or_text is_type Eg::Node[]) {
+        $nodes = (Eg::Node[])$nodes_or_text;
+      }
+      else {
+        die "The type of \$nodes_or_text must be Eg::Node or string.";
+      }
+    }
     
-    return $new_node;
+    my $new_element_node = Eg::Node->new_element($tag_name, $attributes, $nodes);
+    
+    return $new_element_node;
   }
   
   static method body_ : Eg::Node ($attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
