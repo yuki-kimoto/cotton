@@ -1,6 +1,3 @@
-# Copyright (c) 2024 Yuki Kimoto
-# MIT License
-
 class Eg::Attributes {
   allow Eg;
   allow Eg::Node;
@@ -10,7 +7,7 @@ class Eg::Attributes {
   # Fields
   has attributes_h : ro Hash of string;
   
-  has style : ro Eg::Style;
+  has style : Eg::Style;
   
   # Class Methods
   static method new : Eg::Attributes ($attribute_pairs : object[] = undef) {
