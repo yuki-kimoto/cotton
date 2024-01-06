@@ -1,14 +1,11 @@
-class Eg : precompile {
+class Eg {
   use Eg::Node;
-  use List;
-  use Eg::Style::Color;
-  use Encode;
   
   static method text : Eg::Node ($text : string) {
     
-    my $new_node = Eg::Node->new_text($text);
+    my $new_text_node = Eg::Node->new_text($text);
     
-    return $new_node;
+    return $new_text_node;
   }
   
   static method tag : Eg::Node ($tag_name : string, $nodes_or_text : object of Eg::Node[]|string = undef) {

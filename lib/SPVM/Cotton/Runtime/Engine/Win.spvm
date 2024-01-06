@@ -2,6 +2,7 @@ class Cotton::Runtime::Engine::Win {
   use List;
   use Cotton::App;
   use Cotton::Runtime::Engine::Win::WindowHandle;
+  use Encode;
   
   has app : rw Cotton::App;
   has runtime : rw Cotton::Runtime;
