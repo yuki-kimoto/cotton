@@ -1,14 +1,11 @@
 class Eg::Node {
   allow Eg;
-  allow Cotton::App;
-  allow Cotton::Renderer;
   
   use Hash;
-  use StringList;
-  use Eg::Style::Color;
+  use List;
   use StringBuffer;
-  use Eg::Style;
   use Eg::Attributes;
+  use Eg::Style;
   
   enum {
     TYPE_ELEMENT_NODE = 1,
@@ -22,18 +19,20 @@ class Eg::Node {
     TYPE_DOCUMENT_FRAGMENT_NODE = 11,
   }
   
+  # Fields
   has type : ro int;
-  
-  has tag_name : rw string;
-  
-  has text : ro StringBuffer;
   
   has nodes : ro List of Eg::Node;
   
-  has attributes : Eg::Attributes;
+  has attributes : rw Eg::Attributes;
+  
+  has tag_name : ro string;
+  
+  has text_buffer : ro StringBuffer;
   
   has parent : Eg::Node;
   
+  # Class Methods
   static method new : Eg::Node ($type : int, $nodes : Eg::Node[] = undef) {
     
     my $self = new Eg::Node;
@@ -87,19 +86,89 @@ class Eg::Node {
     
     $text_buffer->push($text);
     
-    $self->{text} = $text_buffer;
+    $self->{text_buffer} = $text_buffer;
     
     return $self;
   }
   
   # Instance Methods
   method style : Eg::Style () {
+    
     return $self->{attributes}->{style};
   }
   
   method set_style : void ($style : Eg::Style) {
     $self->{attributes}->{style} = $style;
   }
+  
+  method css : string ($name : string) {
+    
+    return $self->{attributes}->{style}->{style_h}->get_string($name);
+  }
+  
+  method set_css : void ($name : string, $value : string) {
+    
+    $self->{attributes}->{style}->{style_h}->set_string($name, $value);
+  }
+  
+  method attr : string ($name : string) {
+    
+    return $self->{attributes}->{attributes_h}->get_string($name);
+  }
+  
+  method set_attr : void ($name : string, $value : string) {
+    
+    $self->{attributes}->{attributes_h}->set_string($name, $value);
+  }
+  
+  method text : string () {
+    my $nodes = $self->{nodes};
+    
+    my $nodes_length = $nodes->length;
+    
+    my $text = (string)undef;
+    
+    if ($nodes_length > 0) {
+      my $first_child = (Eg::Node)$nodes->get(0);
+      
+      if ($first_child->type == &TYPE_TEXT_NODE) {
+        $text = $first_child->{text_buffer}->to_string;
+      }
+      else {
+        die "The first child is not a text node.";
+      }
+    }
+    else {
+      return "";
+    }
+    
+    return $text;
+  }
+  
+  method set_text : string ($text : string) {
+    my $nodes = $self->{nodes};
+    
+    my $nodes_length = $nodes->length;
+    
+    if ($nodes_length > 0) {
+      my $first_child = (Eg::Node)$nodes->get(0);
+      
+      if ($first_child->type == &TYPE_TEXT_NODE) {
+        $first_child->{text_buffer}->set($text);
+      }
+      else {
+        die "The first child is not a text node.";
+      }
+    }
+    else {
+      $self->{nodes} = List->new([&new_text($text)]);
+    }
+    
+  }
+  
+  # Deprecated allow
+  allow Cotton::App;
+  allow Cotton::Renderer;
   
   # Deprecated Fields
   has color : rw Eg::Style::Color;

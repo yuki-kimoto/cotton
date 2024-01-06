@@ -34,8 +34,8 @@ class Cotton::Renderer {
         $node->{draw_width} = $viewport_width;
         
         my $text_string = (string)undef;
-        if ($node->{text}) {
-          $text_string = $node->{text}->to_string;
+        if ($node->{text_buffer}) {
+          $text_string = $node->{text_buffer}->to_string;
         }
         
         my $draw_height = $runtime->api->calc_text_height($paint_info, $text_string, $viewport_width, undef);
