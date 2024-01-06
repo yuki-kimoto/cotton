@@ -960,10 +960,4 @@ class Eg {
     return &tag_("wbr", $attributes, $nodes_or_text);
   }
   
-  # Deprecated Methods
-  static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
-    my $color = Eg::Style::Color->new($red, $green, $blue, 1);
-    return $color;
-  }
-  
 }

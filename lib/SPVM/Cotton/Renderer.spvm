@@ -7,6 +7,11 @@ class Cotton::Renderer {
   use Fn;
   use Sort;
   
+  static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
+    my $color = Eg::Style::Color->new($red, $green, $blue, 1);
+    return $color;
+  }
+  
   static method new : Cotton::Renderer () {
     return new Cotton::Renderer;
   }
@@ -58,7 +63,7 @@ class Cotton::Renderer {
         
         $node_list->push($node);
         
-        $node->set_background_color(Ct->rgb(0xFF, 0x00, 0x00));
+        $node->set_background_color(&rgb(0xFF, 0x00, 0x00));
       }
       {
         my $node = Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "0xFF0000"}});
@@ -68,7 +73,7 @@ class Cotton::Renderer {
         $node->{draw_width} = 500;
         $node->{draw_height} = 500;
         $node_list->push($node);
-        $node->set_background_color(Ct->rgb(0xFF, 0x00, 0x00));
+        $node->set_background_color(&rgb(0xFF, 0x00, 0x00));
       }
       
       # Drow node
