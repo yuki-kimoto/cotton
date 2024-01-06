@@ -1,9 +1,5 @@
-# Copyright (c) 2024 Yuki Kimoto
-# MIT License
-
 class Eg::Style {
   allow Eg;
-  allow Eg::Node;
   
   use Eg::Style::Color;
   use Regex;
