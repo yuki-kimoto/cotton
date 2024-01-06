@@ -4,11 +4,6 @@ class Eg : precompile {
   use Eg::Style::Color;
   use Encode;
   
-  static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
-    my $color = Eg::Style::Color->new($red, $green, $blue, 1);
-    return $color;
-  }
-  
   static method text : Eg::Node ($text : string) {
     
     my $new_node = Eg::Node->new_text($text);
@@ -72,6 +67,12 @@ class Eg : precompile {
   }
   static method a : Eg::Node ($nodes : Eg::Node[] = undef, $attributes : object[] = undef) {
     return &tag("a", $nodes);
+  }
+  
+  # Deprecated Methods
+  static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
+    my $color = Eg::Style::Color->new($red, $green, $blue, 1);
+    return $color;
   }
   
 }
