@@ -1,5 +1,4 @@
 class Cotton::Page {
-  has title : rw string;
   has body : rw Eg::Node;
   
   static method new : Cotton::Page () {
