@@ -1,9 +1,0 @@
-class Cotton::Page {
-  has body : rw Eg::Node;
-  
-  static method new : Cotton::Page () {
-    my $page = new Cotton::Page;
-    
-    return $page;
-  }
-}

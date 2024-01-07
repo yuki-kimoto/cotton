@@ -2,7 +2,6 @@ class Cotton::Browser::Win {
   use Cotton::App;
   use Eg::Node;
   use List;
-  use Cotton::Page;
   
   use Cotton::Runtime::Engine::Win;
   use Cotton::Runtime;
@@ -53,13 +52,8 @@ class Cotton::Browser::Win {
       $body->set_color(&rgb(0x00, 0x00, 0xFF));
       $body->set_background_color(&rgb(0x00, 0x33, 0x44));
       
-      # Create index page
-      my $page = Cotton::Page->new;
-      $page->set_body($body);
-      $app->push_page($page);
-
       # Set current page;
-      $app->set_current_page($page);
+      $app->set_current_page($body);
     }
     
     # Create runtime

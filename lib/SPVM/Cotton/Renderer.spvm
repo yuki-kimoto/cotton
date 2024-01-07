@@ -19,13 +19,11 @@ class Cotton::Renderer {
   method paint_nodes : void($runtime : Cotton::Runtime, $paint_info : Cotton::PaintInfo) {
     my $app = $runtime->app;
     
-    my $page = $app->current_page;
-    
     my $viewport_width = $runtime->api->get_viewport_width();
     my $viewport_height = $runtime->api->get_viewport_height();
     
     {
-      my $body = $page->body;
+      my $body = $app->current_page;
       
       $body->{draw_left} = 0;
       $body->{draw_top} = 0;
