@@ -55,7 +55,6 @@ class Cotton::Browser::Win {
       
       # Create index page
       my $page = Cotton::Page->new;
-      $page->set_path("/");
       $page->set_body($body);
       $app->push_page($page);
 

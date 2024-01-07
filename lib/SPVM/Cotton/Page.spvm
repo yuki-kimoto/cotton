@@ -1,5 +1,4 @@
 class Cotton::Page {
-  has path : rw string;
   has title : rw string;
   has body : rw Eg::Node;
   
