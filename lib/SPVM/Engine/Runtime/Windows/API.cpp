@@ -42,7 +42,7 @@ struct COTTON_RUNTIME_PAINT_INFO {
   ID2D1HwndRenderTarget* renderer;
 };
 
-int32_t Engine_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
+static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
   int32_t error_id = 0;
   
   void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
@@ -179,7 +179,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       int32_t error_id = 0;
       
       // Draw node
-      error_id = Engine_Runtime_paint_window(env, stack, sv_self);
+      error_id = repaint(env, stack, sv_self);
       
       if (error_id) {
         alert(env, stack, env->get_chars(env, stack, env->get_exception(env, stack)));
