@@ -293,7 +293,7 @@ int32_t SPVM__Engine__Runtime__Windows__API__calc_text_height(SPVM_ENV* env, SPV
   return 0;
 }
 
-int32_t SPVM__Engine__Runtime__Windows__API__repaint(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Windows__API__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   

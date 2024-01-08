@@ -45,7 +45,7 @@ class Engine::Renderer {
         
         $node->{draw_height} = $draw_height;
         
-        $runtime->api->repaint($paint_info, $node);
+        $runtime->api->paint_node($paint_info, $node);
       }
     }
 
@@ -78,7 +78,7 @@ class Engine::Renderer {
       my $node_list_length = $node_list->length;
       for (my $i = 0; $i < $node_list_length; $i++) {
         my $node = (Eg::Node)$node_list->get($i);
-        $runtime->api->repaint($paint_info, $node);
+        $runtime->api->paint_node($paint_info, $node);
       }
     }
   }
