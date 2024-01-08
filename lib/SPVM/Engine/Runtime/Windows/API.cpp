@@ -357,7 +357,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
       if (error_id) { return error_id; }
       void* obj_renderer = stack[0].oval;
       
-      stack[0].oval = obj_renderer;
+      stack[0].oval = obj_self;
       stack[1].oval = obj_app;
       stack[2].oval = obj_paint_info;
       env->call_instance_method_by_name(env, stack, "repaint", 3, &error_id, __func__, FILE_NAME, __LINE__);
