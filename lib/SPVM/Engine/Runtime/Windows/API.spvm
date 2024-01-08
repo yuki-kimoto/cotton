@@ -41,6 +41,8 @@ class Engine::Runtime::Windows::API {
   
   native method open_main_window_native : void ($left : int, $top : int, $width : int, $height : int);
   
+  native method start_app : void ();
+  
   native method get_viewport_width : int ();
   
   native method get_viewport_height : int ();
@@ -48,6 +50,4 @@ class Engine::Runtime::Windows::API {
   native method paint_node : void ($paint_info : object, $node : Eg::Node);
   
   native method calc_text_height : int ($paint_info : Engine::Runtime::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
-  
-  native method start_app : void ();
 }
