@@ -1,9 +1,13 @@
-class Engine::App : precompile {
+class Engine::App {
   use List;
   use Eg::Node;
-  use Engine::Renderer;
+  use Engine::Runtime;
+  
+  # Fields
+  has runtime : rw Engine::Runtime;
   
   has name : rw string;
+  
   has index_document : rw Eg::Node;
   
   static method new : Engine::App() {
