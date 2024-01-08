@@ -3,7 +3,7 @@ class Engine::Windows {
   use Eg::Node;
   use List;
   
-  use Eg::Runtime::Windows::API;
+  use Eg::API::Windows;
   use Eg::Runtime;
 
   static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
@@ -63,7 +63,7 @@ class Engine::Windows {
     
     $app->set_runtime($runtime);
     
-    my $api = Eg::Runtime::Windows::API->new;
+    my $api = Eg::API::Windows->new;
     
     $runtime->set_api($api);
     

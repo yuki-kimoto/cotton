@@ -1,21 +1,22 @@
-class Eg::Runtime::Windows::API {
+class Eg::API::Windows {
   interface Eg::API;
   
   use List;
   use Encode;
   use Eg::App;
-  use Eg::Runtime::Windows::API::WindowHandle;
-  use Eg::Runtime::Windows::PaintInfo;
   use Eg::Node;
   use Hash;
   
+  use Eg::API::Windows::WindowHandle;
+  use Eg::API::Windows::PaintInfo;
+  
   has app : rw Eg::App;
   has runtime : rw Eg::Runtime;
-  has window_handle : Eg::Runtime::Windows::API::WindowHandle;
+  has window_handle : Eg::API::Windows::WindowHandle;
   
-  static method new : Eg::Runtime::Windows::API($options : object[] = undef) {
+  static method new : Eg::API::Windows($options : object[] = undef) {
     
-    my $self = new Eg::Runtime::Windows::API;
+    my $self = new Eg::API::Windows;
     
     return $self;
   }
@@ -49,7 +50,7 @@ class Eg::Runtime::Windows::API {
   
   native method paint_node : void ($paint_info : object, $node : Eg::Node);
   
-  native method calc_text_height : int ($paint_info : Eg::Runtime::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
+  native method calc_text_height : int ($paint_info : Eg::API::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
   static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
     my $color = Eg::Style::Color->new($red, $green, $blue, 1);

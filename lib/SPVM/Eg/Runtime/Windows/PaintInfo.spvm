@@ -1,2 +1,0 @@
-class Eg::Runtime::Windows::PaintInfo : pointer;
-
