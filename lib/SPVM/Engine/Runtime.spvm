@@ -1,8 +1,6 @@
 class Engine::Runtime {
   
   # Fields
-  has app : rw Engine::App;
-  
   has api : rw Engine::API;
   
   # Class Methods
