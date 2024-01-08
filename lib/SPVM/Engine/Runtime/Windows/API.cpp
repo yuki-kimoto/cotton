@@ -15,17 +15,17 @@ extern "C" {
 static int16_t* encode_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* string) {
   int32_t error_id = 0;
   
-  void* sv_string =  env->new_string_nolen(env, stack, string);
+  void* obj_string =  env->new_string_nolen(env, stack, string);
   
-  void* sv_string_utf8_to_utf16 = NULL;
+  void* obj_string_utf8_to_utf16 = NULL;
   {
-    stack[0].oval = sv_string;
+    stack[0].oval = obj_string;
     env->call_class_method_by_name(env, stack, "Encode", "encode_utf16", 1, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return NULL; }
-    sv_string_utf8_to_utf16 = stack[0].oval;
+    obj_string_utf8_to_utf16 = stack[0].oval;
   }
   
-  int16_t* string_utf8_to_utf16 = env->get_elems_short(env, stack, sv_string_utf8_to_utf16);
+  int16_t* string_utf8_to_utf16 = env->get_elems_short(env, stack, obj_string_utf8_to_utf16);
   
   return string_utf8_to_utf16;
 }
@@ -42,38 +42,38 @@ struct COTTON_RUNTIME_PAINT_INFO {
   ID2D1HwndRenderTarget* renderer;
 };
 
-static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
+static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   int32_t error_id = 0;
   
-  void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
 
-  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
 
-  void* sv_runtime = env->get_field_object_by_name(env, stack, sv_self, "runtime", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_runtime = env->get_field_object_by_name(env, stack, obj_self, "runtime", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  HWND window_handle = (HWND)env->get_pointer(env, stack, sv_window_handle);
+  HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
   // Draw page title
   {
-    void* sv_app_name = NULL;
+    void* obj_app_name = NULL;
     {
-      stack[0].oval = sv_app;
+      stack[0].oval = obj_app;
       env->call_instance_method_by_name(env, stack, "name", 1, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
-      sv_app_name = stack[0].oval;
+      obj_app_name = stack[0].oval;
     }
     
-    void* sv_app_name_utf8_to_utf16 = NULL;
+    void* obj_app_name_utf8_to_utf16 = NULL;
     {
-      stack[0].oval = sv_app_name;
+      stack[0].oval = obj_app_name;
       env->call_class_method_by_name(env, stack, "Encode", "encode_utf16", 1, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
-      sv_app_name_utf8_to_utf16 = stack[0].oval;
+      obj_app_name_utf8_to_utf16 = stack[0].oval;
     }
-    int16_t* app_name_utf8_to_utf16 = env->get_elems_short(env, stack, sv_app_name_utf8_to_utf16);
+    int16_t* app_name_utf8_to_utf16 = env->get_elems_short(env, stack, obj_app_name_utf8_to_utf16);
     
     SetWindowTextW(window_handle, (LPCWSTR)app_name_utf8_to_utf16);
   }
@@ -129,7 +129,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
       paint_info->window_handle = window_handle;
       paint_info->renderer = renderer;
       
-      void* sv_paint_info = env->new_pointer_object_by_name(env, stack, "Engine::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
+      void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Engine::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
       env->call_class_method_by_name(env, stack, "Engine::Renderer", "new", 0, &error_id, __func__, FILE_NAME, __LINE__);
@@ -137,8 +137,8 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
       void* obj_renderer = stack[0].oval;
       
       stack[0].oval = obj_renderer;
-      stack[1].oval = sv_runtime;
-      stack[2].oval = sv_paint_info;
+      stack[1].oval = obj_runtime;
+      stack[2].oval = obj_paint_info;
       env->call_instance_method_by_name(env, stack, "paint_nodes", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
@@ -160,7 +160,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
   
   static SPVM_ENV* env;
   static SPVM_VALUE* stack;
-  static void* sv_self;
+  static void* obj_self;
   
   switch (message) {
     case WM_DESTROY: {
@@ -171,7 +171,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
       void** wm_create_args = (void**)create_struct->lpCreateParams;
       env = (SPVM_ENV*)wm_create_args[0];
-      sv_self = (void*)wm_create_args[1];
+      obj_self = (void*)wm_create_args[1];
       stack = (SPVM_VALUE*)wm_create_args[2];
 
       // alert(env, stack, "ハローワールド");
@@ -182,7 +182,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       int32_t error_id = 0;
       
       // Draw node
-      error_id = repaint(env, stack, sv_self);
+      error_id = repaint(env, stack, obj_self);
       
       if (error_id) {
         alert(env, stack, env->get_chars(env, stack, env->get_exception(env, stack)));
@@ -219,19 +219,19 @@ int32_t SPVM__Engine__Runtime__Windows__API__calc_text_height(SPVM_ENV* env, SPV
   
   int32_t error_id = 0;
   
-  void* sv_self = stack[0].oval;
-  void* sv_paint_info = stack[1].oval;
-  void* sv_text = stack[2].oval;
+  void* obj_self = stack[0].oval;
+  void* obj_paint_info = stack[1].oval;
+  void* obj_text = stack[2].oval;
   int32_t draw_width = stack[3].ival;
-  void* sv_font_styles = stack[4].oval;
+  void* obj_font_styles = stack[4].oval;
 
-  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, sv_paint_info);
+  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
   HDC hdc = paint_info->hdc;
   
   int32_t draw_height = 0;
-  if (sv_text) {
+  if (obj_text) {
     // Render block which has text
-    const char* text = env->get_chars(env, stack, sv_text);
+    const char* text = env->get_chars(env, stack, obj_text);
     
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
@@ -297,24 +297,24 @@ int32_t SPVM__Engine__Runtime__Windows__API__paint_node(SPVM_ENV* env, SPVM_VALU
   
   int32_t error_id = 0;
   
-  void* sv_self = stack[0].oval;
-  void* sv_paint_info = stack[1].oval;
-  void* sv_node = stack[2].oval;
+  void* obj_self = stack[0].oval;
+  void* obj_paint_info = stack[1].oval;
+  void* obj_node = stack[2].oval;
 
-  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
 
-  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, sv_paint_info);
+  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
   HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
 
-  int32_t draw_left = env->get_field_int_by_name(env, stack, sv_node, "draw_left", &error_id, __func__, FILE_NAME, __LINE__);
+  int32_t draw_left = env->get_field_int_by_name(env, stack, obj_node, "draw_left", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
-  int32_t draw_top = env->get_field_int_by_name(env, stack, sv_node, "draw_top", &error_id, __func__, FILE_NAME, __LINE__);
+  int32_t draw_top = env->get_field_int_by_name(env, stack, obj_node, "draw_top", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
-  int32_t draw_width = env->get_field_int_by_name(env, stack, sv_node, "draw_width", &error_id, __func__, FILE_NAME, __LINE__);
+  int32_t draw_width = env->get_field_int_by_name(env, stack, obj_node, "draw_width", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
-  int32_t draw_height = env->get_field_int_by_name(env, stack, sv_node, "draw_height", &error_id, __func__, FILE_NAME, __LINE__);
+  int32_t draw_height = env->get_field_int_by_name(env, stack, obj_node, "draw_height", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
 
   // Block rect
@@ -324,22 +324,22 @@ int32_t SPVM__Engine__Runtime__Windows__API__paint_node(SPVM_ENV* env, SPVM_VALU
 
   // Draw block
   {
-    void* sv_background_color = env->get_field_object_by_name(env, stack, sv_node, "background_color", &error_id, __func__, FILE_NAME, __LINE__);
+    void* obj_background_color = env->get_field_object_by_name(env, stack, obj_node, "background_color", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     
     int32_t background_color;
     D2D1::ColorF background_color_f = {0};
-    if (sv_background_color) {
-      float background_color_red = env->get_field_float_by_name(env, stack,  sv_background_color, "red", &error_id, __func__, FILE_NAME, __LINE__);
+    if (obj_background_color) {
+      float background_color_red = env->get_field_float_by_name(env, stack,  obj_background_color, "red", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
-      float background_color_green = env->get_field_float_by_name(env, stack,  sv_background_color, "green", &error_id, __func__, FILE_NAME, __LINE__);
+      float background_color_green = env->get_field_float_by_name(env, stack,  obj_background_color, "green", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
-      float background_color_blue = env->get_field_float_by_name(env, stack,  sv_background_color, "blue", &error_id, __func__, FILE_NAME, __LINE__);
+      float background_color_blue = env->get_field_float_by_name(env, stack,  obj_background_color, "blue", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
-      float background_color_alpha = env->get_field_float_by_name(env, stack,  sv_background_color, "alpha", &error_id, __func__, FILE_NAME, __LINE__);
+      float background_color_alpha = env->get_field_float_by_name(env, stack,  obj_background_color, "alpha", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
@@ -366,19 +366,19 @@ int32_t SPVM__Engine__Runtime__Windows__API__paint_node(SPVM_ENV* env, SPVM_VALU
     background_brush->Release();
   }
   
-  void* sv_text_buffer = env->get_field_object_by_name(env, stack, sv_node, "text_buffer", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_text_buffer = env->get_field_object_by_name(env, stack, obj_node, "text_buffer", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  if (sv_text_buffer) {
+  if (obj_text_buffer) {
     
     // Render block which has text
     
-    stack[0].oval = sv_text_buffer;
+    stack[0].oval = obj_text_buffer;
     env->call_instance_method_by_name(env, stack, "to_string", 0, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    void* sv_text = stack[0].oval;
+    void* obj_text = stack[0].oval;
     
-    const char* text = env->get_chars(env, stack, sv_text);
+    const char* text = env->get_chars(env, stack, obj_text);
     
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
@@ -388,22 +388,22 @@ int32_t SPVM__Engine__Runtime__Windows__API__paint_node(SPVM_ENV* env, SPVM_VALU
     int32_t parent_width = block_rect.right + 1;
     int32_t parent_height = block_rect.bottom + 1;
 
-    void* sv_color = env->get_field_object_by_name(env, stack, sv_node, "color", &error_id, __func__, FILE_NAME, __LINE__);
+    void* obj_color = env->get_field_object_by_name(env, stack, obj_node, "color", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     
     int32_t color;
     D2D1::ColorF color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
-    if (sv_color) {
-      float color_red = env->get_field_float_by_name(env, stack,  sv_color, "red", &error_id, __func__, FILE_NAME, __LINE__);
+    if (obj_color) {
+      float color_red = env->get_field_float_by_name(env, stack,  obj_color, "red", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
-      float color_green = env->get_field_float_by_name(env, stack,  sv_color, "green", &error_id, __func__, FILE_NAME, __LINE__);
+      float color_green = env->get_field_float_by_name(env, stack,  obj_color, "green", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
-      float color_blue = env->get_field_float_by_name(env, stack,  sv_color, "blue", &error_id, __func__, FILE_NAME, __LINE__);
+      float color_blue = env->get_field_float_by_name(env, stack,  obj_color, "blue", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
-      float color_alpha = env->get_field_float_by_name(env, stack,  sv_color, "alpha", &error_id, __func__, FILE_NAME, __LINE__);
+      float color_alpha = env->get_field_float_by_name(env, stack,  obj_color, "alpha", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
       color = RGB(color_red, color_green, color_blue);
@@ -467,15 +467,15 @@ int32_t SPVM__Engine__Runtime__Windows__API__get_viewport_width(SPVM_ENV* env, S
   
   int32_t error_id = 0;
   
-  void* sv_self = stack[0].oval;
+  void* obj_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
 
-  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  HWND window_handle = (HWND)env->get_pointer(env, stack, sv_window_handle);
+  HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
   RECT rect;
   GetClientRect(window_handle, &rect);
@@ -492,15 +492,15 @@ int32_t SPVM__Engine__Runtime__Windows__API__get_viewport_height(SPVM_ENV* env, 
   
   int32_t error_id = 0;
 
-  void* sv_self = stack[0].oval;
+  void* obj_self = stack[0].oval;
 
-  void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
 
-  void* sv_app = env->get_field_object_by_name(env, stack, sv_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  HWND window_handle = (HWND)env->get_pointer(env, stack, sv_window_handle);
+  HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
   RECT rect;
   GetClientRect(window_handle, &rect);
@@ -517,7 +517,7 @@ struct Vertex {
  
 int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
   
-  void* sv_self = stack[0].oval;
+  void* obj_self = stack[0].oval;
   
   int32_t error_id = 0;
   
@@ -548,7 +548,7 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
   HMENU window_id = NULL;
   void** wm_create_args = (void**)calloc(3, sizeof(void*));
   wm_create_args[0] = env;
-  wm_create_args[1] = sv_self;
+  wm_create_args[1] = obj_self;
   wm_create_args[2] = stack;
   void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
@@ -559,10 +559,10 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
       window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
-  void* sv_window_handle = env->new_pointer_object_by_name(env, stack, "Engine::Runtime::Windows::API", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Engine::Runtime::Windows::API", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  env->set_field_object_by_name(env, stack, sv_self, "window_handle", sv_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
+  env->set_field_object_by_name(env, stack, obj_self, "window_handle", obj_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
   {
