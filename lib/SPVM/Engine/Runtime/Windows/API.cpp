@@ -525,7 +525,7 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName = TEXT("Window");
-  if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register window class"); };
+  if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register the window class"); };
   
   // Create Main Window
   const int16_t* window_class_name = (const int16_t*)TEXT("Window");
@@ -557,86 +557,85 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   if (error_id) { return error_id; }
   
   {
+    // Swap chain descriptor
+    DXGI_SWAP_CHAIN_DESC sd;
+    ZeroMemory( &sd, sizeof( sd ) );
+    sd.BufferCount = 1;
+    sd.BufferDesc.Width = 640;
+    sd.BufferDesc.Height = 480;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = window_handle;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+    sd.Windowed = TRUE;
+    
+    D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
+    UINT               numFeatureLevelsRequested = 1;
+    D3D_FEATURE_LEVEL  FeatureLevelsSupported;
+    
+    // Create a device and a swap chane
+    HRESULT hr;
+    IDXGISwapChain* g_pSwapChain;
+    ID3D11Device* g_pd3dDevice;
+    ID3D11DeviceContext* g_pImmediateContext;
+    if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
+                    D3D_DRIVER_TYPE_HARDWARE, 
+                    NULL, 
+                    0,
+                    &FeatureLevelsRequested, 
+                    numFeatureLevelsRequested, 
+                    D3D11_SDK_VERSION, 
+                    &sd, 
+                    &g_pSwapChain, 
+                    &g_pd3dDevice, 
+                    &FeatureLevelsSupported,
+                    &g_pImmediateContext )))
     {
-      // Swap chain descriptor
-      DXGI_SWAP_CHAIN_DESC sd;
-      ZeroMemory( &sd, sizeof( sd ) );
-      sd.BufferCount = 1;
-      sd.BufferDesc.Width = 640;
-      sd.BufferDesc.Height = 480;
-      sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-      sd.BufferDesc.RefreshRate.Numerator = 60;
-      sd.BufferDesc.RefreshRate.Denominator = 1;
-      sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-      sd.OutputWindow = window_handle;
-      sd.SampleDesc.Count = 1;
-      sd.SampleDesc.Quality = 0;
-      sd.Windowed = TRUE;
-      
-      D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
-      UINT               numFeatureLevelsRequested = 1;
-      D3D_FEATURE_LEVEL  FeatureLevelsSupported;
-      
-      // Create a device and a swap chane
-      HRESULT hr;
-      IDXGISwapChain* g_pSwapChain;
-      ID3D11Device* g_pd3dDevice;
-      ID3D11DeviceContext* g_pImmediateContext;
-      if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
-                      D3D_DRIVER_TYPE_HARDWARE, 
-                      NULL, 
-                      0,
-                      &FeatureLevelsRequested, 
-                      numFeatureLevelsRequested, 
-                      D3D11_SDK_VERSION, 
-                      &sd, 
-                      &g_pSwapChain, 
-                      &g_pd3dDevice, 
-                      &FeatureLevelsSupported,
-                      &g_pImmediateContext )))
-      {
-        return hr;
-      }
-      
-      // Vertex buffer
-      ID3D11Buffer*      g_pVertexBuffer;
-      
-      // Supply the actual vertex data.
-      Vertex g_VertexList[] = {
-        { { -0.5f,  0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-        { {  0.5f, -0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-        { { -0.5f, -0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-        { {  0.5f,  0.5f, 0.5f }, { 1.0f, 1.0f, 0.0f, 1.0f } }
-      };
-      
-      // Buffer description
-      D3D11_BUFFER_DESC bufferDesc;
-      bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
-      bufferDesc.ByteWidth        = (sizeof( float ) * 3) * 3;
-      bufferDesc.BindFlags        = D3D11_BIND_VERTEX_BUFFER;
-      bufferDesc.CPUAccessFlags   = 0;
-      bufferDesc.MiscFlags        = 0;
-      
-      // Vertex data
-      D3D11_SUBRESOURCE_DATA InitData;
-      InitData.pSysMem = g_VertexList;
-      InitData.SysMemPitch = 0;
-      InitData.SysMemSlicePitch = 0;
-      
-      // Create vertex buffer
-      hr = g_pd3dDevice->CreateBuffer( &bufferDesc, &InitData, &g_pVertexBuffer );
-      
-      if (FAILED(hr)) {
-        return hr;
-      }
-      
-      // Shape of vertex
-      D3D11_INPUT_ELEMENT_DESC g_VertexDesc[] {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-      };
+      return hr;
     }
+    
+    // Vertex buffer
+    ID3D11Buffer*      g_pVertexBuffer;
+    
+    // Supply the actual vertex data.
+    Vertex g_VertexList[] = {
+      { { -0.5f,  0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+      { {  0.5f, -0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+      { { -0.5f, -0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+      { {  0.5f,  0.5f, 0.5f }, { 1.0f, 1.0f, 0.0f, 1.0f } }
+    };
+    
+    // Buffer description
+    D3D11_BUFFER_DESC bufferDesc;
+    bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
+    bufferDesc.ByteWidth        = (sizeof( float ) * 3) * 3;
+    bufferDesc.BindFlags        = D3D11_BIND_VERTEX_BUFFER;
+    bufferDesc.CPUAccessFlags   = 0;
+    bufferDesc.MiscFlags        = 0;
+    
+    // Vertex data
+    D3D11_SUBRESOURCE_DATA InitData;
+    InitData.pSysMem = g_VertexList;
+    InitData.SysMemPitch = 0;
+    InitData.SysMemSlicePitch = 0;
+    
+    // Create vertex buffer
+    hr = g_pd3dDevice->CreateBuffer( &bufferDesc, &InitData, &g_pVertexBuffer );
+    
+    if (FAILED(hr)) {
+      return hr;
+    }
+    
+    // Shape of vertex
+    D3D11_INPUT_ELEMENT_DESC g_VertexDesc[] {
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
   }
+  
   return 0;
 }
 
