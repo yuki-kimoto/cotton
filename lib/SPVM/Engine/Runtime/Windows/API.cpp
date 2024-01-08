@@ -534,6 +534,9 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   int window_x = CW_USEDEFAULT;
   int window_y = CW_USEDEFAULT;
   int window_width = CW_USEDEFAULT;
+  
+  spvm_warn("LINE %d %d", __LINE__, window_width);
+  
   int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
@@ -556,13 +559,20 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   env->set_field_object_by_name(env, stack, obj_self, "window_handle", obj_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
+  // Renderer
   {
+    RECT window_rect;
+    GetWindowRect(window_handle, &window_rect);
+    
+    int window_width = window_rect.right - window_rect.left;
+    int window_height = window_rect.bottom - window_rect.top;
+    
     // Swap chain descriptor
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory( &sd, sizeof( sd ) );
     sd.BufferCount = 1;
-    sd.BufferDesc.Width = 640;
-    sd.BufferDesc.Height = 480;
+    sd.BufferDesc.Width = window_width;
+    sd.BufferDesc.Height = window_height;
     sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     sd.BufferDesc.RefreshRate.Numerator = 60;
     sd.BufferDesc.RefreshRate.Denominator = 1;
