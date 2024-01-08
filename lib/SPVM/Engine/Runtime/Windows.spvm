@@ -50,8 +50,16 @@ class Engine::Runtime::Windows {
       $body->set_color(&rgb(0x00, 0x00, 0xFF));
       $body->set_background_color(&rgb(0x00, 0x33, 0x44));
       
-      # Set current page;
-      $app->set_index_document($body);
+      my $document = Eg->html(
+        [
+          Eg->head([
+            Eg->title("コットン")
+          ]),
+          $body
+        ]
+      );
+      
+      $app->set_index_document($document);
     }
     
     my $runtime = Engine::Runtime->new;
