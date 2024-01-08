@@ -1,4 +1,4 @@
-class Eg::Runtime::Windows {
+class Engine::Windows {
   use Eg::App;
   use Eg::Node;
   use List;
