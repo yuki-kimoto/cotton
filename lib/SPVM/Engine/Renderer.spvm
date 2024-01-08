@@ -1,9 +1,6 @@
 class Engine::Renderer {
   use Engine::App;
   use Engine::Runtime;
-  
-  use Eg as Ct;
-  
   use Fn;
   use Sort;
   
@@ -49,7 +46,7 @@ class Engine::Renderer {
         $runtime->api->paint_node($paint_info, $node);
       }
     }
-
+    
     {
       my $node_list = List->new([]);
       {

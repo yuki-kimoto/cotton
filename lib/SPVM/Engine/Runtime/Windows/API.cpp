@@ -12,6 +12,177 @@
 static const char* FILE_NAME = "Engine/Runtime/Windows/API.cpp";
 
 extern "C" {
+
+static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam);
+
+struct Vertex {
+        float pos[ 3 ];
+        float col[ 4 ];
+};
+
+int32_t SPVM__Engine__Runtime__Windows__API__open_main_window_native(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  void* obj_self = stack[0].oval;
+  
+  int32_t window_left = stack[1].ival;
+  
+  int32_t window_top = stack[2].ival;
+  
+  int32_t window_width = stack[3].ival;
+  
+  int32_t window_height = stack[4].ival;
+  
+  int32_t error_id = 0;
+  
+  HINSTANCE instance_handle = GetModuleHandle(NULL);
+  
+  // Register Window Class
+  WNDCLASS winc;
+  winc.style = CS_HREDRAW | CS_VREDRAW;
+  winc.lpfnWndProc = window_procedure;
+  winc.cbClsExtra = winc.cbWndExtra = 0;
+  winc.hInstance = instance_handle;
+  winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
+  winc.hCursor = LoadCursor(NULL , IDC_ARROW);
+  winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+  winc.lpszMenuName = NULL;
+  winc.lpszClassName = TEXT("Window");
+  if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register the window class"); };
+  
+  // Create Main Window
+  const int16_t* window_class_name = (const int16_t*)TEXT("Window");
+  const int16_t* window_title = NULL;
+  DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+  HWND window_parent_window_handle = NULL;
+  HMENU window_id = NULL;
+  void** wm_create_args = (void**)calloc(3, sizeof(void*));
+  wm_create_args[0] = env;
+  wm_create_args[1] = obj_self;
+  wm_create_args[2] = stack;
+  void* window_wm_create_lparam = (void*)wm_create_args;
+  HWND window_handle = CreateWindow(
+    (LPCWSTR)window_class_name, (LPCWSTR)window_title,
+    window_style,
+    window_left, window_top,
+    window_width, window_height,
+    window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
+  );
+  
+  void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Engine::Runtime::Windows::API", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  env->set_field_object_by_name(env, stack, obj_self, "window_handle", obj_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  // Renderer
+  {
+    RECT window_rect;
+    GetWindowRect(window_handle, &window_rect);
+    
+    int window_width = window_rect.right - window_rect.left;
+    int window_height = window_rect.bottom - window_rect.top;
+    
+    // Swap chain descriptor
+    DXGI_SWAP_CHAIN_DESC sd;
+    ZeroMemory( &sd, sizeof( sd ) );
+    sd.BufferCount = 1;
+    sd.BufferDesc.Width = window_width;
+    sd.BufferDesc.Height = window_height;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = window_handle;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+    sd.Windowed = TRUE;
+    
+    D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
+    UINT               numFeatureLevelsRequested = 1;
+    D3D_FEATURE_LEVEL  FeatureLevelsSupported;
+    
+    // Create a device and a swap chane
+    HRESULT hr;
+    IDXGISwapChain* g_pSwapChain;
+    ID3D11Device* g_pd3dDevice;
+    ID3D11DeviceContext* g_pImmediateContext;
+    if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
+      D3D_DRIVER_TYPE_HARDWARE, 
+      NULL, 
+      0,
+      &FeatureLevelsRequested, 
+      numFeatureLevelsRequested, 
+      D3D11_SDK_VERSION, 
+      &sd, 
+      &g_pSwapChain, 
+      &g_pd3dDevice, 
+      &FeatureLevelsSupported,
+      &g_pImmediateContext )))
+    {
+      return hr;
+    }
+    
+    // Vertex buffer
+    ID3D11Buffer*      g_pVertexBuffer;
+    
+    // Supply the actual vertex data.
+    Vertex g_VertexList[] = {
+      { { -0.5f,  0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+      { {  0.5f, -0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+      { { -0.5f, -0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+      { {  0.5f,  0.5f, 0.5f }, { 1.0f, 1.0f, 0.0f, 1.0f } }
+    };
+    
+    // Buffer description
+    D3D11_BUFFER_DESC bufferDesc;
+    bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
+    bufferDesc.ByteWidth        = (sizeof( float ) * 3) * 3;
+    bufferDesc.BindFlags        = D3D11_BIND_VERTEX_BUFFER;
+    bufferDesc.CPUAccessFlags   = 0;
+    bufferDesc.MiscFlags        = 0;
+    
+    // Vertex data
+    D3D11_SUBRESOURCE_DATA InitData;
+    InitData.pSysMem = g_VertexList;
+    InitData.SysMemPitch = 0;
+    InitData.SysMemSlicePitch = 0;
+    
+    // Create vertex buffer
+    hr = g_pd3dDevice->CreateBuffer( &bufferDesc, &InitData, &g_pVertexBuffer );
+    
+    if (FAILED(hr)) {
+      return hr;
+    }
+    
+    // Shape of vertex
+    D3D11_INPUT_ELEMENT_DESC g_VertexDesc[] {
+      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+    };
+  }
+  
+  return 0;
+}
+
+int32_t SPVM__Engine__Runtime__Windows__API__start_app(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  // Get and dispatch message
+  MSG message;
+  while (1) {
+    if (PeekMessage(&message , NULL , 0 , 0, PM_NOREMOVE)) {
+      if (GetMessage(&message , NULL , 0 , 0)) {
+        TranslateMessage(&message);
+        DispatchMessage(&message);
+      }
+      else {
+        break;
+      }
+    }
+  }
+  
+  return 0;
+}
+
 static int16_t* encode_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* string) {
   int32_t error_id = 0;
   
@@ -193,25 +364,6 @@ static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPA
     }
   }
   return DefWindowProc(window_handle , message , wparam , lparam);
-}
-
-int32_t SPVM__Engine__Runtime__Windows__API__start_app(SPVM_ENV* env, SPVM_VALUE* stack) {
-  
-  // Get and dispatch message
-  MSG message;
-  while (1) {
-    if (PeekMessage(&message , NULL , 0 , 0, PM_NOREMOVE)) {
-      if (GetMessage(&message , NULL , 0 , 0)) {
-        TranslateMessage(&message);
-        DispatchMessage(&message);
-      }
-      else {
-        break;
-      }
-    }
-  }
-  
-  return 0;
 }
 
 int32_t SPVM__Engine__Runtime__Windows__API__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
@@ -501,158 +653,9 @@ int32_t SPVM__Engine__Runtime__Windows__API__get_viewport_height(SPVM_ENV* env, 
   return 0;
 }
 
-struct Vertex {
-        float pos[ 3 ];
-        float col[ 4 ];
-};
-
 int32_t SPVM__Engine__Runtime__Windows__API__CW_USEDEFAULT(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   stack[0].ival = CW_USEDEFAULT;
-  
-  return 0;
-}
-
-int32_t SPVM__Engine__Runtime__Windows__API__open_main_window_native(SPVM_ENV* env, SPVM_VALUE* stack) {
-  
-  void* obj_self = stack[0].oval;
-  
-  int32_t window_left = stack[1].ival;
-  
-  int32_t window_top = stack[2].ival;
-  
-  int32_t window_width = stack[3].ival;
-  
-  int32_t window_height = stack[4].ival;
-  
-  int32_t error_id = 0;
-  
-  HINSTANCE instance_handle = GetModuleHandle(NULL);
-  
-  // Register Window Class
-  WNDCLASS winc;
-  winc.style = CS_HREDRAW | CS_VREDRAW;
-  winc.lpfnWndProc = window_procedure;
-  winc.cbClsExtra = winc.cbWndExtra = 0;
-  winc.hInstance = instance_handle;
-  winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
-  winc.hCursor = LoadCursor(NULL , IDC_ARROW);
-  winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-  winc.lpszMenuName = NULL;
-  winc.lpszClassName = TEXT("Window");
-  if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register the window class"); };
-  
-  // Create Main Window
-  const int16_t* window_class_name = (const int16_t*)TEXT("Window");
-  const int16_t* window_title = NULL;
-  DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
-  HWND window_parent_window_handle = NULL;
-  HMENU window_id = NULL;
-  void** wm_create_args = (void**)calloc(3, sizeof(void*));
-  wm_create_args[0] = env;
-  wm_create_args[1] = obj_self;
-  wm_create_args[2] = stack;
-  void* window_wm_create_lparam = (void*)wm_create_args;
-  HWND window_handle = CreateWindow(
-    (LPCWSTR)window_class_name, (LPCWSTR)window_title,
-    window_style,
-    window_left, window_top,
-    window_width, window_height,
-    window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
-  );
-  
-  void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Engine::Runtime::Windows::API", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
-  env->set_field_object_by_name(env, stack, obj_self, "window_handle", obj_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
-  // Renderer
-  {
-    RECT window_rect;
-    GetWindowRect(window_handle, &window_rect);
-    
-    int window_width = window_rect.right - window_rect.left;
-    int window_height = window_rect.bottom - window_rect.top;
-    
-    // Swap chain descriptor
-    DXGI_SWAP_CHAIN_DESC sd;
-    ZeroMemory( &sd, sizeof( sd ) );
-    sd.BufferCount = 1;
-    sd.BufferDesc.Width = window_width;
-    sd.BufferDesc.Height = window_height;
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    sd.BufferDesc.RefreshRate.Numerator = 60;
-    sd.BufferDesc.RefreshRate.Denominator = 1;
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    sd.OutputWindow = window_handle;
-    sd.SampleDesc.Count = 1;
-    sd.SampleDesc.Quality = 0;
-    sd.Windowed = TRUE;
-    
-    D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
-    UINT               numFeatureLevelsRequested = 1;
-    D3D_FEATURE_LEVEL  FeatureLevelsSupported;
-    
-    // Create a device and a swap chane
-    HRESULT hr;
-    IDXGISwapChain* g_pSwapChain;
-    ID3D11Device* g_pd3dDevice;
-    ID3D11DeviceContext* g_pImmediateContext;
-    if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
-      D3D_DRIVER_TYPE_HARDWARE, 
-      NULL, 
-      0,
-      &FeatureLevelsRequested, 
-      numFeatureLevelsRequested, 
-      D3D11_SDK_VERSION, 
-      &sd, 
-      &g_pSwapChain, 
-      &g_pd3dDevice, 
-      &FeatureLevelsSupported,
-      &g_pImmediateContext )))
-    {
-      return hr;
-    }
-    
-    // Vertex buffer
-    ID3D11Buffer*      g_pVertexBuffer;
-    
-    // Supply the actual vertex data.
-    Vertex g_VertexList[] = {
-      { { -0.5f,  0.5f, 0.5f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-      { {  0.5f, -0.5f, 0.5f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-      { { -0.5f, -0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-      { {  0.5f,  0.5f, 0.5f }, { 1.0f, 1.0f, 0.0f, 1.0f } }
-    };
-    
-    // Buffer description
-    D3D11_BUFFER_DESC bufferDesc;
-    bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
-    bufferDesc.ByteWidth        = (sizeof( float ) * 3) * 3;
-    bufferDesc.BindFlags        = D3D11_BIND_VERTEX_BUFFER;
-    bufferDesc.CPUAccessFlags   = 0;
-    bufferDesc.MiscFlags        = 0;
-    
-    // Vertex data
-    D3D11_SUBRESOURCE_DATA InitData;
-    InitData.pSysMem = g_VertexList;
-    InitData.SysMemPitch = 0;
-    InitData.SysMemSlicePitch = 0;
-    
-    // Create vertex buffer
-    hr = g_pd3dDevice->CreateBuffer( &bufferDesc, &InitData, &g_pVertexBuffer );
-    
-    if (FAILED(hr)) {
-      return hr;
-    }
-    
-    // Shape of vertex
-    D3D11_INPUT_ELEMENT_DESC g_VertexDesc[] {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-      { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-  }
   
   return 0;
 }
