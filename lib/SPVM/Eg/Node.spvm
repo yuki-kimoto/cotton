@@ -167,7 +167,7 @@ class Eg::Node {
   }
   
   # Deprecated allow
-  allow Engine::App;
+  allow Eg::App;
   
   # Deprecated Fields
   has color : rw Eg::Style::Color;

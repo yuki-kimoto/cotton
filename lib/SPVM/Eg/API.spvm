@@ -1,5 +1,5 @@
-class Engine::API : interface_t {
-  use Engine::App;
+class Eg::API : interface_t {
+  use Eg::App;
   use Eg::Node;
   
   # Interface Methods
@@ -7,7 +7,7 @@ class Engine::API : interface_t {
   
   method get_viewport_width : int ();
   
-  method run_app : void ($app : Engine::App);
+  method run_app : void ($app : Eg::App);
   
   method paint_node : void ($paint_info : object, $node : Eg::Node);
   

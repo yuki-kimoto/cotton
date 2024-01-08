@@ -1,10 +1,10 @@
-class Engine::Runtime::Windows {
-  use Engine::App;
+class Eg::Runtime::Windows {
+  use Eg::App;
   use Eg::Node;
   use List;
   
-  use Engine::Runtime::Windows::API;
-  use Engine::Runtime;
+  use Eg::Runtime::Windows::API;
+  use Eg::Runtime;
 
   static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
     my $color = Eg::Style::Color->new($red, $green, $blue, 1);
@@ -12,7 +12,7 @@ class Engine::Runtime::Windows {
   }
   
   static method main : int ($start_file : string, $args : string[]) {
-    my $app = Engine::App->new;
+    my $app = Eg::App->new;
     
     # Add index page
     {
@@ -59,11 +59,11 @@ class Engine::Runtime::Windows {
       $app->set_current_document($document);
     }
     
-    my $runtime = Engine::Runtime->new;
+    my $runtime = Eg::Runtime->new;
     
     $app->set_runtime($runtime);
     
-    my $api = Engine::Runtime::Windows::API->new;
+    my $api = Eg::Runtime::Windows::API->new;
     
     $runtime->set_api($api);
     

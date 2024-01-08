@@ -1,0 +1,15 @@
+class Eg::Runtime {
+  
+  # Fields
+  has api : rw Eg::API;
+  
+  # Class Methods
+  static method new : Eg::Runtime ($options : object[] = undef) {
+    my $options_h = Hash->new($options);
+    
+    my $self = new Eg::Runtime;
+    
+    return $self;
+  }
+  
+}
