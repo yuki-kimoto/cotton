@@ -16,8 +16,7 @@ class Engine::Renderer {
     return new Engine::Renderer;
   }
   
-  method repaint : void($runtime : Engine::Runtime, $paint_info : Engine::Runtime::Windows::PaintInfo) {
-    my $app = $runtime->app;
+  method repaint : void($runtime : Engine::Runtime, $app : Engine::App, $paint_info : Engine::Runtime::Windows::PaintInfo) {
     
     my $viewport_width = $runtime->api->get_viewport_width();
     my $viewport_height = $runtime->api->get_viewport_height();
