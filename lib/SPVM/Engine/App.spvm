@@ -8,7 +8,7 @@ class Engine::App {
   
   has name : rw string;
   
-  has index_document : rw Eg::Node;
+  has document : rw Eg::Node;
   
   static method new : Engine::App() {
     my $self = new Engine::App;

@@ -51,7 +51,7 @@ class Engine::Runtime::Windows {
       $body->set_background_color(&rgb(0x00, 0x33, 0x44));
       
       # Set current page;
-      $app->set_index_document($body);
+      $app->set_document($body);
     }
     
     my $runtime = Engine::Runtime->new;
