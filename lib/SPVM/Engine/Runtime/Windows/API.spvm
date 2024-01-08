@@ -22,16 +22,16 @@ class Engine::Runtime::Windows::API {
   }
   
   method get_viewport_width : int () {
-
+    
     my $engine = $self->engine;
-
+    
     return $engine->get_viewport_width;
   }
   
   method paint_node : void ($paint_info : object, $node : Eg::Node) {
-
+    
     my $engine = $self->engine;
-
+    
     $engine->paint_node($paint_info, $node);
   }
   
@@ -39,5 +39,12 @@ class Engine::Runtime::Windows::API {
     my $engine = $self->engine;
     
     return $engine->calc_text_height($paint_info, $text, $width, $font_styles);
+  }
+  
+  method run : void () {
+    
+    my $engine = $self->engine;
+    
+    $engine->run;
   }
 }
