@@ -47,10 +47,10 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   
   void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
-
+  
   void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
-
+  
   void* obj_runtime = env->get_field_object_by_name(env, stack, obj_self, "runtime", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
@@ -83,7 +83,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
     // Begin paint and get Device context
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(window_handle, &ps);
-
+    
     // Result for COM. Direct 2D is COM.
     HRESULT com_result = S_OK;
     
@@ -94,7 +94,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
       fprintf(stderr, "Fail D2D1CreateFactory\n");
       return 1;
     }
-
+    
     // Viewport rect
     RECT viewport_rect;
     GetClientRect(window_handle, &viewport_rect);
@@ -116,11 +116,11 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
         
     // Start Draw
     renderer->BeginDraw();
-
+    
     // Clear viewport
     D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
     renderer->Clear(viewport_init_background_color);
-
+    
     {
       int32_t scope = env->enter_scope(env, stack);
       
@@ -156,7 +156,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   return 0;
 }
 
-LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
+static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
   
   static SPVM_ENV* env;
   static SPVM_VALUE* stack;
@@ -173,9 +173,8 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       env = (SPVM_ENV*)wm_create_args[0];
       obj_self = (void*)wm_create_args[1];
       stack = (SPVM_VALUE*)wm_create_args[2];
-
+      
       // alert(env, stack, "ハローワールド");
-
       return 0;
     }
     case WM_PAINT: {
@@ -518,18 +517,18 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
   // Register Window Class
   WNDCLASS winc;
   winc.style = CS_HREDRAW | CS_VREDRAW;
-  winc.lpfnWndProc = COTTON_RUNTIME_ENGINE_WIN_WndProc;
+  winc.lpfnWndProc = window_procedure;
   winc.cbClsExtra = winc.cbWndExtra = 0;
   winc.hInstance = instance_handle;
   winc.hIcon = LoadIcon(NULL , IDI_APPLICATION);
   winc.hCursor = LoadCursor(NULL , IDC_ARROW);
   winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
-  winc.lpszClassName = TEXT("main_window");
+  winc.lpszClassName = TEXT("MainWindow");
   if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register window class"); };
   
   // Create Main Window
-  const int16_t* window_class_name = (const int16_t*)TEXT("main_window");
+  const int16_t* window_class_name = (const int16_t*)TEXT("MainWindow");
   const int16_t* window_title = NULL;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
