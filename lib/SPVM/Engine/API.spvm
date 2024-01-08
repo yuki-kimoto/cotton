@@ -1,7 +1,6 @@
 class Engine::API : interface_t {
   use Engine::App;
   use Eg::Node;
-  use Engine::Renderer;
   
   # Interface Methods
   method get_viewport_height : int ();
