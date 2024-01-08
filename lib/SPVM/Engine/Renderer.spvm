@@ -13,7 +13,7 @@ class Engine::Renderer {
     return new Engine::Renderer;
   }
   
-  method repaint : void($app : Engine::App, $paint_info : Engine::Runtime::Windows::PaintInfo) {
+  method repaint : void ($app : Engine::App, $paint_info : object) {
     
     my $runtime = $app->runtime;
     
