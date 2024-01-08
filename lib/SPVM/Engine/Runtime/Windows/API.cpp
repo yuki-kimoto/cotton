@@ -506,7 +506,7 @@ struct Vertex {
         float col[ 4 ];
 };
  
-int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* obj_self = stack[0].oval;
   

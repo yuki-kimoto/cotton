@@ -19,7 +19,7 @@ class Engine::Runtime::Windows::API {
     return $self;
   }
   
-  native method create_main_window : void ();
+  native method open_main_window : void ();
   
   native method get_viewport_width : int ();
 

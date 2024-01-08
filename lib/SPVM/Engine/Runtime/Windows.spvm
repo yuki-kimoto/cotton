@@ -67,7 +67,7 @@ class Engine::Runtime::Windows {
     $api->set_runtime($runtime);
     $api->set_app($app);
     
-    $api->create_main_window;
+    $api->open_main_window;
     
     $api->run;
 
