@@ -468,22 +468,17 @@ int32_t SPVM__Engine__Runtime__Windows__API__get_viewport_width(SPVM_ENV* env, S
   int32_t error_id = 0;
   
   void* obj_self = stack[0].oval;
-
+  
   void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-
-  void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
   HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
   RECT rect;
   GetClientRect(window_handle, &rect);
-
+  
   stack[0].ival = rect.right + 1;
   
-  printf("DDDDDDDD %d\n", stack[0].ival);
-
   return 0;
 }
 
@@ -491,20 +486,17 @@ int32_t SPVM__Engine__Runtime__Windows__API__get_viewport_width(SPVM_ENV* env, S
 int32_t SPVM__Engine__Runtime__Windows__API__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
-
+  
   void* obj_self = stack[0].oval;
-
+  
   void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-
-  void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
   HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
   RECT rect;
   GetClientRect(window_handle, &rect);
-
+  
   stack[0].ival = rect.bottom + 1;
   
   return 0;
@@ -535,7 +527,7 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
   winc.lpszMenuName = NULL;
   winc.lpszClassName = TEXT("main_window");
   if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register window class"); };
-
+  
   // Create Main Window
   const int16_t* window_class_name = (const int16_t*)TEXT("main_window");
   const int16_t* window_title = NULL;
@@ -581,7 +573,7 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
       sd.SampleDesc.Count = 1;
       sd.SampleDesc.Quality = 0;
       sd.Windowed = TRUE;
-
+      
       D3D_FEATURE_LEVEL  FeatureLevelsRequested = D3D_FEATURE_LEVEL_11_0;
       UINT               numFeatureLevelsRequested = 1;
       D3D_FEATURE_LEVEL  FeatureLevelsSupported;
@@ -617,7 +609,7 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
         { { -0.5f, -0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
         { {  0.5f,  0.5f, 0.5f }, { 1.0f, 1.0f, 0.0f, 1.0f } }
       };
-
+      
       // Buffer description
       D3D11_BUFFER_DESC bufferDesc;
       bufferDesc.Usage            = D3D11_USAGE_DEFAULT;
@@ -634,7 +626,7 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
       
       // Create vertex buffer
       hr = g_pd3dDevice->CreateBuffer( &bufferDesc, &InitData, &g_pVertexBuffer );
-
+      
       if (FAILED(hr)) {
         return hr;
       }
@@ -644,7 +636,6 @@ int32_t SPVM__Engine__Runtime__Windows__API__create_main_window(SPVM_ENV* env, S
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0,                            0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
       };
-
     }
   }
   return 0;
