@@ -14,9 +14,6 @@ class Engine::Runtime::Windows {
   static method main : int ($start_file : string, $args : string[]) {
     my $app = Engine::App->new;
     
-    # Application name
-    $app->set_name("コットン");
-    
     # Add index page
     {
       my $text1 = Eg->text("あああああ");
@@ -59,7 +56,7 @@ class Engine::Runtime::Windows {
         ]
       );
       
-      $app->set_index_document($document);
+      $app->set_current_document($document);
     }
     
     my $runtime = Engine::Runtime->new;

@@ -279,13 +279,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   
   // Draw page title
   {
-    void* obj_app_name = NULL;
-    {
-      stack[0].oval = obj_app;
-      env->call_instance_method_by_name(env, stack, "name", 1, &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-      obj_app_name = stack[0].oval;
-    }
+    void* obj_app_name = env->new_string(env, stack, "コットン", strlen("コットン"));
     
     void* obj_app_name_utf8_to_utf16 = NULL;
     {
