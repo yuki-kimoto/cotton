@@ -26,6 +26,8 @@ class Eg::Node {
   
   has attributes : rw Eg::Attributes;
   
+  has style : rw Eg::Style;
+  
   has tag_name : ro string;
   
   has text_buffer : ro StringBuffer;
@@ -69,7 +71,7 @@ class Eg::Node {
     
     my $style = Eg::Style->new($style_pairs);
     
-    $attributes->{style} = $style;
+    $self->{style} = $style;
     
     return $self;
   }
@@ -92,33 +94,32 @@ class Eg::Node {
   }
   
   # Instance Methods
-  method style : Eg::Style () {
-    
-    return $self->{attributes}->{style};
-  }
-  
-  method set_style : void ($style : Eg::Style) {
-    $self->{attributes}->{style} = $style;
-  }
-  
   method css : string ($name : string) {
     
-    return $self->{attributes}->{style}->{style_h}->get_string($name);
+    my $style = $self->{style};
+    
+    return $style->{style_h}->get_string($name);
   }
   
   method set_css : void ($name : string, $value : string) {
     
-    $self->{attributes}->{style}->{style_h}->set_string($name, $value);
+    my $style = $self->{style};
+    
+    $style->{style_h}->set_string($name, $value);
   }
   
   method attr : string ($name : string) {
     
-    return $self->{attributes}->{attributes_h}->get_string($name);
+    my $attributes = $self->{attributes};
+    
+    return $attributes->{attributes_h}->get_string($name);
   }
   
   method set_attr : void ($name : string, $value : string) {
     
-    $self->{attributes}->{attributes_h}->set_string($name, $value);
+    my $attributes = $self->{attributes};
+    
+    $attributes->{attributes_h}->set_string($name, $value);
   }
   
   method text : string () {
