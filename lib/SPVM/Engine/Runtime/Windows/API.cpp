@@ -505,10 +505,25 @@ struct Vertex {
         float pos[ 3 ];
         float col[ 4 ];
 };
- 
-int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
+
+int32_t SPVM__Engine__Runtime__Windows__API__CW_USEDEFAULT(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  stack[0].ival = CW_USEDEFAULT;
+  
+  return 0;
+}
+
+int32_t SPVM__Engine__Runtime__Windows__API__open_main_window_native(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* obj_self = stack[0].oval;
+  
+  int32_t window_left = stack[1].ival;
+  
+  int32_t window_top = stack[2].ival;
+  
+  int32_t window_width = stack[3].ival;
+  
+  int32_t window_height = stack[4].ival;
   
   int32_t error_id = 0;
   
@@ -531,11 +546,6 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   const int16_t* window_class_name = (const int16_t*)TEXT("Window");
   const int16_t* window_title = NULL;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
-  int window_x = CW_USEDEFAULT;
-  int window_y = CW_USEDEFAULT;
-  int window_width = CW_USEDEFAULT;
-  
-  int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
   void** wm_create_args = (void**)calloc(3, sizeof(void*));
@@ -546,8 +556,8 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   HWND window_handle = CreateWindow(
     (LPCWSTR)window_class_name, (LPCWSTR)window_title,
     window_style,
-    window_x, window_y,
-    window_width, window_heigth,
+    window_left, window_top,
+    window_width, window_height,
     window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   

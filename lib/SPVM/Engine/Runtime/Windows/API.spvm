@@ -7,6 +7,7 @@ class Engine::Runtime::Windows::API {
   use Engine::Runtime::Windows::API::WindowHandle;
   use Engine::Runtime::Windows::PaintInfo;
   use Eg::Node;
+  use Hash;
   
   has app : rw Engine::App;
   has runtime : rw Engine::Runtime;
@@ -19,14 +20,33 @@ class Engine::Runtime::Windows::API {
     return $self;
   }
   
-  native method open_main_window : void ();
+  native static method CW_USEDEFAULT : int ();
+  
+  method open_main_window : void ($options : object[] = undef) {
+    
+    my $options_h = Hash->new($options);
+    
+    my $left = $options_h->get_or_default_int("left", &CW_USEDEFAULT);
+    
+    my $top = $options_h->get_or_default_int("top", &CW_USEDEFAULT);
+    
+    my $width = $options_h->get_or_default_int("width", &CW_USEDEFAULT);
+    
+    my $height = $options_h->get_or_default_int("height", &CW_USEDEFAULT);
+    
+    warn dump [$left, $top, $width, $height];
+    
+    $self->open_main_window_native($left, $top, $width, $height);
+  }
+  
+  native method open_main_window_native : void ($left : int, $top : int, $width : int, $height : int);
   
   native method get_viewport_width : int ();
-
+  
   native method get_viewport_height : int ();
-
+  
   native method paint_node : void ($paint_info : object, $node : Eg::Node);
-
+  
   native method calc_text_height : int ($paint_info : Engine::Runtime::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
   native method run : void ();
