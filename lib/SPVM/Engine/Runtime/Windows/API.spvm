@@ -64,7 +64,7 @@ class Engine::Runtime::Windows::API {
     my $viewport_height = $runtime->api->get_viewport_height();
     
     {
-      my $body = $app->document;
+      my $body = $app->index_document;
       
       $body->set_draw_left(0);
       $body->set_draw_top(0);
