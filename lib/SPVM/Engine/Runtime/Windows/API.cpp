@@ -524,11 +524,11 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   winc.hCursor = LoadCursor(NULL , IDC_ARROW);
   winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
-  winc.lpszClassName = TEXT("MainWindow");
+  winc.lpszClassName = TEXT("Window");
   if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register window class"); };
   
   // Create Main Window
-  const int16_t* window_class_name = (const int16_t*)TEXT("MainWindow");
+  const int16_t* window_class_name = (const int16_t*)TEXT("Window");
   const int16_t* window_title = NULL;
   DWORD window_style = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
   int window_x = CW_USEDEFAULT;
