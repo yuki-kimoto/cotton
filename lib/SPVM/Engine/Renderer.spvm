@@ -16,7 +16,7 @@ class Engine::Renderer {
     return new Engine::Renderer;
   }
   
-  method paint_nodes : void($runtime : Engine::Runtime, $paint_info : Engine::PaintInfo) {
+  method repaints : void($runtime : Engine::Runtime, $paint_info : Engine::PaintInfo) {
     my $app = $runtime->app;
     
     my $viewport_width = $runtime->api->get_viewport_width();
@@ -45,7 +45,7 @@ class Engine::Renderer {
         
         $node->{draw_height} = $draw_height;
         
-        $runtime->api->paint_node($paint_info, $node);
+        $runtime->api->repaint($paint_info, $node);
       }
     }
 
@@ -78,7 +78,7 @@ class Engine::Renderer {
       my $node_list_length = $node_list->length;
       for (my $i = 0; $i < $node_list_length; $i++) {
         my $node = (Eg::Node)$node_list->get($i);
-        $runtime->api->paint_node($paint_info, $node);
+        $runtime->api->repaint($paint_info, $node);
       }
     }
   }

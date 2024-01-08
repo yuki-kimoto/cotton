@@ -26,7 +26,7 @@ class Engine::Runtime::Windows::API {
 
   native method get_viewport_height : int ();
 
-  native method paint_node : void ($paint_info : object, $node : Eg::Node);
+  native method repaint : void ($paint_info : object, $node : Eg::Node);
 
   native method calc_text_height : int ($paint_info : Engine::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
