@@ -535,8 +535,6 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   int window_y = CW_USEDEFAULT;
   int window_width = CW_USEDEFAULT;
   
-  spvm_warn("LINE %d %d", __LINE__, window_width);
-  
   int window_heigth = CW_USEDEFAULT;
   HWND window_parent_window_handle = NULL;
   HMENU window_id = NULL;
@@ -546,11 +544,11 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
   wm_create_args[2] = stack;
   void* window_wm_create_lparam = (void*)wm_create_args;
   HWND window_handle = CreateWindow(
-      (LPCWSTR)window_class_name, (LPCWSTR)window_title,
-      window_style,
-      window_x, window_y,
-      window_width, window_heigth,
-      window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
+    (LPCWSTR)window_class_name, (LPCWSTR)window_title,
+    window_style,
+    window_x, window_y,
+    window_width, window_heigth,
+    window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
   void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Engine::Runtime::Windows::API", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
@@ -592,17 +590,17 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window(SPVM_ENV* env, SPV
     ID3D11Device* g_pd3dDevice;
     ID3D11DeviceContext* g_pImmediateContext;
     if( FAILED (hr = D3D11CreateDeviceAndSwapChain( NULL, 
-                    D3D_DRIVER_TYPE_HARDWARE, 
-                    NULL, 
-                    0,
-                    &FeatureLevelsRequested, 
-                    numFeatureLevelsRequested, 
-                    D3D11_SDK_VERSION, 
-                    &sd, 
-                    &g_pSwapChain, 
-                    &g_pd3dDevice, 
-                    &FeatureLevelsSupported,
-                    &g_pImmediateContext )))
+      D3D_DRIVER_TYPE_HARDWARE, 
+      NULL, 
+      0,
+      &FeatureLevelsRequested, 
+      numFeatureLevelsRequested, 
+      D3D11_SDK_VERSION, 
+      &sd, 
+      &g_pSwapChain, 
+      &g_pd3dDevice, 
+      &FeatureLevelsSupported,
+      &g_pImmediateContext )))
     {
       return hr;
     }
