@@ -129,7 +129,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
       paint_info->window_handle = window_handle;
       paint_info->renderer = renderer;
       
-      void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Engine::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
+      void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Engine::Runtime::Windows::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
       env->call_class_method_by_name(env, stack, "Engine::Renderer", "new", 0, &error_id, __func__, FILE_NAME, __LINE__);

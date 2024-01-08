@@ -1,6 +1,5 @@
 class Engine::App : precompile {
   use List;
-  use Engine::PaintInfo;
   use Eg::Node;
   use Engine::Renderer;
   
