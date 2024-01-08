@@ -1,4 +1,4 @@
-class Engine::Browser::Win {
+class Engine::Runtime::Windows {
   use Engine::App;
   use Eg::Node;
   use List;
