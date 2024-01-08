@@ -3,7 +3,7 @@ class Engine::Browser::Win {
   use Eg::Node;
   use List;
   
-  use Engine::Runtime::Engine::Win;
+  use Engine::Runtime::Windows::API;
   use Engine::Runtime;
 
   static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
@@ -58,7 +58,7 @@ class Engine::Browser::Win {
     my $runtime = Engine::Runtime->new({});
     
     # API
-    my $api = Engine::Runtime::Engine::Win->new;
+    my $api = Engine::Runtime::Windows::API->new;
     
     $runtime->set_api($api);
     

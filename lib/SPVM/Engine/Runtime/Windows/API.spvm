@@ -1,18 +1,18 @@
-class Engine::Runtime::Engine::Win {
+class Engine::Runtime::Windows::API {
   interface Engine::API;
   
   use List;
   use Encode;
   use Engine::App;
-  use Engine::Runtime::Engine::Win::WindowHandle;
+  use Engine::Runtime::Windows::API::WindowHandle;
   
   has app : rw Engine::App;
   has runtime : rw Engine::Runtime;
-  has window_handle : Engine::Runtime::Engine::Win::WindowHandle;
+  has window_handle : Engine::Runtime::Windows::API::WindowHandle;
   
-  static method new : Engine::Runtime::Engine::Win($options : object[] = undef) {
+  static method new : Engine::Runtime::Windows::API($options : object[] = undef) {
     
-    my $self = new Engine::Runtime::Engine::Win;
+    my $self = new Engine::Runtime::Windows::API;
     
     return $self;
   }
