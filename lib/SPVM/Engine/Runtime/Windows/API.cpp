@@ -15,6 +15,10 @@ extern "C" {
 
 static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam);
 
+static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self);
+
+static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message);
+
 struct Vertex {
         float pos[ 3 ];
         float col[ 4 ];
@@ -164,6 +168,13 @@ int32_t SPVM__Engine__Runtime__Windows__API__open_main_window_native(SPVM_ENV* e
   return 0;
 }
 
+int32_t SPVM__Engine__Runtime__Windows__API__CW_USEDEFAULT(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  stack[0].ival = CW_USEDEFAULT;
+  
+  return 0;
+}
+
 int32_t SPVM__Engine__Runtime__Windows__API__start_app(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   // Get and dispatch message
@@ -181,6 +192,45 @@ int32_t SPVM__Engine__Runtime__Windows__API__start_app(SPVM_ENV* env, SPVM_VALUE
   }
   
   return 0;
+}
+
+static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
+  
+  static SPVM_ENV* env;
+  static SPVM_VALUE* stack;
+  static void* obj_self;
+  
+  switch (message) {
+    case WM_DESTROY: {
+      PostQuitMessage(0);
+      return 0;
+    }
+    case WM_CREATE: {
+      CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
+      void** wm_create_args = (void**)create_struct->lpCreateParams;
+      env = (SPVM_ENV*)wm_create_args[0];
+      obj_self = (void*)wm_create_args[1];
+      stack = (SPVM_VALUE*)wm_create_args[2];
+      
+      // alert(env, stack, "ハローワールド");
+      return 0;
+    }
+    case WM_PAINT: {
+      int32_t error_id = 0;
+      
+      // Draw node
+      error_id = repaint(env, stack, obj_self);
+      
+      if (error_id) {
+        alert(env, stack, env->get_chars(env, stack, env->get_exception(env, stack)));
+        PostQuitMessage(0);
+        return 0;
+      }
+      
+      return 0;
+    }
+  }
+  return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
 static int16_t* encode_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* string) {
@@ -325,45 +375,6 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   }
   
   return 0;
-}
-
-static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam) {
-  
-  static SPVM_ENV* env;
-  static SPVM_VALUE* stack;
-  static void* obj_self;
-  
-  switch (message) {
-    case WM_DESTROY: {
-      PostQuitMessage(0);
-      return 0;
-    }
-    case WM_CREATE: {
-      CREATESTRUCT* create_struct = (CREATESTRUCT*)lparam;
-      void** wm_create_args = (void**)create_struct->lpCreateParams;
-      env = (SPVM_ENV*)wm_create_args[0];
-      obj_self = (void*)wm_create_args[1];
-      stack = (SPVM_VALUE*)wm_create_args[2];
-      
-      // alert(env, stack, "ハローワールド");
-      return 0;
-    }
-    case WM_PAINT: {
-      int32_t error_id = 0;
-      
-      // Draw node
-      error_id = repaint(env, stack, obj_self);
-      
-      if (error_id) {
-        alert(env, stack, env->get_chars(env, stack, env->get_exception(env, stack)));
-        PostQuitMessage(0);
-        return 0;
-      }
-      
-      return 0;
-    }
-  }
-  return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
 int32_t SPVM__Engine__Runtime__Windows__API__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
@@ -649,13 +660,6 @@ int32_t SPVM__Engine__Runtime__Windows__API__get_viewport_height(SPVM_ENV* env, 
   GetClientRect(window_handle, &rect);
   
   stack[0].ival = rect.bottom + 1;
-  
-  return 0;
-}
-
-int32_t SPVM__Engine__Runtime__Windows__API__CW_USEDEFAULT(SPVM_ENV* env, SPVM_VALUE* stack) {
-  
-  stack[0].ival = CW_USEDEFAULT;
   
   return 0;
 }
