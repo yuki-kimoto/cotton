@@ -6,8 +6,6 @@ class Engine::Browser::Win {
   use Engine::Runtime::Engine::Win;
   use Engine::Runtime;
 
-  use Engine::Runtime::Windows::API;
-  
   static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
     my $color = Eg::Style::Color->new($red, $green, $blue, 1);
     return $color;
