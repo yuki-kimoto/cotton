@@ -1,12 +1,12 @@
 class Engine::Runtime {
-  use List;
-  use Engine::PaintInfo;
-  use Eg::Node;
-  use Engine::Renderer;
   
+  # Fields
   has app : rw Engine::App;
+  
   has api : rw Engine::API;
-  static method new : Engine::Runtime ($options : object[]) {
+  
+  # Class Methods
+  static method new : Engine::Runtime ($options : object[] = undef) {
     my $options_h = Hash->new($options);
     
     my $self = new Engine::Runtime;
@@ -14,9 +14,4 @@ class Engine::Runtime {
     return $self;
   }
   
-  method paint_nodes : void($paint_info : Engine::PaintInfo) {
-    my $renderer = Engine::Renderer->new;
-    
-    $renderer->paint_nodes($self, $paint_info);
-  }
 }

@@ -5,6 +5,9 @@ class Engine::Runtime::Windows::API {
   use Encode;
   use Engine::App;
   use Engine::Runtime::Windows::API::WindowHandle;
+  use Engine::Renderer;
+  use Engine::PaintInfo;
+  use Eg::Node;
   
   has app : rw Engine::App;
   has runtime : rw Engine::Runtime;

@@ -121,7 +121,6 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
     D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
     renderer->Clear(viewport_init_background_color);
 
-    // Call Engine::Runtime->paint_nodes
     {
       int32_t scope = env->enter_scope(env, stack);
       
@@ -133,12 +132,16 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
       void* sv_paint_info = env->new_pointer_object_by_name(env, stack, "Engine::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
-      stack[0].oval = sv_runtime;
-      stack[1].oval = sv_paint_info;
+      env->call_class_method_by_name(env, stack, "Engine::Renderer", "new", 0, &error_id, __func__, FILE_NAME, __LINE__);
+      if (error_id) { return error_id; }
+      void* obj_renderer = stack[0].oval;
+      
+      stack[0].oval = obj_renderer;
+      stack[1].oval = sv_runtime;
+      stack[2].oval = sv_paint_info;
       env->call_instance_method_by_name(env, stack, "paint_nodes", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
-
-
+      
       free(paint_info);
       env->leave_scope(env, stack, scope);
     }
