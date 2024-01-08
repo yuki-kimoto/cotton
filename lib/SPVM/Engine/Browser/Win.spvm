@@ -59,24 +59,19 @@ class Engine::Browser::Win {
     # Create runtime
     my $runtime = Engine::Runtime->new({});
     
-    # Create engine
-    my $engine = Engine::Runtime::Engine::Win->new({});
-    
     # API
-    my $cotton_api_win = Engine::Runtime::Windows::API->new;
-    $cotton_api_win->set_engine($engine);
-    $runtime->set_api($cotton_api_win);
-
-
-    # Execute application
+    my $api = Engine::Runtime::Engine::Win->new;
+    
+    $runtime->set_api($api);
+    
     $runtime->set_app($app);
     
-    $engine->set_runtime($runtime);
-    $engine->set_app($app);
+    $api->set_runtime($runtime);
+    $api->set_app($app);
     
-    $engine->create_main_window;
+    $api->create_main_window;
     
-    $engine->run;
+    $api->run;
 
   }
 }

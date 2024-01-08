@@ -2,15 +2,15 @@ class Engine::Runtime::Engine::Win {
   interface Engine::API;
   
   use List;
+  use Encode;
   use Engine::App;
   use Engine::Runtime::Engine::Win::WindowHandle;
-  use Encode;
   
   has app : rw Engine::App;
   has runtime : rw Engine::Runtime;
   has window_handle : Engine::Runtime::Engine::Win::WindowHandle;
   
-  static method new : Engine::Runtime::Engine::Win($options : object[]) {
+  static method new : Engine::Runtime::Engine::Win($options : object[] = undef) {
     
     my $self = new Engine::Runtime::Engine::Win;
     
