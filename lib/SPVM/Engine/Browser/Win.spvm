@@ -6,7 +6,7 @@ class Engine::Browser::Win {
   use Engine::Runtime::Engine::Win;
   use Engine::Runtime;
 
-  use Engine::API::Win;
+  use Engine::Runtime::Windows::API;
   
   static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
     my $color = Eg::Style::Color->new($red, $green, $blue, 1);
@@ -63,7 +63,7 @@ class Engine::Browser::Win {
     my $engine = Engine::Runtime::Engine::Win->new({});
     
     # API
-    my $cotton_api_win = Engine::API::Win->new;
+    my $cotton_api_win = Engine::Runtime::Windows::API->new;
     $cotton_api_win->set_engine($engine);
     $cotton_api_win->set_runtime($runtime);
     $runtime->set_api($cotton_api_win);

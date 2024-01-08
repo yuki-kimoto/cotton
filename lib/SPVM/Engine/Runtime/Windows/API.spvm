@@ -1,4 +1,4 @@
-class Engine::API::Win {
+class Engine::Runtime::Windows::API {
   interface Engine::API;
   
   use Engine::App;
@@ -7,9 +7,9 @@ class Engine::API::Win {
   has engine : rw Engine::Runtime::Engine::Win;
   has runtime : rw Engine::Runtime;
   
-  static method new : Engine::API::Win () {
+  static method new : Engine::Runtime::Windows::API () {
     
-    my $win = new Engine::API::Win;
+    my $win = new Engine::Runtime::Windows::API;
     
     return $win;
   }
