@@ -30,14 +30,10 @@ static int16_t* encode_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* strin
   return string_utf8_to_utf16;
 }
 
-static void my_alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
+static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
   int16_t* message_utf8_to_utf16 = encode_utf16(env, stack, message);
   
   MessageBoxW(NULL, (LPCWSTR)message_utf8_to_utf16, TEXT("Alert"), MB_OK);
-}
-
-static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
-  my_alert(env, stack, message);
 }
 
 struct COTTON_RUNTIME_PAINT_INFO {
@@ -175,7 +171,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       sv_self = (void*)wm_create_args[1];
       stack = (SPVM_VALUE*)wm_create_args[2];
 
-      // my_alert(env, stack, "ハローワールド");
+      // alert(env, stack, "ハローワールド");
 
       return 0;
     }
