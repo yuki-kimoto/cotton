@@ -65,7 +65,6 @@ class Engine::Browser::Win {
     # API
     my $cotton_api_win = Engine::Runtime::Windows::API->new;
     $cotton_api_win->set_engine($engine);
-    $cotton_api_win->set_runtime($runtime);
     $runtime->set_api($cotton_api_win);
 
 

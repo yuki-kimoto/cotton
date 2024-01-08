@@ -1,17 +1,15 @@
 class Engine::Runtime::Windows::API {
   interface Engine::API;
   
-  use Engine::App;
   use Eg::Node;
   
   has engine : rw Engine::Runtime::Engine::Win;
-  has runtime : rw Engine::Runtime;
   
   static method new : Engine::Runtime::Windows::API () {
     
-    my $win = new Engine::Runtime::Windows::API;
+    my $self = new Engine::Runtime::Windows::API;
     
-    return $win;
+    return $self;
   }
   
   method get_viewport_height : int () {

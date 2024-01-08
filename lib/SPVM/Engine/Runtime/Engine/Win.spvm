@@ -1,4 +1,6 @@
 class Engine::Runtime::Engine::Win {
+  interface Engine::API;
+  
   use List;
   use Engine::App;
   use Engine::Runtime::Engine::Win::WindowHandle;
@@ -9,6 +11,7 @@ class Engine::Runtime::Engine::Win {
   has window_handle : Engine::Runtime::Engine::Win::WindowHandle;
   
   static method new : Engine::Runtime::Engine::Win($options : object[]) {
+    
     my $self = new Engine::Runtime::Engine::Win;
     
     return $self;
