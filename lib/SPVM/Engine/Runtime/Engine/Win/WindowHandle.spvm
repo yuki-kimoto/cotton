@@ -1,0 +1,1 @@
+class Engine::Runtime::Engine::Win::WindowHandle : pointer;

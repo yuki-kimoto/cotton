@@ -1,6 +1,6 @@
-# Cotton
+# Engine
 
-Cotton is a example of SPVM application on Windows.
+Engine is a example of SPVM application on Windows.
 
 # Required Modules Installation
 
@@ -8,9 +8,9 @@ Cotton is a example of SPVM application on Windows.
 
 # Executable File Generating
 
-  # Compile Cotton - development mode
-  spvmcc -o cotton -c cotton.config -I lib/SPVM Cotton::Browser::Win
+  # Compile Engine - development mode
+  spvmcc -o cotton -c cotton.config -I lib/SPVM Engine::Browser::Win
 
-  # Compile Cotton - producetion mode
-  spvmcc -o cotton -c cotton.production.config -I lib/SPVM Cotton::Browser::Win
+  # Compile Engine - producetion mode
+  spvmcc -o cotton -c cotton.production.config -I lib/SPVM Engine::Browser::Win
 

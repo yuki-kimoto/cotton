@@ -1,6 +1,6 @@
-class Cotton::Renderer {
-  use Cotton::App;
-  use Cotton::Runtime;
+class Engine::Renderer {
+  use Engine::App;
+  use Engine::Runtime;
   
   use Eg as Ct;
   
@@ -12,18 +12,18 @@ class Cotton::Renderer {
     return $color;
   }
   
-  static method new : Cotton::Renderer () {
-    return new Cotton::Renderer;
+  static method new : Engine::Renderer () {
+    return new Engine::Renderer;
   }
   
-  method paint_nodes : void($runtime : Cotton::Runtime, $paint_info : Cotton::PaintInfo) {
+  method paint_nodes : void($runtime : Engine::Runtime, $paint_info : Engine::PaintInfo) {
     my $app = $runtime->app;
     
     my $viewport_width = $runtime->api->get_viewport_width();
     my $viewport_height = $runtime->api->get_viewport_height();
     
     {
-      my $body = $app->current_page;
+      my $body = $app->index_document;
       
       $body->{draw_left} = 0;
       $body->{draw_top} = 0;

@@ -1,15 +1,15 @@
-class Cotton::API::Win {
-  interface Cotton::API;
+class Engine::API::Win {
+  interface Engine::API;
   
-  use Cotton::App;
+  use Engine::App;
   use Eg::Node;
   
-  has engine : rw Cotton::Runtime::Engine::Win;
-  has runtime : rw Cotton::Runtime;
+  has engine : rw Engine::Runtime::Engine::Win;
+  has runtime : rw Engine::Runtime;
   
-  static method new : Cotton::API::Win () {
+  static method new : Engine::API::Win () {
     
-    my $win = new Cotton::API::Win;
+    my $win = new Engine::API::Win;
     
     return $win;
   }
@@ -35,7 +35,7 @@ class Cotton::API::Win {
     $engine->paint_node($paint_info, $node);
   }
   
-  method run_app : void ($app : Cotton::App) {
+  method run_app : void ($app : Engine::App) {
     my $runtime = $self->runtime;
     my $engine = $self->engine;
 
@@ -49,7 +49,7 @@ class Cotton::API::Win {
     $engine->run;
   }
   
-  method calc_text_height : int ($paint_info : Cotton::PaintInfo, $text : string, $width : int, $font_styles : string[]) {
+  method calc_text_height : int ($paint_info : Engine::PaintInfo, $text : string, $width : int, $font_styles : string[]) {
     my $engine = $self->engine;
     
     return $engine->calc_text_height($paint_info, $text, $width, $font_styles);

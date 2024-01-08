@@ -1,12 +1,12 @@
-class Cotton::Browser::Win {
-  use Cotton::App;
+class Engine::Browser::Win {
+  use Engine::App;
   use Eg::Node;
   use List;
   
-  use Cotton::Runtime::Engine::Win;
-  use Cotton::Runtime;
+  use Engine::Runtime::Engine::Win;
+  use Engine::Runtime;
 
-  use Cotton::API::Win;
+  use Engine::API::Win;
   
   static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
     my $color = Eg::Style::Color->new($red, $green, $blue, 1);
@@ -14,7 +14,7 @@ class Cotton::Browser::Win {
   }
   
   static method main : int ($start_file : string, $args : string[]) {
-    my $app = Cotton::App->new;
+    my $app = Engine::App->new;
     
     # Application name
     $app->set_name("コットン");
@@ -53,17 +53,17 @@ class Cotton::Browser::Win {
       $body->set_background_color(&rgb(0x00, 0x33, 0x44));
       
       # Set current page;
-      $app->set_current_page($body);
+      $app->set_index_document($body);
     }
     
     # Create runtime
-    my $runtime = Cotton::Runtime->new({});
+    my $runtime = Engine::Runtime->new({});
     
     # Create engine
-    my $engine = Cotton::Runtime::Engine::Win->new({});
+    my $engine = Engine::Runtime::Engine::Win->new({});
     
     # API
-    my $cotton_api_win = Cotton::API::Win->new;
+    my $cotton_api_win = Engine::API::Win->new;
     $cotton_api_win->set_engine($engine);
     $cotton_api_win->set_runtime($runtime);
     $runtime->set_api($cotton_api_win);

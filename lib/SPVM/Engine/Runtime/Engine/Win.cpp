@@ -44,7 +44,7 @@ struct COTTON_RUNTIME_PAINT_INFO {
   ID2D1HwndRenderTarget* renderer;
 };
 
-int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
+int32_t Engine_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_self) {
   int32_t error_id = 0;
   
   void* sv_window_handle = env->get_field_object_by_name(env, stack, sv_self, "window_handle", &error_id, __func__, __FILE__, __LINE__);
@@ -123,7 +123,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
     D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
     renderer->Clear(viewport_init_background_color);
 
-    // Call Cotton::Runtime->paint_nodes
+    // Call Engine::Runtime->paint_nodes
     {
       int32_t scope = env->enter_scope(env, stack);
       
@@ -132,7 +132,7 @@ int32_t Cotton_Runtime_paint_window(SPVM_ENV* env, SPVM_VALUE* stack, void* sv_s
       paint_info->window_handle = window_handle;
       paint_info->renderer = renderer;
       
-      void* sv_paint_info = env->new_pointer_object_by_name(env, stack, "Cotton::PaintInfo", paint_info, &error_id, __func__, __FILE__, __LINE__);
+      void* sv_paint_info = env->new_pointer_object_by_name(env, stack, "Engine::PaintInfo", paint_info, &error_id, __func__, __FILE__, __LINE__);
       if (error_id) { return error_id; }
       
       stack[0].oval = sv_runtime;
@@ -181,7 +181,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
       int32_t error_id = 0;
       
       // Draw node
-      error_id = Cotton_Runtime_paint_window(env, stack, sv_self);
+      error_id = Engine_Runtime_paint_window(env, stack, sv_self);
       
       if (error_id) {
         alert(env, stack, env->get_chars(env, stack, env->get_exception(env, stack)));
@@ -195,7 +195,7 @@ LRESULT CALLBACK COTTON_RUNTIME_ENGINE_WIN_WndProc(HWND window_handle , UINT mes
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-int32_t SPVM__Cotton__Runtime__Engine__Win__run(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Engine__Win__run(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   // Get and dispatch message
   MSG message;
@@ -214,7 +214,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__run(SPVM_ENV* env, SPVM_VALUE* stack
   return 0;
 }
 
-int32_t SPVM__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -292,7 +292,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__calc_text_height(SPVM_ENV* env, SPVM
   return 0;
 }
 
-int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -462,7 +462,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__paint_node(SPVM_ENV* env, SPVM_VALUE
   return 0;
 }
 
-int32_t SPVM__Cotton__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -487,7 +487,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__get_viewport_width(SPVM_ENV* env, SP
 }
 
 
-int32_t SPVM__Cotton__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Engine__Win__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
 
@@ -514,7 +514,7 @@ struct Vertex {
         float col[ 4 ];
 };
  
-int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* sv_self = stack[0].oval;
   
@@ -558,7 +558,7 @@ int32_t SPVM__Cotton__Runtime__Engine__Win__create_main_window(SPVM_ENV* env, SP
       window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
-  void* sv_window_handle = env->new_pointer_object_by_name(env, stack, "Cotton::Runtime::Engine::Win::WindowHandle", window_handle, &error_id, __func__, __FILE__, __LINE__);
+  void* sv_window_handle = env->new_pointer_object_by_name(env, stack, "Engine::Runtime::Engine::Win::WindowHandle", window_handle, &error_id, __func__, __FILE__, __LINE__);
   if (error_id) { return error_id; }
   
   env->set_field_object_by_name(env, stack, sv_self, "window_handle", sv_window_handle, &error_id, __func__, __FILE__, __LINE__);

@@ -1,0 +1,28 @@
+class Engine::Runtime::Engine::Win {
+  use List;
+  use Engine::App;
+  use Engine::Runtime::Engine::Win::WindowHandle;
+  use Encode;
+  
+  has app : rw Engine::App;
+  has runtime : rw Engine::Runtime;
+  has window_handle : Engine::Runtime::Engine::Win::WindowHandle;
+  
+  static method new : Engine::Runtime::Engine::Win($options : object[]) {
+    my $self = new Engine::Runtime::Engine::Win;
+    
+    return $self;
+  }
+  
+  native method create_main_window : void ();
+  
+  native method get_viewport_width : int ();
+
+  native method get_viewport_height : int ();
+
+  native method paint_node : void ($paint_info : object, $node : Eg::Node);
+
+  native method calc_text_height : int ($paint_info : Engine::PaintInfo, $text : string, $width : int, $font_styles : string[]);
+  
+  native method run : void ();
+}

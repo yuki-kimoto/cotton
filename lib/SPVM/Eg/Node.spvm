@@ -167,8 +167,8 @@ class Eg::Node {
   }
   
   # Deprecated allow
-  allow Cotton::App;
-  allow Cotton::Renderer;
+  allow Engine::App;
+  allow Engine::Renderer;
   
   # Deprecated Fields
   has color : rw Eg::Style::Color;
