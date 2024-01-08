@@ -195,7 +195,7 @@ static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPA
   return DefWindowProc(window_handle , message , wparam , lparam);
 }
 
-int32_t SPVM__Engine__Runtime__Windows__API__run(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Engine__Runtime__Windows__API__start_app(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   // Get and dispatch message
   MSG message;

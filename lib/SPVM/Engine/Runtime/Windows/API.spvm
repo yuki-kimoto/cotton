@@ -49,5 +49,5 @@ class Engine::Runtime::Windows::API {
   
   native method calc_text_height : int ($paint_info : Engine::Runtime::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
-  native method run : void ();
+  native method start_app : void ();
 }

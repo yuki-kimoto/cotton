@@ -54,10 +54,8 @@ class Engine::Runtime::Windows {
       $app->set_index_document($body);
     }
     
-    # Create runtime
-    my $runtime = Engine::Runtime->new({});
+    my $runtime = Engine::Runtime->new;
     
-    # API
     my $api = Engine::Runtime::Windows::API->new;
     
     $runtime->set_api($api);
@@ -65,11 +63,11 @@ class Engine::Runtime::Windows {
     $runtime->set_app($app);
     
     $api->set_runtime($runtime);
+    
     $api->set_app($app);
     
     $api->open_main_window;
     
-    $api->run;
-
+    $api->start_app;
   }
 }
