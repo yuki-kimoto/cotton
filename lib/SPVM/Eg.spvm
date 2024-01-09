@@ -1,5 +1,27 @@
+# Copyright (c) 2023 Yuki Kimoto
+# MIT License
+
 class Eg {
+  version "0.007";
+  
   use Eg::Node;
+  use Hash;
+  use List;
+  use StringBuffer;
+  
+  static method document : Eg::Node ($root_node : Eg::Node) {
+    unless ($root_node) {
+      die "\$root_node must be defined.";
+    }
+    
+    unless ($root_node->{tag_name}&& $root_node->{tag_name} eq "html") {
+      die "The tag name of \$root_node must be \"html\".";
+    }
+    
+    my $new_document_node = Eg::Node->new_document($root_node);
+    
+    return $new_document_node;
+  }
   
   static method text : Eg::Node ($text : string) {
     
@@ -236,8 +258,27 @@ class Eg {
     return &tag("hr", $nodes_or_text);
   }
   
-  static method html : Eg::Node ($nodes_or_text : object of Eg::Node[]|string = undef) {
-    return &tag("html", $nodes_or_text);
+  static method html : Eg::Node ($nodes : Eg::Node[] = undef) {
+    
+    unless ($nodes) {
+      die "\$nodes must be defined.";
+    }
+    
+    my $nodes_length = @$nodes;
+    
+    unless ($nodes_length == 2) {
+      die "\$nodes_length must be 2.";
+    }
+    
+    unless ($nodes->[0]->{tag_name} eq "head") {
+      die "The tag name of the 1th element of \$nodes must be \"head\".";
+    }
+    
+    unless ($nodes->[1]->{tag_name} eq "body") {
+      die "The tag name of the 1th element of \$nodes must be \"body\".";
+    }
+    
+    return &tag("html", $nodes);
   }
   
   static method i : Eg::Node ($nodes_or_text : object of Eg::Node[]|string = undef) {
@@ -712,8 +753,27 @@ class Eg {
     return &tag_("hr", $attributes, $nodes_or_text);
   }
   
-  static method html_ : Eg::Node ($attributes : object[] = undef, $nodes_or_text : object of Eg::Node[]|string = undef) {
-    return &tag_("html", $attributes, $nodes_or_text);
+  static method html_ : Eg::Node ($attributes : object[] = undef, $nodes : Eg::Node[] = undef) {
+    
+    unless ($nodes) {
+      die "\$nodes must be defined.";
+    }
+    
+    my $nodes_length = @$nodes;
+    
+    unless ($nodes_length == 2) {
+      die "\$nodes_length must be 2.";
+    }
+    
+    unless ($nodes->[0]->{tag_name} eq "head") {
+      die "The tag name of the 1th element of \$nodes must be \"head\".";
+    }
+    
+    unless ($nodes->[1]->{tag_name} eq "body") {
+      die "The tag name of the 1th element of \$nodes must be \"body\".";
+    }
+    
+    return &tag_("html", $attributes, $nodes);
   }
   
   static method i_ : Eg::Node ($attributes : object[] = undef, $nodes_or_text : object of Eg::Node[]|string = undef) {

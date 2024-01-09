@@ -53,6 +53,13 @@ class Eg::Node {
     return $self;
   }
   
+  static method new_document : Eg::Node ($root_node : Eg::Node) {
+    
+    my $self = Eg::Node->new(Eg::Node->TYPE_DOCUMENT_NODE, [$root_node]);
+    
+    return $self;
+  }
+  
   static method new_element : Eg::Node ($tag_name : string, $attribute_pairs : object[] = undef, $nodes : Eg::Node[] = undef) {
     
     unless ($tag_name) {
