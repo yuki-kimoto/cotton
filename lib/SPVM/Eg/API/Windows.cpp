@@ -481,6 +481,52 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   if (error_id) { return error_id; }
   void* obj_style_pairs = stack[0].oval;
   
+  int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
+  for (int32_t i = 0; i < style_pairs_length; i += 2) {
+    void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
+    void* obj_style_value = env->get_elem_object(env, stack, obj_style_pairs, i + 1);
+    
+    const char* style_name = env->get_chars(env, stack, obj_style_name);
+    const char* style_value = env->get_chars(env, stack, obj_style_value);
+    
+    char ch = style_name[0];
+    
+    switch (ch) {
+      case 'l' : {
+        
+        if (strcmp(style_name, "left") == 0) {
+          spvm_warn("left");
+        }
+        
+        break;
+      }
+      case 't' : {
+        
+        if (strcmp(style_name, "top") == 0) {
+          
+        }
+        
+        break;
+      }
+      case 'w' : {
+        
+        if (strcmp(style_name, "weight") == 0) {
+          
+        }
+        
+        break;
+      }
+      case 'h' : {
+        
+        if (strcmp(style_name, "height") == 0) {
+          
+        }
+        
+        break;
+      }
+    }
+  }
+  
   int32_t draw_left = env->get_field_int_by_name(env, stack, obj_node, "draw_left", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   int32_t draw_top = env->get_field_int_by_name(env, stack, obj_node, "draw_top", &error_id, __func__, FILE_NAME, __LINE__);
