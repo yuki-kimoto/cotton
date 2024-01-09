@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include "re2/re2.h"
+
 static const char* FILE_NAME = "Eg/API/Windows.cpp";
 
 extern "C" {
@@ -489,12 +491,11 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     const char* style_name = env->get_chars(env, stack, obj_style_name);
     const char* style_value = env->get_chars(env, stack, obj_style_value);
     
-    char ch = style_name[0];
-    
-    switch (ch) {
+    switch (style_name[0]) {
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
+          int32_t match = RE2::PartialMatch("abcde", "bcd");
           spvm_warn("left");
         }
         
