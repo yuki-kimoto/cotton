@@ -551,18 +551,21 @@ static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style
     memcpy(red_string, submatch[1].data(), submatch[1].length());
     char* red_end;
     *red = strtol(red_string, &red_end, 16);
+    *red /= 255;
     env->free_memory_block(env, stack, red_string);
     
     char* green_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
     memcpy(green_string, submatch[1].data(), submatch[1].length());
     char* green_end;
     *green = strtol(green_string, &green_end, 16);
+    *green /= 255;
     env->free_memory_block(env, stack, green_string);
     
     char* blue_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
     memcpy(blue_string, submatch[1].data(), submatch[1].length());
     char* blue_end;
     *blue = strtol(blue_string, &blue_end, 16);
+    *blue /= 255;
     env->free_memory_block(env, stack, blue_string);
   }
   
@@ -594,6 +597,11 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t top = 0;
   int32_t width = 0;
   int32_t height = 0;
+  float background_color_red = 0;
+  float background_color_green = 0;
+  float background_color_blue = 0;
+  float background_color_alpha = 0;
+  
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
     void* obj_style_value = env->get_elem_object(env, stack, obj_style_pairs, i + 1);
@@ -603,6 +611,14 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     int32_t style_value_length = env->length(env, stack, obj_style_value);
     
     switch (style_name[0]) {
+      case 'b' : {
+        
+        if (strcmp(style_name, "background-color") == 0) {
+          parse_css_color(env, stack, style_value, style_value_length, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
+        }
+        
+        break;
+      }
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
@@ -643,6 +659,8 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   printf("EEEEE %f %f\n", block_rect.left, block_rect.right);
 
+  spvm_warn("LINE %d %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue);
+
   // Draw block
   {
     void* obj_background_color = env->get_field_object_by_name(env, stack, obj_node, "background_color", &error_id, __func__, FILE_NAME, __LINE__);
@@ -664,6 +682,9 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       if (error_id) { return error_id; }
 
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
+
+      spvm_warn("LINE %d %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue);
+  
     }
     else {
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 0);
