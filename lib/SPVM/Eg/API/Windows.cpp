@@ -537,6 +537,10 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
             if (strcmp(unit, "px") == 0) {
               left = (int32_t)number;
             }
+            
+            env->free_memory_block(env, stack, number_string);
+            env->free_memory_block(env, stack, unit);
+            
           }
           
           spvm_warn("left %d", left);
