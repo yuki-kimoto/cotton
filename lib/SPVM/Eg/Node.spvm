@@ -218,14 +218,5 @@ class Eg::Node {
   has color : rw Eg::Style::Color;
   
   has background_color : rw Eg::Style::Color;
-  
-  has draw_left : rw int;
-  
-  has draw_top : rw int;
-  
-  has draw_width : rw int;
-  
-  has draw_height : rw int;
-  
 }
 

@@ -70,9 +70,6 @@ class Eg::API::Windows {
       my $nodes = [$body, (Eg::Node)$body->nodes->get(0), $body->nodes->get(0)->(Eg::Node)->nodes->get(0)->(Eg::Node)];
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
-        $node->set_draw_left(0);
-        $node->set_draw_top(0);
-        $node->set_draw_width($viewport_width);
         
         my $text_string = (string)undef;
         if ($node->text_buffer) {
@@ -80,8 +77,6 @@ class Eg::API::Windows {
         }
         
         my $draw_height = $runtime->api->calc_text_height($paint_info, $text_string, $viewport_width, undef);
-        
-        $node->set_draw_height($draw_height);
         
         $node->set_css("left", "0px");
         $node->set_css("top", "0px");
@@ -97,11 +92,6 @@ class Eg::API::Windows {
       {
         my $node = Eg->div_({style => {left => "300px", top => "500px", width => "400px", height => "400px", "background-color" => "0xFF0000"}});
         
-        $node->set_draw_left(300);
-        $node->set_draw_top(500);
-        $node->set_draw_width(400);
-        $node->set_draw_height(400);
-        
         $node_list->push($node);
         
         $node->set_background_color(&rgb(0xFF, 0x00, 0x00));
@@ -109,10 +99,6 @@ class Eg::API::Windows {
       {
         my $node = Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "0xFF0000"}});
         
-        $node->set_draw_left(400);
-        $node->set_draw_top(600);
-        $node->set_draw_width(500);
-        $node->set_draw_height(500);
         $node_list->push($node);
         $node->set_background_color(&rgb(0xFF, 0x00, 0x00));
       }
