@@ -263,6 +263,22 @@ struct COTTON_RUNTIME_PAINT_INFO {
   ID2D1HwndRenderTarget* renderer;
 };
 
+struct EG_STYLE_INFO {
+  float color_red;
+  float color_green;
+  float color_blue;
+  float color_alpha;
+  float background_color_red;
+  float background_color_green;
+  float background_color_blue;
+  float background_color_alpha;
+  int32_t left;
+  int32_t top;
+  int32_t width;
+  int32_t height;
+  struct EG_STYLE_INFO* parent;
+};
+
 static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   int32_t error_id = 0;
   
