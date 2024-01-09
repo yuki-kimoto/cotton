@@ -514,6 +514,60 @@ static double parse_css_length (SPVM_ENV* env, SPVM_VALUE* stack, const char* st
   return pixel;
 }
 
+static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, float* red, float* green, float* blue, float* alpha) {
+  
+  *red = 0;
+  *green = 0;
+  *blue = 0;
+  *alpha = 0;
+  
+  const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
+  
+  int32_t css_color_pattern_length = strlen(css_color_pattern);
+  
+  RE2::Options options;
+  options.set_log_errors(false);
+  re2::StringPiece stp_css_color_pattern(css_color_pattern, css_color_pattern_length);
+  
+  std::unique_ptr<RE2> re2(new RE2(stp_css_color_pattern, options));
+  
+  std::string error = re2->error();
+  std::string error_arg = re2->error_arg();
+  
+  if (!re2->ok()) {
+    abort();
+  }
+  
+  int32_t captures_length = re2->NumberOfCapturingGroups();
+  int32_t doller0_and_captures_length = captures_length + 1;
+  
+  int32_t offset = 0;
+  
+  std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
+  int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
+  
+  if (match) {
+    char* red_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
+    memcpy(red_string, submatch[1].data(), submatch[1].length());
+    char* red_end;
+    *red = strtol(red_string, &red_end, 16);
+    env->free_memory_block(env, stack, red_string);
+    
+    char* green_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
+    memcpy(green_string, submatch[1].data(), submatch[1].length());
+    char* green_end;
+    *green = strtol(green_string, &green_end, 16);
+    env->free_memory_block(env, stack, green_string);
+    
+    char* blue_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
+    memcpy(blue_string, submatch[1].data(), submatch[1].length());
+    char* blue_end;
+    *blue = strtol(blue_string, &blue_end, 16);
+    env->free_memory_block(env, stack, blue_string);
+  }
+  
+}
+
 int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
