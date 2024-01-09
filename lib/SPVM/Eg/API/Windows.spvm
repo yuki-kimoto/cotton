@@ -83,12 +83,10 @@ class Eg::API::Windows {
         
         $node->set_draw_height($draw_height);
         
-        if ($node->style) {
-          $node->set_css("left", "0px");
-          $node->set_css("top", "0px");
-          $node->set_css("width", "${viewport_width}px");
-          $node->set_css("height", "${draw_height}px");
-        }
+        $node->set_css("left", "0px");
+        $node->set_css("top", "0px");
+        $node->set_css("width", "${viewport_width}px");
+        $node->set_css("height", "${draw_height}px");
         
         $runtime->api->paint_node($paint_info, $node);
       }

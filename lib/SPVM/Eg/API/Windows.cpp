@@ -621,7 +621,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
     }
     else {
-      printf("GGGGGGGGGG\n");
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 0);
     }
 
@@ -633,7 +632,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     );
     assert(background_brush);
     
-    printf("FFFFFFFFFF %d %d %d %d\n", draw_left, draw_top, draw_width, draw_height);
+    printf("FFFF %d %d %d %d\n", draw_left, draw_top, draw_width, draw_height);
     printf("GGGG %d %d %d %d\n", left, top, width, height);
     
     // 四角形の描画

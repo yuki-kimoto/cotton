@@ -110,6 +110,10 @@ class Eg::Node {
   
   method set_css : void ($name : string, $value : string) {
     
+    unless ($self->{style}) {
+      $self->{style} = Eg::Style->new;
+    }
+    
     my $style = $self->{style};
     
     $style->{style_h}->set_string($name, $value);
