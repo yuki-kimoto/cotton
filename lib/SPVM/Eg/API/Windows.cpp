@@ -567,7 +567,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       }
       case 'w' : {
         
-        if (strcmp(style_name, "weight") == 0) {
+        if (strcmp(style_name, "width") == 0) {
           width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
@@ -634,6 +634,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     assert(background_brush);
     
     printf("FFFFFFFFFF %d %d %d %d\n", draw_left, draw_top, draw_width, draw_height);
+    printf("GGGG %d %d %d %d\n", left, top, width, height);
     
     // 四角形の描画
     renderer->FillRectangle(&block_rect, background_brush);

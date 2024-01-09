@@ -67,10 +67,6 @@ class Eg::API::Windows {
     {
       my $body = (Eg::Node)$app->current_document->nodes->get(1);
       
-      $body->set_draw_left(0);
-      $body->set_draw_top(0);
-      $body->set_draw_width($viewport_width);
-      
       my $nodes = [$body, (Eg::Node)$body->nodes->get(0), $body->nodes->get(0)->(Eg::Node)->nodes->get(0)->(Eg::Node)];
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
@@ -86,6 +82,13 @@ class Eg::API::Windows {
         my $draw_height = $runtime->api->calc_text_height($paint_info, $text_string, $viewport_width, undef);
         
         $node->set_draw_height($draw_height);
+        
+        if ($node->style) {
+          $node->set_css("left", "0px");
+          $node->set_css("top", "0px");
+          $node->set_css("width", "${viewport_width}px");
+          $node->set_css("height", "${draw_height}px");
+        }
         
         $runtime->api->paint_node($paint_info, $node);
       }
