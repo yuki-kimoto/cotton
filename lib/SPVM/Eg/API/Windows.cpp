@@ -537,6 +537,9 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
   
   int32_t left = 0;
+  int32_t top = 0;
+  int32_t width = 0;
+  int32_t height = 0;
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
     void* obj_style_value = env->get_elem_object(env, stack, obj_style_pairs, i + 1);
@@ -550,7 +553,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
         
         if (strcmp(style_name, "left") == 0) {
           left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
-          spvm_warn("left %d", left);
         }
         
         break;
@@ -558,7 +560,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          
+          top = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -566,7 +568,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       case 'w' : {
         
         if (strcmp(style_name, "weight") == 0) {
-          
+          width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -574,7 +576,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          
+          height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
         break;
