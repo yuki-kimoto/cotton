@@ -464,6 +464,56 @@ int32_t SPVM__Eg__API__Windows__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stac
   return 0;
 }
 
+static double parse_css_length (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length) {
+  
+  const char* css_length_pattern = "^(\\d+)(px)$";
+  
+  int32_t css_length_pattern_length = strlen(css_length_pattern);
+  
+  RE2::Options options;
+  options.set_log_errors(false);
+  re2::StringPiece stp_css_length_pattern(css_length_pattern, css_length_pattern_length);
+  
+  std::unique_ptr<RE2> re2(new RE2(stp_css_length_pattern, options));
+  
+  std::string error = re2->error();
+  std::string error_arg = re2->error_arg();
+  
+  if (!re2->ok()) {
+    return env->die(env, stack, "The regex pattern %s can't be compiled. [Error]%s. [Fragment]%s", css_length_pattern, error.data(), error_arg.data(), __func__, FILE_NAME, __LINE__);
+  }
+  
+  int32_t captures_length = re2->NumberOfCapturingGroups();
+  int32_t doller0_and_captures_length = captures_length + 1;
+  
+  int32_t offset = 0;
+  
+  std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
+  int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
+  
+  int32_t pixel = 0;
+  
+  if (match) {
+    char* number_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
+    memcpy(number_string, submatch[1].data(), submatch[1].length());
+    char* end;
+    double number = strtod(number_string, &end);
+    
+    char* unit = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
+    memcpy(unit, submatch[2].data(), submatch[2].length());
+    
+    if (strcmp(unit, "px") == 0) {
+      pixel = (int32_t)number;
+    }
+    
+    env->free_memory_block(env, stack, number_string);
+    env->free_memory_block(env, stack, unit);
+    
+  }
+  
+  return pixel;
+}
+
 int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
@@ -485,6 +535,8 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   void* obj_style_pairs = stack[0].oval;
   
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
+  
+  int32_t left = 0;
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
     void* obj_style_value = env->get_elem_object(env, stack, obj_style_pairs, i + 1);
@@ -497,52 +549,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          
-          const char* css_length_pattern = "^(\\d+)(px)$";
-          
-          int32_t css_length_pattern_length = strlen(css_length_pattern);
-          
-          RE2::Options options;
-          options.set_log_errors(false);
-          re2::StringPiece stp_css_length_pattern(css_length_pattern, css_length_pattern_length);
-          
-          std::unique_ptr<RE2> re2(new RE2(stp_css_length_pattern, options));
-          
-          std::string error = re2->error();
-          std::string error_arg = re2->error_arg();
-          
-          if (!re2->ok()) {
-            return env->die(env, stack, "The regex pattern %s can't be compiled. [Error]%s. [Fragment]%s", css_length_pattern, error.data(), error_arg.data(), __func__, FILE_NAME, __LINE__);
-          }
-          
-          int32_t captures_length = re2->NumberOfCapturingGroups();
-          int32_t doller0_and_captures_length = captures_length + 1;
-          
-          int32_t offset = 0;
-          
-          std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
-          int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
-          
-          int32_t left = 0;
-          
-          if (match) {
-            char* number_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
-            memcpy(number_string, submatch[1].data(), submatch[1].length());
-            char* end;
-            double number = strtod(number_string, &end);
-            
-            char* unit = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
-            memcpy(unit, submatch[2].data(), submatch[2].length());
-            
-            if (strcmp(unit, "px") == 0) {
-              left = (int32_t)number;
-            }
-            
-            env->free_memory_block(env, stack, number_string);
-            env->free_memory_block(env, stack, unit);
-            
-          }
-          
+          left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
           spvm_warn("left %d", left);
         }
         
