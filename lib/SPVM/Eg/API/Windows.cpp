@@ -597,9 +597,9 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t top = 0;
   int32_t width = 0;
   int32_t height = 0;
-  float background_color_red = 0;
-  float background_color_green = 0;
-  float background_color_blue = 0;
+  float background_color_red = 1;
+  float background_color_green = 1;
+  float background_color_blue = 1;
   float background_color_alpha = 0;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
