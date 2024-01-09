@@ -584,17 +584,8 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     }
   }
   
-  int32_t draw_left = env->get_field_int_by_name(env, stack, obj_node, "draw_left", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  int32_t draw_top = env->get_field_int_by_name(env, stack, obj_node, "draw_top", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  int32_t draw_width = env->get_field_int_by_name(env, stack, obj_node, "draw_width", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  int32_t draw_height = env->get_field_int_by_name(env, stack, obj_node, "draw_height", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-
   // Block rect
-  D2D1_RECT_F block_rect = D2D1::RectF(draw_left, draw_top, draw_width, draw_height);
+  D2D1_RECT_F block_rect = D2D1::RectF(left, top, width, height);
   
   printf("EEEEE %f %f\n", block_rect.left, block_rect.right);
 
@@ -632,7 +623,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     );
     assert(background_brush);
     
-    printf("FFFF %d %d %d %d\n", draw_left, draw_top, draw_width, draw_height);
     printf("GGGG %d %d %d %d\n", left, top, width, height);
     
     // 四角形の描画
@@ -691,7 +681,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     }
     
     // draw width
-    int32_t draw_width = parent_width;
+    int32_t width = parent_width;
     
     // COM result
     HRESULT com_result;
@@ -719,7 +709,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
           (const WCHAR*)text_utf16       // 文字列
         , text_utf16_length        // 文字列の幅
         ,text_format           // DWriteTextFormat
-        , draw_width    // 枠の幅
+        , width    // 枠の幅
         , 0    // 枠の高さ
         , &text_layout
     );
