@@ -494,12 +494,12 @@ static double parse_css_length (SPVM_ENV* env, SPVM_VALUE* stack, const char* st
   int32_t pixel = 0;
   
   if (match) {
-    char* number_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
+    char* number_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
     memcpy(number_string, submatch[1].data(), submatch[1].length());
     char* end;
     double number = strtod(number_string, &end);
     
-    char* unit = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
+    char* unit = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
     memcpy(unit, submatch[2].data(), submatch[2].length());
     
     if (strcmp(unit, "px") == 0) {
@@ -547,22 +547,22 @@ static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style
   int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
   
   if (match) {
-    char* red_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
+    char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
     memcpy(red_string, submatch[1].data(), submatch[1].length());
     char* red_end;
     *red = strtol(red_string, &red_end, 16);
     *red /= 255;
     env->free_memory_block(env, stack, red_string);
     
-    char* green_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
-    memcpy(green_string, submatch[1].data(), submatch[1].length());
+    char* green_string = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
+    memcpy(green_string, submatch[2].data(), submatch[2].length());
     char* green_end;
     *green = strtol(green_string, &green_end, 16);
     *green /= 255;
     env->free_memory_block(env, stack, green_string);
     
-    char* blue_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
-    memcpy(blue_string, submatch[1].data(), submatch[1].length());
+    char* blue_string = (char*)env->new_memory_block(env, stack, submatch[3].length() + 1);
+    memcpy(blue_string, submatch[3].data(), submatch[3].length());
     char* blue_end;
     *blue = strtol(blue_string, &blue_end, 16);
     *blue /= 255;
@@ -614,7 +614,12 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       case 'b' : {
         
         if (strcmp(style_name, "background-color") == 0) {
+          
+          spvm_warn("LINE %d %s", __LINE__, style_value);
+          
           parse_css_color(env, stack, style_value, style_value_length, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
+          spvm_warn("LINE %d %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue);
+
         }
         
         break;
@@ -658,8 +663,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   D2D1_RECT_F block_rect = D2D1::RectF(left, top, width, height);
   
   printf("EEEEE %f %f\n", block_rect.left, block_rect.right);
-
-  spvm_warn("LINE %d %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue);
 
   // Draw block
   {
