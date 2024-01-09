@@ -471,11 +471,16 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
 
   void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
-
+  
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
   HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
-
+  
+  stack[0].oval = obj_node;
+  env->call_instance_method_by_name(env, stack, "style_to_pairs", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  void* obj_style_pairs = stack[0].oval;
+  
   int32_t draw_left = env->get_field_int_by_name(env, stack, obj_node, "draw_left", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   int32_t draw_top = env->get_field_int_by_name(env, stack, obj_node, "draw_top", &error_id, __func__, FILE_NAME, __LINE__);
