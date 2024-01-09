@@ -471,7 +471,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   void* obj_self = stack[0].oval;
   void* obj_paint_info = stack[1].oval;
   void* obj_node = stack[2].oval;
-
+  
   void* obj_app = env->get_field_object_by_name(env, stack, obj_self, "app", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
@@ -491,6 +491,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     
     const char* style_name = env->get_chars(env, stack, obj_style_name);
     const char* style_value = env->get_chars(env, stack, obj_style_value);
+    int32_t style_value_length = env->length(env, stack, obj_style_value);
     
     switch (style_name[0]) {
       case 'l' : {
@@ -514,8 +515,31 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
             return env->die(env, stack, "The regex pattern %s can't be compiled. [Error]%s. [Fragment]%s", css_length_pattern, error.data(), error_arg.data(), __func__, FILE_NAME, __LINE__);
           }
           
-          int32_t match = RE2::PartialMatch(style_value, "^(\\d+)(px)$");
-          spvm_warn("left");
+          int32_t captures_length = re2->NumberOfCapturingGroups();
+          int32_t doller0_and_captures_length = captures_length + 1;
+          
+          int32_t offset = 0;
+          
+          std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
+          int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
+          
+          int32_t left = 0;
+          
+          if (match) {
+            char* number_string = (char*)env->new_memory_block(env, stack, submatch[0].length() + 1);
+            memcpy(number_string, submatch[1].data(), submatch[1].length());
+            char* end;
+            double number = strtod(number_string, &end);
+            
+            char* unit = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
+            memcpy(unit, submatch[2].data(), submatch[2].length());
+            
+            if (strcmp(unit, "px") == 0) {
+              left = (int32_t)number;
+            }
+          }
+          
+          spvm_warn("left %d", left);
         }
         
         break;
