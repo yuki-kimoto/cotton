@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
+#include<memory>
 
 #include <iostream>
 
@@ -495,7 +496,25 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          int32_t match = RE2::PartialMatch("abcde", "bcd");
+          
+          const char* css_length_pattern = "^(\\d+)(px)$";
+          
+          int32_t css_length_pattern_length = strlen(css_length_pattern);
+          
+          RE2::Options options;
+          options.set_log_errors(false);
+          re2::StringPiece stp_css_length_pattern(css_length_pattern, css_length_pattern_length);
+          
+          std::unique_ptr<RE2> re2(new RE2(stp_css_length_pattern, options));
+          
+          std::string error = re2->error();
+          std::string error_arg = re2->error_arg();
+          
+          if (!re2->ok()) {
+            return env->die(env, stack, "The regex pattern %s can't be compiled. [Error]%s. [Fragment]%s", css_length_pattern, error.data(), error_arg.data(), __func__, FILE_NAME, __LINE__);
+          }
+          
+          int32_t match = RE2::PartialMatch(style_value, "^(\\d+)(px)$");
           spvm_warn("left");
         }
         
