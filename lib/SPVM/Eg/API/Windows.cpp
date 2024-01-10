@@ -549,7 +549,6 @@ static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style
   if (match) {
     char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
     memcpy(red_string, submatch[1].data(), submatch[1].length());
-    spvm_warn("LINE %d %s", __LINE__, red_string);
     char* red_end;
     *red = strtol(red_string, &red_end, 16);
     *red /= UINT8_MAX;
@@ -557,7 +556,6 @@ static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style
     
     char* green_string = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
     memcpy(green_string, submatch[2].data(), submatch[2].length());
-    spvm_warn("LINE %d %s", __LINE__, green_string);
     char* green_end;
     *green = strtol(green_string, &green_end, 16);
     *green /= UINT8_MAX;
@@ -565,7 +563,6 @@ static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style
     
     char* blue_string = (char*)env->new_memory_block(env, stack, submatch[3].length() + 1);
     memcpy(blue_string, submatch[3].data(), submatch[3].length());
-    spvm_warn("LINE %d %s", __LINE__, blue_string);
     char* blue_end;
     *blue = strtol(blue_string, &blue_end, 16);
     *blue /= UINT8_MAX;
@@ -623,8 +620,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
           
           has_background_color = 1;
           
-          spvm_warn("LINE %d %s", __LINE__, style_value);
-          
           parse_css_color(env, stack, style_value, style_value_length, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
         }
         
@@ -668,8 +663,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   // Block rect
   D2D1_RECT_F block_rect = D2D1::RectF(left, top, width, height);
   
-  printf("EEEEE %f %f\n", block_rect.left, block_rect.right);
-
   // Draw block
   {
     D2D1::ColorF background_color_f = {0};
@@ -688,8 +681,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       &background_brush
     );
     assert(background_brush);
-    
-    printf("GGGG %d %d %d %d\n", left, top, width, height);
     
     // 四角形の描画
     renderer->FillRectangle(&block_rect, background_brush);
