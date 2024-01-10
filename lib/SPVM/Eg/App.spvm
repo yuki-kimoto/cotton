@@ -6,7 +6,7 @@ class Eg::App {
   # Fields
   has runtime : rw Eg::Runtime;
   
-  has current_document : rw Eg::Node;
+  has document : rw Eg::Node;
   
   static method new : Eg::App() {
     my $self = new Eg::App;

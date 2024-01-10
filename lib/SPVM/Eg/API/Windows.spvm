@@ -57,7 +57,7 @@ class Eg::API::Windows {
     my $runtime = $app->runtime;
     
     {
-      my $body = (Eg::Node)$app->current_document->nodes->get(1);
+      my $body = (Eg::Node)$app->document->nodes->get(1);
       
       my $nodes = [
         $body,

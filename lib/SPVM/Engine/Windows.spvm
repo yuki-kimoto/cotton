@@ -34,7 +34,7 @@ class Engine::Windows {
         ]
       );
       
-      $app->set_current_document($document);
+      $app->set_document($document);
     }
     
     my $runtime = Eg::Runtime->new;
