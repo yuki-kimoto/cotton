@@ -17,7 +17,8 @@ class Engine::Windows {
     # Add index page
     {
       my $text1 = Eg->text("あああああ");
-      $text1->set_color(&rgb(0x00, 0x00, 0xFF));
+      $text1->set_color(&rgb(0, 0, 1));
+      $text1->set_css("color" => "#0000FF");
       $text1->set_css("background-color" => "#00FF00");
       
       my $div1 = Eg->div_({style => {
@@ -25,17 +26,17 @@ class Engine::Windows {
         "background-color" => "#00FF00"
       }}, [$text1]);
       
-      $div1->set_color(&rgb(0x00, 0x00, 0xFF));
+      $div1->set_color(&rgb(0, 0, 1));
       
       my $text2 = Eg->text("いいいいい");
-      $text2->set_color(&rgb(0x00, 0x00, 0xFF));
+      $text2->set_color(&rgb(0, 0, 1));
       
       my $div2 = Eg->div_(
         {style => {"color" => "#0000FF", "background-color" => "#00FF00"}},
         [$text2]
       );
       
-      $div2->set_color(&rgb(0x00, 0x00, 0xFF));
+      $div2->set_color(&rgb(0, 0, 1));
       
       my $body = Eg->body_({style => {"color" => "#0000FF", "background-color" => "#00FF00"}},[
         $div1,

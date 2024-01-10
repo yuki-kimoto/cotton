@@ -516,11 +516,6 @@ static double parse_css_length (SPVM_ENV* env, SPVM_VALUE* stack, const char* st
 
 static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, float* red, float* green, float* blue, float* alpha) {
   
-  *red = 1;
-  *green = 1;
-  *blue = 1;
-  *alpha = 1;
-  
   const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
   
   int32_t css_color_pattern_length = strlen(css_color_pattern);
@@ -604,6 +599,11 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   float background_color_green = 1;
   float background_color_blue = 1;
   float background_color_alpha = 1;
+  int32_t has_color = 0;
+  float color_red_v2 = 0;
+  float color_green_v2 = 0;
+  float color_blue_v2 = 0;
+  float color_alpha_v2 = 1;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
@@ -621,6 +621,17 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
           has_background_color = 1;
           
           parse_css_color(env, stack, style_value, style_value_length, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
+        }
+        
+        break;
+      }
+      case 'c' : {
+        
+        if (strcmp(style_name, "color") == 0) {
+          
+          has_color = 1;
+          
+          parse_css_color(env, stack, style_value, style_value_length, &color_red_v2, &color_green_v2, &color_blue_v2, &color_alpha_v2);
         }
         
         break;
@@ -714,9 +725,8 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     void* obj_color = env->get_field_object_by_name(env, stack, obj_node, "color", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     
-    int32_t color;
     D2D1::ColorF color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
-    if (obj_color) {
+    if (obj_color || has_color) {
       float color_red = env->get_field_float_by_name(env, stack,  obj_color, "red", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
@@ -729,12 +739,14 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
       float color_alpha = env->get_field_float_by_name(env, stack,  obj_color, "alpha", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
 
-      color = RGB(color_red, color_green, color_blue);
-      color_f = D2D1::ColorF(color_red, color_green, color_blue, color_alpha);
+      color_f = D2D1::ColorF(color_red_v2, color_green_v2, color_blue_v2, color_alpha_v2);
+      
+      spvm_warn("LINE %d %f %f %f %f", __LINE__, color_red, color_green, color_blue, color_alpha);
+      spvm_warn("LINE %d %f %f %f %f", __LINE__, color_red_v2, color_green_v2, color_blue_v2, color_alpha_v2);
+      
     }
     else {
-      color = RGB(0xFF, 0x00, 0x00);
-      color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);
+      color_f = D2D1::ColorF(0, 0, 0, 0);
     }
     
     // draw width
