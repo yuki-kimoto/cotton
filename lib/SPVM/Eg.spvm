@@ -9,6 +9,10 @@ class Eg {
   use List;
   use StringBuffer;
   
+  our $WINDOW : rw Eg::Window;
+  
+  static method window : Eg::Window () { return $WINDOW; }
+  
   static method document : Eg::Node ($root_node : Eg::Node) {
     unless ($root_node) {
       die "\$root_node must be defined.";

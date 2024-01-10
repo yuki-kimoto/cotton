@@ -49,6 +49,8 @@ class Engine::Windows {
     
     $api->set_app($app);
     
+    Eg->SET_WINDOW($app);
+    
     $api->open_main_window;
     
     $api->start_app;
