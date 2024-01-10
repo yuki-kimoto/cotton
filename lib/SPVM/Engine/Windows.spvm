@@ -27,6 +27,7 @@ class Engine::Windows {
       my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
         $div1,
         Eg->div_({style => {left => "300px", top => "500px", width => "400px", height => "400px", "background-color" => "#FF0000"}}),
+        Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "#FF0000"}}),
       ]);
       
       my $document = Eg->html(
