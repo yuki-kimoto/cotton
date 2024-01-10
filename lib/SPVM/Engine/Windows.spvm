@@ -19,6 +19,7 @@ class Engine::Windows {
       my $text1 = Eg->text("あああああ");
       $text1->set_color(&rgb(0x00, 0x00, 0xFF));
       $text1->set_background_color(&rgb(0, 1, 0));
+      $text1->set_css("background-color" => "#00FF00");
       
       my $div1 = Eg->div_({style => {
         "color" => "#0000FF",
@@ -32,19 +33,19 @@ class Engine::Windows {
       $text2->set_color(&rgb(0x00, 0x00, 0xFF));
       $text2->set_background_color(&rgb(0, 1, 0));
       
-      my $div2 = Eg->div_({style => {
-        "color" => "#0000FF",
-        "background-color" => "#00FF00"
-      }}, [$text2]);
+      my $div2 = Eg->div_(
+        {style => {"color" => "#0000FF", "background-color" => "#00FF00"}},
+        [$text2]
+      );
       
       $div2->set_color(&rgb(0x00, 0x00, 0xFF));
       $div2->set_background_color(&rgb(0, 1, 0));
       
-      my $body = Eg->body([
+      my $body = Eg->body_({style => {"color" => "#0000FF", "background-color" => "#00FF00"}},[
         $div1,
         $div2
       ]);
-      $body->set_color(&rgb(0x00, 0x00, 0xFF));
+      $body->set_color(&rgb(0, 0, 1));
       $body->set_background_color(&rgb(0, 1, 0));
       
       my $document = Eg->html(
