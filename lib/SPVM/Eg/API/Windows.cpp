@@ -672,12 +672,9 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
 
   // Draw block
   {
-    void* obj_background_color = env->get_field_object_by_name(env, stack, obj_node, "background_color", &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) { return error_id; }
-    
-    int32_t background_color;
     D2D1::ColorF background_color_f = {0};
-    if (obj_background_color || has_background_color) {
+    
+    if (has_background_color) {
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
 
       spvm_warn("LINE %d %f %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue, background_color_alpha);
