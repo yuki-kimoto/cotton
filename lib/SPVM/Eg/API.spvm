@@ -7,8 +7,6 @@ class Eg::API : interface_t {
   
   method get_viewport_width : int ();
   
-  method run_app : void ($window : Eg::Window);
-  
   method paint_node : void ($paint_info : object, $node : Eg::Node);
   
   method calc_text_height : int ($paint_info : object, $text : string, $width : int, $font_styles : string[]);
