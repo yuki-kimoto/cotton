@@ -68,6 +68,7 @@ class Eg::API::Windows {
         $body,
         (Eg::Node)$body->nodes->get(0),
         $body->nodes->get(0)->(Eg::Node)->nodes->get(0)->(Eg::Node),
+        $body->nodes->get(1)->(Eg::Node),
       ];
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
@@ -83,11 +84,6 @@ class Eg::API::Windows {
     
     {
       my $node_list = List->new([]);
-      {
-        my $node = Eg->div_({style => {left => "300px", top => "500px", width => "400px", height => "400px", "background-color" => "#FF0000"}});
-        
-        $node_list->push($node);
-      }
       {
         my $node = Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "#FF0000"}});
         
