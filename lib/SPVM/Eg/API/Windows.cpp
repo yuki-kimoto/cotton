@@ -676,16 +676,11 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     
     if (has_background_color) {
       background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
-
-      spvm_warn("LINE %d %f %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue, background_color_alpha);
-
-  
     }
     else {
-      background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 0);
-      spvm_warn("LINE %d %f %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue, background_color_alpha);
+      background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1);
     }
-
+    
     // Create background brash
     ID2D1SolidColorBrush* background_brush = NULL;
     renderer->CreateSolidColorBrush(
