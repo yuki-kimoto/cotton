@@ -79,10 +79,10 @@ class Eg::Node {
       
       my $attributes_h = $self->{attributes_h};
       
-      my $styles_pairs = (object[])$attributes_h->delete("style");
+      my $style_pairs = (object[])$attributes_h->delete("style");
       
-      if ($styles_pairs) {
-        my $styles_h = Hash->new($styles_pairs);
+      if ($style_pairs) {
+        my $styles_h = Hash->new($style_pairs);
         
         $self->{styles_h} = $styles_h;
       }
@@ -156,32 +156,32 @@ class Eg::Node {
     }
   }
   
-  method attributes : string[] () {
+  method attribute_pairs : string[] () {
     
     my $attributes_h = $self->{attributes_h};
     
-    my $attributes = (string[])undef;
+    my $attribute_pairs = (string[])undef;
     
     if ($attributes_h) {
       my $names = $attributes_h->keys;
       
       Sort->sort_string_asc($names);
       
-      my $attributes_pairs_list = StringList->new;
+      my $attribute_pairs_list = StringList->new;
       for my $name (@$names) {
         my $value = $attributes_h->get_string($name);
         
-        $attributes_pairs_list->push($name);
-        $attributes_pairs_list->push($value);
+        $attribute_pairs_list->push($name);
+        $attribute_pairs_list->push($value);
       }
       
-      $attributes = $attributes_pairs_list->to_array;
+      $attribute_pairs = $attribute_pairs_list->to_array;
     }
     else {
-      $attributes = new string[0];
+      $attribute_pairs = new string[0];
     }
     
-    return $attributes;
+    return $attribute_pairs;
   }
   
   method css : string ($name : string) {
@@ -231,32 +231,32 @@ class Eg::Node {
     }
   }
   
-  method styles : string[] () {
+  method style_pairs : string[] () {
     
     my $styles_h = $self->{styles_h};
     
-    my $styles = (string[])undef;
+    my $style_pairs = (string[])undef;
     
     if ($styles_h) {
       my $names = $styles_h->keys;
       
       Sort->sort_string_asc($names);
       
-      my $styles_pairs_list = StringList->new;
+      my $style_pairs_list = StringList->new;
       for my $name (@$names) {
         my $value = $styles_h->get_string($name);
         
-        $styles_pairs_list->push($name);
-        $styles_pairs_list->push($value);
+        $style_pairs_list->push($name);
+        $style_pairs_list->push($value);
       }
       
-      $styles = $styles_pairs_list->to_array;
+      $style_pairs = $style_pairs_list->to_array;
     }
     else {
-      $styles = new string[0];
+      $style_pairs = new string[0];
     }
     
-    return $styles;
+    return $style_pairs;
   }
   
   method text : string () {

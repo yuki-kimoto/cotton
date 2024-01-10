@@ -584,7 +584,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
   
   stack[0].oval = obj_node;
-  env->call_instance_method_by_name(env, stack, "styles", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  env->call_instance_method_by_name(env, stack, "style_pairs", 1, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   void* obj_style_pairs = stack[0].oval;
   
