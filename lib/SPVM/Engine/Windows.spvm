@@ -21,18 +21,17 @@ class Engine::Windows {
       $text1->set_css("background-color" => "#00FF00");
       
       my $div1 = Eg->div_({style => {
-        "color" => "#0000FF",
         "background-color" => "#00FF00"
       }}, [$text1]);
       
       my $text2 = Eg->text("いいいいい");
       
       my $div2 = Eg->div_(
-        {style => {"color" => "#0000FF", "background-color" => "#00FF00"}},
+        {style => {"background-color" => "#00FF00"}},
         [$text2]
       );
       
-      my $body = Eg->body_({style => {"color" => "#0000FF", "background-color" => "#00FF00"}},[
+      my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
         $div1,
         $div2
       ]);
