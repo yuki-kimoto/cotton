@@ -78,8 +78,6 @@ class Eg::API::Windows {
         
         my $draw_height = $runtime->api->calc_text_height($paint_info, $text_string, $viewport_width, undef);
         
-        $node->set_css("left", "0px");
-        $node->set_css("top", "0px");
         $node->set_css("width", "${viewport_width}px");
         $node->set_css("height", "${draw_height}px");
         
