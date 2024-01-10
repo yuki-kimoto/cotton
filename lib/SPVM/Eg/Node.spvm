@@ -216,7 +216,5 @@ class Eg::Node {
   
   # Deprecated Fields
   has color : rw Eg::Style::Color;
-  
-  has background_color : rw Eg::Style::Color;
 }
 

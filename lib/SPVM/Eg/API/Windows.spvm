@@ -93,14 +93,11 @@ class Eg::API::Windows {
         my $node = Eg->div_({style => {left => "300px", top => "500px", width => "400px", height => "400px", "background-color" => "#FF0000"}});
         
         $node_list->push($node);
-        
-        $node->set_background_color(&rgb(1, 0, 0));
       }
       {
         my $node = Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "#FF0000"}});
         
         $node_list->push($node);
-        $node->set_background_color(&rgb(1, 0, 0));
       }
       
       # Drow node
