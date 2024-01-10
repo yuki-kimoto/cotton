@@ -52,12 +52,12 @@ class Eg::API::Windows {
   
   native method calc_text_height : int ($paint_info : Eg::API::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
-  method repaint : void ($app : Eg::Window, $paint_info : object) {
+  method repaint : void ($window : Eg::Window, $paint_info : object) {
     
-    my $runtime = $app->runtime;
+    my $runtime = $window->runtime;
     
     {
-      my $body = (Eg::Node)$app->document->child_nodes_list->get(1);
+      my $body = (Eg::Node)$window->document->child_nodes_list->get(1);
       
       my $nodes = [
         $body,
