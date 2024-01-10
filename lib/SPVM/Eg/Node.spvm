@@ -1,11 +1,12 @@
+# Copyright (c) 2023 Yuki Kimoto
+# MIT License
+
 class Eg::Node {
   allow Eg;
   
   use Hash;
   use List;
   use StringBuffer;
-  use Eg::Attributes;
-  use Eg::Style;
   
   enum {
     TYPE_ELEMENT_NODE = 1,
@@ -22,29 +23,32 @@ class Eg::Node {
   # Fields
   has type : ro int;
   
-  has nodes : ro List of Eg::Node;
+  has child_nodes_list : ro List of Eg::Node;
   
-  has attributes : rw Eg::Attributes;
+  has attributes_h : ro Hash of string;
   
-  has style : rw Eg::Style;
+  has styles_h : ro Hash of string;
   
   has tag_name : ro string;
   
-  has text_buffer : ro StringBuffer;
+  has value_buffer : ro StringBuffer;
   
-  has parent : Eg::Node;
+  has parent : ro Eg::Node;
   
   # Class Methods
-  static method new : Eg::Node ($type : int, $nodes : Eg::Node[] = undef) {
+  static method new : Eg::Node ($type : int, $child_nodes : Eg::Node[] = undef) {
     
     my $self = new Eg::Node;
     
     $self->{type} = $type;
     
-    $self->{nodes} = List->new($nodes);
+    unless ($child_nodes) {
+      $child_nodes = new Eg::Node[0];
+    }
+    $self->{child_nodes_list} = List->new($child_nodes);
     
-    if ($nodes) {
-      for my $node (@$nodes) {
+    if ($child_nodes) {
+      for my $node (@$child_nodes) {
         $node->{parent} = $self;
         weaken $node->{parent};
       }
@@ -53,37 +57,41 @@ class Eg::Node {
     return $self;
   }
   
-  static method new_document : Eg::Node ($root_node : Eg::Node) {
+  static method new_document_node : Eg::Node ($root_node : Eg::Node) {
     
     my $self = Eg::Node->new(Eg::Node->TYPE_DOCUMENT_NODE, [$root_node]);
     
     return $self;
   }
   
-  static method new_element : Eg::Node ($tag_name : string, $attribute_pairs : object[] = undef, $nodes : Eg::Node[] = undef) {
+  static method new_element_node : Eg::Node ($tag_name : string, $attribute_pairs : object[] = undef, $child_nodes : Eg::Node[] = undef) {
     
     unless ($tag_name) {
       die "\$tag_namet must be defined.";
     }
     
-    my $self = Eg::Node->new(Eg::Node->TYPE_ELEMENT_NODE, $nodes);
+    my $self = Eg::Node->new(Eg::Node->TYPE_ELEMENT_NODE, $child_nodes);
     
     $self->{tag_name} = $tag_name;
     
-    my $attributes = Eg::Attributes->new($attribute_pairs);
-    
-    $self->{attributes} = $attributes;
-    
-    my $style_pairs = (object[])$attributes->attributes_h->delete("style");
-    
-    my $style = Eg::Style->new($style_pairs);
-    
-    $self->{style} = $style;
+    if ($attribute_pairs) {
+      $self->{attributes_h} = Hash->new($attribute_pairs);
+      
+      my $attributes_h = $self->{attributes_h};
+      
+      my $styles_pairs = (object[])$attributes_h->delete("style");
+      
+      if ($styles_pairs) {
+        my $styles_h = Hash->new($styles_pairs);
+        
+        $self->{styles_h} = $styles_h;
+      }
+    }
     
     return $self;
   }
   
-  static method new_text : Eg::Node ($text : string) {
+  static method new_text_node : Eg::Node ($text : string) {
     
     unless ($text) {
       die "\$text must be defined.";
@@ -91,60 +99,178 @@ class Eg::Node {
     
     my $self = Eg::Node->new(Eg::Node->TYPE_TEXT_NODE);
     
-    my $text_buffer = StringBuffer->new;
+    my $value_buffer = StringBuffer->new;
     
-    $text_buffer->push($text);
+    $value_buffer->push($text);
     
-    $self->{text_buffer} = $text_buffer;
+    $self->{value_buffer} = $value_buffer;
     
     return $self;
   }
   
   # Instance Methods
-  method css : string ($name : string) {
-    
-    my $style = $self->{style};
-    
-    return $style->{style_h}->get_string($name);
-  }
-  
-  method set_css : void ($name : string, $value : string) {
-    
-    unless ($self->{style}) {
-      $self->{style} = Eg::Style->new;
-    }
-    
-    my $style = $self->{style};
-    
-    $style->{style_h}->set_string($name, $value);
-  }
-  
   method attr : string ($name : string) {
     
-    my $attributes = $self->{attributes};
+    my $attributes_h = $self->{attributes_h};
     
-    return $attributes->{attributes_h}->get_string($name);
+    unless ($self->{attributes_h}) {
+      return undef;
+    }
+    
+    my $attr = (string)$attributes_h->get($name);
+    
+    return $attr;
   }
   
   method set_attr : void ($name : string, $value : string) {
     
-    my $attributes = $self->{attributes};
+    my $attributes_h = $self->{attributes_h};
     
-    $attributes->{attributes_h}->set_string($name, $value);
+    unless ($attributes_h) {
+      $attributes_h = $self->{attributes_h} = Hash->new;
+    }
+    
+    $attributes_h->set_string($name, $value);
+  }
+  
+  method exists_attr : int ($name : string) {
+    
+    my $attributes_h = $self->{attributes_h};
+    
+    my $exists = 0;
+    if ($attributes_h) {
+      $exists = $attributes_h->exists($name);
+    }
+    
+    return $exists;
+  }
+  
+  method remove_attr : void ($name : string) {
+    
+    my $attributes_h = $self->{attributes_h};
+    
+    my $deleted_attr = (string)undef;
+    
+    if ($self->{attributes_h}) {
+      $attributes_h->delete($name);
+    }
+  }
+  
+  method attributes : string[] () {
+    
+    my $attributes_h = $self->{attributes_h};
+    
+    my $attributes = (string[])undef;
+    
+    if ($attributes_h) {
+      my $names = $attributes_h->keys;
+      
+      Sort->sort_string_asc($names);
+      
+      my $attributes_pairs_list = StringList->new;
+      for my $name (@$names) {
+        my $value = $attributes_h->get_string($name);
+        
+        $attributes_pairs_list->push($name);
+        $attributes_pairs_list->push($value);
+      }
+      
+      $attributes = $attributes_pairs_list->to_array;
+    }
+    else {
+      $attributes = new string[0];
+    }
+    
+    return $attributes;
+  }
+  
+  method css : string ($name : string) {
+    
+    my $styles_h = $self->{styles_h};
+    
+    unless ($self->{styles_h}) {
+      return undef;
+    }
+    
+    my $css = (string)$styles_h->get($name);
+    
+    return $css;
+  }
+  
+  method set_css : void ($name : string, $value : string) {
+    
+    my $styles_h = $self->{styles_h};
+    
+    unless ($styles_h) {
+      $styles_h = $self->{styles_h} = Hash->new;
+    }
+    
+    $styles_h->set_string($name, $value);
+  }
+  
+  method exists_css : int ($name : string) {
+    
+    my $styles_h = $self->{styles_h};
+    
+    my $exists = 0;
+    if ($styles_h) {
+      $exists = $styles_h->exists($name);
+    }
+    
+    return $exists;
+  }
+  
+  method remove_css : void ($name : string) {
+    
+    my $styles_h = $self->{styles_h};
+    
+    my $deleted_css = (string)undef;
+    
+    if ($self->{styles_h}) {
+      $styles_h->delete($name);
+    }
+  }
+  
+  method styles : string[] () {
+    
+    my $styles_h = $self->{styles_h};
+    
+    my $styles = (string[])undef;
+    
+    if ($styles_h) {
+      my $names = $styles_h->keys;
+      
+      Sort->sort_string_asc($names);
+      
+      my $styles_pairs_list = StringList->new;
+      for my $name (@$names) {
+        my $value = $styles_h->get_string($name);
+        
+        $styles_pairs_list->push($name);
+        $styles_pairs_list->push($value);
+      }
+      
+      $styles = $styles_pairs_list->to_array;
+    }
+    else {
+      $styles = new string[0];
+    }
+    
+    return $styles;
   }
   
   method text : string () {
-    my $nodes = $self->{nodes};
+    my $child_nodes = $self->{child_nodes_list};
     
-    my $nodes_length = $nodes->length;
+    my $child_nodes_length = $child_nodes->length;
     
     my $text = (string)undef;
     
-    if ($nodes_length > 0) {
-      my $first_child = (Eg::Node)$nodes->get(0);
+    if ($child_nodes_length > 0) {
+      my $first_child = (Eg::Node)$child_nodes->get(0);
       
       if ($first_child->type == &TYPE_TEXT_NODE) {
-        $text = $first_child->{text_buffer}->to_string;
+        $text = $first_child->{value_buffer}->to_string;
       }
       else {
         die "The first child is not a text node.";
@@ -158,57 +284,37 @@ class Eg::Node {
   }
   
   method set_text : string ($text : string) {
-    my $nodes = $self->{nodes};
+    my $child_nodes = $self->{child_nodes_list};
     
-    my $nodes_length = $nodes->length;
+    my $child_nodes_length = $child_nodes->length;
     
-    if ($nodes_length > 0) {
-      my $first_child = (Eg::Node)$nodes->get(0);
+    if ($child_nodes_length > 0) {
+      my $first_child = (Eg::Node)$child_nodes->get(0);
       
       if ($first_child->type == &TYPE_TEXT_NODE) {
-        $first_child->{text_buffer}->set($text);
+        $first_child->{value_buffer}->set($text);
       }
       else {
         die "The first child is not a text node.";
       }
     }
     else {
-      $self->{nodes} = List->new([&new_text($text)]);
+      $self->{child_nodes_list} = List->new([&new_text_node($text)]);
     }
     
   }
   
-  method style_to_pairs : string[] () {
+  method children : Eg::Node[] () {
+    my $child_nodes_list = $self->{child_nodes_list};
     
-    my $style_pairs = (string[])undef;
-    
-    my $style = $self->{style};
-    
-    if ($style) {
-      my $style_h = $style->{style_h};
-      
-      if ($style_h) {
-        my $names = $style_h->keys;
-        
-        my $style_pairs_list = StringList->new;
-        for my $name (@$names) {
-          my $value = $style_h->get_string($name);
-          
-          $style_pairs_list->push($name);
-          $style_pairs_list->push($value);
-        }
-        
-        $style_pairs = $style_pairs_list->to_array;
-      }
-      else {
-        $style_pairs = new string[0];
-      }
+    my $child_nodes = (Eg::Node[])undef;
+    if ($child_nodes_list) {
+      $child_nodes = (Eg::Node[])$child_nodes_list->to_array;
     }
     else {
-      $style_pairs = new string[0];
+      $child_nodes = new Eg::Node[0];
     }
     
-    return $style_pairs;
+    return $child_nodes;
   }
 }
-

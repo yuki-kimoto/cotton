@@ -57,21 +57,21 @@ class Eg::API::Windows {
     my $runtime = $app->runtime;
     
     {
-      my $body = (Eg::Node)$app->document->nodes->get(1);
+      my $body = (Eg::Node)$app->document->child_nodes_list->get(1);
       
       my $nodes = [
         $body,
-        (Eg::Node)$body->nodes->get(0),
-        $body->nodes->get(0)->(Eg::Node)->nodes->get(0)->(Eg::Node),
-        $body->nodes->get(1)->(Eg::Node),
-        $body->nodes->get(2)->(Eg::Node),
+        (Eg::Node)$body->child_nodes_list->get(0),
+        $body->child_nodes_list->get(0)->(Eg::Node)->child_nodes_list->get(0)->(Eg::Node),
+        $body->child_nodes_list->get(1)->(Eg::Node),
+        $body->child_nodes_list->get(2)->(Eg::Node),
       ];
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
         
         my $text_string = (string)undef;
-        if ($node->text_buffer) {
-          $text_string = $node->text_buffer->to_string;
+        if ($node->value_buffer) {
+          $text_string = $node->value_buffer->to_string;
         }
         
         $runtime->api->paint_node($paint_info, $node);

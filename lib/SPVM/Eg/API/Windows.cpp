@@ -584,7 +584,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
   
   stack[0].oval = obj_node;
-  env->call_instance_method_by_name(env, stack, "style_to_pairs", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  env->call_instance_method_by_name(env, stack, "styles", 1, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   void* obj_style_pairs = stack[0].oval;
   
@@ -602,11 +602,11 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   }
   int32_t height = 0;
   {
-    void* obj_text_buffer = env->get_field_object_by_name(env, stack, obj_node, "text_buffer", &error_id, __func__, FILE_NAME, __LINE__);
+    void* obj_value_buffer = env->get_field_object_by_name(env, stack, obj_node, "value_buffer", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     
-    if (obj_text_buffer) {
-      stack[0].oval = obj_text_buffer;
+    if (obj_value_buffer) {
+      stack[0].oval = obj_value_buffer;
       env->call_instance_method_by_name(env, stack, "to_string", 0, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       void* obj_text = stack[0].oval;
@@ -727,14 +727,14 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     background_brush->Release();
   }
   
-  void* obj_text_buffer = env->get_field_object_by_name(env, stack, obj_node, "text_buffer", &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_value_buffer = env->get_field_object_by_name(env, stack, obj_node, "value_buffer", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  if (obj_text_buffer) {
+  if (obj_value_buffer) {
     
     // Render block which has text
     
-    stack[0].oval = obj_text_buffer;
+    stack[0].oval = obj_value_buffer;
     env->call_instance_method_by_name(env, stack, "to_string", 0, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     void* obj_text = stack[0].oval;
