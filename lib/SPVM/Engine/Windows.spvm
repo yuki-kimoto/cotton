@@ -24,16 +24,8 @@ class Engine::Windows {
         "background-color" => "#00FF00"
       }}, [$text1]);
       
-      my $text2 = Eg->text("いいいいい");
-      
-      my $div2 = Eg->div_(
-        {style => {"background-color" => "#00FF00"}},
-        [$text2]
-      );
-      
       my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
         $div1,
-        $div2
       ]);
       
       my $document = Eg->html(

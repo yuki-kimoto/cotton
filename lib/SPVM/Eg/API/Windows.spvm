@@ -64,7 +64,11 @@ class Eg::API::Windows {
     {
       my $body = (Eg::Node)$app->current_document->nodes->get(1);
       
-      my $nodes = [$body, (Eg::Node)$body->nodes->get(0), $body->nodes->get(0)->(Eg::Node)->nodes->get(0)->(Eg::Node)];
+      my $nodes = [
+        $body,
+        (Eg::Node)$body->nodes->get(0),
+        $body->nodes->get(0)->(Eg::Node)->nodes->get(0)->(Eg::Node),
+      ];
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
         
