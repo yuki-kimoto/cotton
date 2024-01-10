@@ -5,10 +5,6 @@ class Eg::Style {
   allow Eg;
   allow Eg::Node;
   
-  use Eg::Style::Color;
-  use Regex;
-  use Fn;
-  
   # Fields
   has style_h : ro Hash of string;
   
@@ -21,66 +17,5 @@ class Eg::Style {
     
     return $self;
   }
-  
-  static method parse_color_string : Eg::Style::Color ($color_string : string) {
-    
-    unless ($color_string) {
-      return undef;
-    }
-    
-    my $color = (Eg::Style::Color)undef;
-    if (my $match = Regex->new("^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$")->match($color_string)) {
-      my $red_string = $match->cap1;
-      
-      my $green_string = $match->cap2;
-      
-      my $blue_string = $match->cap3;
-      
-      my $red = Fn->to_int($red_string);
-      
-      my $green = Fn->to_int($green_string);
-      
-      my $blue = Fn->to_int($blue_string);
-      
-      $color = Eg::Style::Color->new($red, $green, $blue);
-    }
-    else {
-      return undef;
-    }
-    
-    return $color;
-  }
-  
-  # Instance Methods
-  method parse_color : Eg::Style::Color () {
-    
-    my $style_h = $self->{style_h};
-    
-    my $color_string = $style_h->get_string("color");
-    
-    unless ($color_string) {
-      return undef;
-    }
-    
-    my $color = &parse_color_string($color_string);
-    
-    return $color;
-  }
-  
-  method parse_background_color : Eg::Style::Color () {
-    
-    my $style_h = $self->{style_h};
-    
-    my $background_color_string = $style_h->get_string("background-color");
-    
-    unless ($background_color_string) {
-      return undef;
-    }
-    
-    my $background_color = &parse_color_string($background_color_string);
-    
-    return $background_color;
-  }
-  
   
 }

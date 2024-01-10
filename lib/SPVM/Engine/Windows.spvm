@@ -6,11 +6,6 @@ class Engine::Windows {
   use Eg::API::Windows;
   use Eg::Runtime;
 
-  static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
-    my $color = Eg::Style::Color->new($red, $green, $blue, 1);
-    return $color;
-  }
-  
   static method main : int ($start_file : string, $args : string[]) {
     my $app = Eg::App->new;
     

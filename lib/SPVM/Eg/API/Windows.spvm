@@ -52,11 +52,6 @@ class Eg::API::Windows {
   
   native method calc_text_height : int ($paint_info : Eg::API::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
-  static method rgb : Eg::Style::Color ($red : float, $green : float, $blue : float) {
-    my $color = Eg::Style::Color->new($red, $green, $blue, 1);
-    return $color;
-  }
-  
   method repaint : void ($app : Eg::App, $paint_info : object) {
     
     my $runtime = $app->runtime;
@@ -79,17 +74,6 @@ class Eg::API::Windows {
           $text_string = $node->text_buffer->to_string;
         }
         
-        $runtime->api->paint_node($paint_info, $node);
-      }
-    }
-    
-    {
-      my $node_list = List->new([]);
-      
-      # Drow node
-      my $node_list_length = $node_list->length;
-      for (my $i = 0; $i < $node_list_length; $i++) {
-        my $node = (Eg::Node)$node_list->get($i);
         $runtime->api->paint_node($paint_info, $node);
       }
     }
