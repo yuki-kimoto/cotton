@@ -73,12 +73,6 @@ class Eg::API::Windows {
           $text_string = $node->text_buffer->to_string;
         }
         
-        my $viewport_width = $runtime->api->get_viewport_width();
-        
-        my $height = $runtime->api->calc_text_height($paint_info, $text_string, $viewport_width, undef);
-        
-        $node->set_css("height", "${height}px");
-        
         $runtime->api->paint_node($paint_info, $node);
       }
     }

@@ -601,6 +601,26 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     width = stack[0].ival;
   }
   int32_t height = 0;
+  {
+    void* obj_text_buffer = env->get_field_object_by_name(env, stack, obj_node, "text_buffer", &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    
+    if (obj_text_buffer) {
+      stack[0].oval = obj_text_buffer;
+      env->call_instance_method_by_name(env, stack, "to_string", 0, &error_id, __func__, FILE_NAME, __LINE__);
+      if (error_id) { return error_id; }
+      void* obj_text = stack[0].oval;
+      
+      stack[0].oval = obj_self;
+      stack[1].oval = obj_paint_info;
+      stack[2].oval = obj_text;
+      stack[3].ival = width;
+      env->call_instance_method_by_name(env, stack, "calc_text_height", 4, &error_id, __func__, FILE_NAME, __LINE__);
+      if (error_id) { return error_id; }
+      height = stack[0].ival;
+    }
+  }
+  
   int32_t has_background_color = 0;
   float background_color_red = 1;
   float background_color_green = 1;
