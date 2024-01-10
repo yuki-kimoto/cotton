@@ -10,7 +10,7 @@ class Eg::API::Windows {
   use Eg::API::Windows::WindowHandle;
   use Eg::API::Windows::PaintInfo;
   
-  has app : rw Eg::Window;
+  has window : rw Eg::Window;
   has runtime : rw Eg::Runtime;
   has window_handle : Eg::API::Windows::WindowHandle;
   
