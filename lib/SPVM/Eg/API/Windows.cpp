@@ -603,10 +603,10 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t width = 0;
   int32_t height = 0;
   int32_t has_background_color = 0;
-  float background_color_red_v2 = 1;
-  float background_color_green_v2 = 1;
-  float background_color_blue_v2 = 1;
-  float background_color_alpha_v2 = 1;
+  float background_color_red = 1;
+  float background_color_green = 1;
+  float background_color_blue = 1;
+  float background_color_alpha = 1;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
@@ -625,7 +625,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
           
           spvm_warn("LINE %d %s", __LINE__, style_value);
           
-          parse_css_color(env, stack, style_value, style_value_length, &background_color_red_v2, &background_color_green_v2, &background_color_blue_v2, &background_color_alpha_v2);
+          parse_css_color(env, stack, style_value, style_value_length, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
         }
         
         break;
@@ -678,28 +678,15 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     int32_t background_color;
     D2D1::ColorF background_color_f = {0};
     if (obj_background_color || has_background_color) {
-      float background_color_red = env->get_field_float_by_name(env, stack,  obj_background_color, "red", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
-      float background_color_green = env->get_field_float_by_name(env, stack,  obj_background_color, "green", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
-      float background_color_blue = env->get_field_float_by_name(env, stack,  obj_background_color, "blue", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
-      float background_color_alpha = env->get_field_float_by_name(env, stack,  obj_background_color, "alpha", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
-      background_color_f = D2D1::ColorF(background_color_red_v2, background_color_green_v2, background_color_blue_v2, background_color_alpha_v2);
+      background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
 
       spvm_warn("LINE %d %f %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue, background_color_alpha);
-      spvm_warn("LINE %d %f %f %f %f", __LINE__, background_color_red_v2, background_color_green_v2, background_color_blue_v2, background_color_alpha_v2);
 
   
     }
     else {
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 0);
-      spvm_warn("LINE %d %f %f %f %f", __LINE__, background_color_red_v2, background_color_green_v2, background_color_blue_v2, background_color_alpha_v2);
+      spvm_warn("LINE %d %f %f %f %f", __LINE__, background_color_red, background_color_green, background_color_blue, background_color_alpha);
     }
 
     // Create background brash
