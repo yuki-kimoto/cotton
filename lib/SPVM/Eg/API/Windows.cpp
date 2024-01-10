@@ -593,6 +593,13 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t left = 0;
   int32_t top = 0;
   int32_t width = 0;
+  // Windows Inner width(viewport)
+  {
+    stack[0].oval = obj_self;
+    env->call_instance_method_by_name(env, stack, "get_viewport_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    width = stack[0].ival;
+  }
   int32_t height = 0;
   int32_t has_background_color = 0;
   float background_color_red = 1;

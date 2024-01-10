@@ -77,7 +77,6 @@ class Eg::API::Windows {
         
         my $height = $runtime->api->calc_text_height($paint_info, $text_string, $viewport_width, undef);
         
-        $node->set_css("width", "${viewport_width}px");
         $node->set_css("height", "${height}px");
         
         $runtime->api->paint_node($paint_info, $node);
