@@ -3,14 +3,14 @@ class Eg::API::Windows {
   
   use List;
   use Encode;
-  use Eg::App;
+  use Eg::Window;
   use Eg::Node;
   use Hash;
   
   use Eg::API::Windows::WindowHandle;
   use Eg::API::Windows::PaintInfo;
   
-  has app : rw Eg::App;
+  has app : rw Eg::Window;
   has runtime : rw Eg::Runtime;
   has window_handle : Eg::API::Windows::WindowHandle;
   
@@ -52,7 +52,7 @@ class Eg::API::Windows {
   
   native method calc_text_height : int ($paint_info : Eg::API::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
-  method repaint : void ($app : Eg::App, $paint_info : object) {
+  method repaint : void ($app : Eg::Window, $paint_info : object) {
     
     my $runtime = $app->runtime;
     

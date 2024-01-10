@@ -1,5 +1,5 @@
 class Engine::Windows {
-  use Eg::App;
+  use Eg::Window;
   use Eg::Node;
   use List;
   
@@ -7,7 +7,7 @@ class Engine::Windows {
   use Eg::Runtime;
 
   static method main : int ($start_file : string, $args : string[]) {
-    my $app = Eg::App->new;
+    my $app = Eg::Window->new;
     
     # Add index page
     {
