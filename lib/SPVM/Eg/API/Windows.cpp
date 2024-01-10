@@ -725,25 +725,9 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     void* obj_color = env->get_field_object_by_name(env, stack, obj_node, "color", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     
-    D2D1::ColorF color_f = D2D1::ColorF(0, 0, 1.0f, 1.0f);
-    if (obj_color || has_color) {
-      float color_red = env->get_field_float_by_name(env, stack,  obj_color, "red", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
-      float color_green = env->get_field_float_by_name(env, stack,  obj_color, "green", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
-      float color_blue = env->get_field_float_by_name(env, stack,  obj_color, "blue", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
-      float color_alpha = env->get_field_float_by_name(env, stack,  obj_color, "alpha", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-
+    D2D1::ColorF color_f = {0};
+    if (has_color) {
       color_f = D2D1::ColorF(color_red_v2, color_green_v2, color_blue_v2, color_alpha_v2);
-      
-      spvm_warn("LINE %d %f %f %f %f", __LINE__, color_red, color_green, color_blue, color_alpha);
-      spvm_warn("LINE %d %f %f %f %f", __LINE__, color_red_v2, color_green_v2, color_blue_v2, color_alpha_v2);
-      
     }
     else {
       color_f = D2D1::ColorF(0, 0, 0, 0);
