@@ -600,10 +600,10 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   float background_color_blue = 1;
   float background_color_alpha = 1;
   int32_t has_color = 0;
-  float color_red_v2 = 0;
-  float color_green_v2 = 0;
-  float color_blue_v2 = 0;
-  float color_alpha_v2 = 1;
+  float color_red = 0;
+  float color_green = 0;
+  float color_blue = 0;
+  float color_alpha = 1;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
@@ -631,7 +631,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
           
           has_color = 1;
           
-          parse_css_color(env, stack, style_value, style_value_length, &color_red_v2, &color_green_v2, &color_blue_v2, &color_alpha_v2);
+          parse_css_color(env, stack, style_value, style_value_length, &color_red, &color_green, &color_blue, &color_alpha);
         }
         
         break;
@@ -716,18 +716,15 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
     
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
-
+    
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
     int32_t parent_width = block_rect.right + 1;
     int32_t parent_height = block_rect.bottom + 1;
-
-    void* obj_color = env->get_field_object_by_name(env, stack, obj_node, "color", &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) { return error_id; }
     
     D2D1::ColorF color_f = {0};
     if (has_color) {
-      color_f = D2D1::ColorF(color_red_v2, color_green_v2, color_blue_v2, color_alpha_v2);
+      color_f = D2D1::ColorF(color_red, color_green, color_blue, color_alpha);
     }
     else {
       color_f = D2D1::ColorF(0, 0, 0, 0);
