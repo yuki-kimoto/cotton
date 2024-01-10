@@ -1,16 +1,13 @@
-class Eg::Window {
-  use List;
+class Eg::Window : interface_t {
   use Eg::Node;
   use Eg::Runtime;
   
-  # Fields
-  has runtime : rw Eg::Runtime;
+  method runtime : Eg::Runtime ();
   
-  has document : rw Eg::Node;
+  method set_runtime : void ($runtime_node : Eg::Runtime);
   
-  static method new : Eg::Window() {
-    my $self = new Eg::Window;
-    
-    return $self;
-  }
+  method document : Eg::Node ();
+  
+  method set_document : void ($document_node : Eg::Node);
+  
 }

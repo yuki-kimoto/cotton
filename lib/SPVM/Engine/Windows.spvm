@@ -1,5 +1,6 @@
 class Engine::Windows {
   use Eg::Window;
+  use Eg::API::Windows::Window;
   use Eg::Node;
   use List;
   
@@ -7,7 +8,7 @@ class Engine::Windows {
   use Eg::Runtime;
 
   static method main : int ($start_file : string, $args : string[]) {
-    my $app = Eg::Window->new;
+    my $window_impl = Eg::API::Windows::Window->new;
     
     # Add index page
     {
@@ -34,12 +35,12 @@ class Engine::Windows {
         ]
       );
       
-      $app->set_document($document);
+      $window_impl->set_document($document);
     }
     
     my $runtime = Eg::Runtime->new;
     
-    $app->set_runtime($runtime);
+    $window_impl->set_runtime($runtime);
     
     my $api = Eg::API::Windows->new;
     
@@ -47,9 +48,9 @@ class Engine::Windows {
     
     $api->set_runtime($runtime);
     
-    $api->set_app($app);
+    $api->set_app($window_impl);
     
-    Eg->SET_WINDOW($app);
+    Eg->SET_WINDOW($window_impl);
     
     $api->open_main_window;
     
