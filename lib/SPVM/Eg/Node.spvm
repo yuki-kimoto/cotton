@@ -210,8 +210,5 @@ class Eg::Node {
     
     return $style_pairs;
   }
-  
-  # Deprecated allow
-  allow Eg::App;
 }
 
