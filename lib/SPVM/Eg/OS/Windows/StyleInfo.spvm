@@ -1,0 +1,1 @@
+class Eg::OS::Windows::StyleInfo : pointer;

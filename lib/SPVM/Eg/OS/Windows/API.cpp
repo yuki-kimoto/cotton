@@ -12,7 +12,7 @@
 
 #include "re2/re2.h"
 
-static const char* FILE_NAME = "Eg/API/Windows.cpp";
+static const char* FILE_NAME = "Eg/OS/Windows/API.cpp";
 
 extern "C" {
 
@@ -27,7 +27,7 @@ struct Vertex {
         float col[ 4 ];
 };
 
-int32_t SPVM__Eg__API__Windows__open_main_window_native(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__open_main_window_native(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   void* obj_self = stack[0].oval;
   
@@ -75,7 +75,7 @@ int32_t SPVM__Eg__API__Windows__open_main_window_native(SPVM_ENV* env, SPVM_VALU
     window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
-  void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Eg::API::Windows", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::API", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
   env->set_field_object_by_name(env, stack, obj_self, "window_handle", obj_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
@@ -171,14 +171,14 @@ int32_t SPVM__Eg__API__Windows__open_main_window_native(SPVM_ENV* env, SPVM_VALU
   return 0;
 }
 
-int32_t SPVM__Eg__API__Windows__CW_USEDEFAULT(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__CW_USEDEFAULT(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   stack[0].ival = CW_USEDEFAULT;
   
   return 0;
 }
 
-int32_t SPVM__Eg__API__Windows__start_app(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__start_app(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   // Get and dispatch message
   MSG message;
@@ -360,7 +360,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
       paint_info->window_handle = window_handle;
       paint_info->renderer = renderer;
       
-      void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Eg::API::Windows::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
+      void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
       stack[0].oval = obj_self;
@@ -382,7 +382,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   return 0;
 }
 
-int32_t SPVM__Eg__API__Windows__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -564,7 +564,7 @@ static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style
   }
 }
 
-int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -799,7 +799,7 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-int32_t SPVM__Eg__API__Windows__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -819,7 +819,7 @@ int32_t SPVM__Eg__API__Windows__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* st
 }
 
 
-int32_t SPVM__Eg__API__Windows__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   

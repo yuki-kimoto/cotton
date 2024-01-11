@@ -1,22 +1,22 @@
 class Engine::Windows {
   use Eg::Window;
-  use Eg::API::Windows::Window;
+  use Eg::OS::Windows::API::Window;
   use Eg::Node;
   use List;
   
-  use Eg::API::Windows;
+  use Eg::OS::Windows::API;
   use Eg::Runtime;
 
   static method main : int ($start_file : string, $args : string[]) {
     my $runtime = Eg::Runtime->new;
     
-    my $api = Eg::API::Windows->new;
+    my $api = Eg::OS::Windows::API->new;
     
     $api->set_runtime($runtime);
     
     $runtime->set_api($api);
     
-    my $api_window = Eg::API::Windows::Window->new;
+    my $api_window = Eg::OS::Windows::API::Window->new;
     
     $api_window->set_runtime($runtime);
     

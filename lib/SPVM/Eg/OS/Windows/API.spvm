@@ -1,4 +1,4 @@
-class Eg::API::Windows {
+class Eg::OS::Windows::API {
   interface Eg::API;
   
   use List;
@@ -7,16 +7,16 @@ class Eg::API::Windows {
   use Eg::Node;
   use Hash;
   
-  use Eg::API::Windows::WindowHandle;
-  use Eg::API::Windows::PaintInfo;
+  use Eg::OS::Windows::WindowHandle;
+  use Eg::OS::Windows::PaintInfo;
   
   has runtime : rw Eg::Runtime;
   
-  has window_handle : Eg::API::Windows::WindowHandle;
+  has window_handle : Eg::OS::Windows::WindowHandle;
   
-  static method new : Eg::API::Windows($options : object[] = undef) {
+  static method new : Eg::OS::Windows::API($options : object[] = undef) {
     
-    my $self = new Eg::API::Windows;
+    my $self = new Eg::OS::Windows::API;
     
     return $self;
   }
@@ -77,7 +77,7 @@ class Eg::API::Windows {
   
   native method paint_node : void ($paint_info : object, $node : Eg::Node);
   
-  native method calc_text_height : int ($paint_info : Eg::API::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
+  native method calc_text_height : int ($paint_info : Eg::OS::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
   
   native static method CW_USEDEFAULT : int ();
   

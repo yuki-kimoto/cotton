@@ -1,4 +1,4 @@
-class Eg::API::Windows::Window {
+class Eg::OS::Windows::API::Window {
   use List;
   use Eg::Node;
   use Eg::Runtime;
@@ -8,8 +8,8 @@ class Eg::API::Windows::Window {
   
   has document : rw Eg::Node;
   
-  static method new : Eg::API::Windows::Window() {
-    my $self = new Eg::API::Windows::Window;
+  static method new : Eg::OS::Windows::API::Window() {
+    my $self = new Eg::OS::Windows::API::Window;
     
     return $self;
   }
