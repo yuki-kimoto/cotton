@@ -24,11 +24,7 @@ class Engine::Windows {
     
     Eg->SET_RUNTIME($runtime);
     
-    my $window = Eg::Window->new;
-    
-    $window->set_runtime($runtime);
-    
-    $runtime->set_window($window);
+    my $window = $runtime->window;
     
     # Add index page
     {
