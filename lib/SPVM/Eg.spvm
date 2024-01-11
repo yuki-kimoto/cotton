@@ -9,6 +9,8 @@ class Eg {
   use List;
   use StringBuffer;
   
+  our $RUNTIME : rw Eg::Runtime;
+  
   static method document : Eg::Node ($root_node : Eg::Node) {
     unless ($root_node) {
       die "\$root_node must be defined.";
@@ -1021,6 +1023,6 @@ class Eg {
   }
   
   # Experimenta Features
-  static method window : Eg::Window () { return undef; }
+  static method window : Eg::Window () { $RUNTIME->window; }
   
 }
