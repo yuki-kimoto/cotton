@@ -288,9 +288,6 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  void* obj_window = env->get_field_object_by_name(env, stack, obj_self, "window", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
   void* obj_runtime = env->get_field_object_by_name(env, stack, obj_self, "runtime", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
@@ -367,7 +364,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
       if (error_id) { return error_id; }
       
       stack[0].oval = obj_self;
-      stack[2].oval = obj_paint_info;
+      stack[1].oval = obj_paint_info;
       env->call_instance_method_by_name(env, stack, "repaint", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
@@ -574,9 +571,6 @@ int32_t SPVM__Eg__API__Windows__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   void* obj_self = stack[0].oval;
   void* obj_paint_info = stack[1].oval;
   void* obj_node = stack[2].oval;
-  
-  void* obj_window = env->get_field_object_by_name(env, stack, obj_self, "window", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
   
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
   HDC hdc = paint_info->hdc;

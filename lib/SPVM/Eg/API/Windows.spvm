@@ -12,8 +12,6 @@ class Eg::API::Windows {
   
   has runtime : rw Eg::Runtime;
   
-  has window : rw Eg::Window;
-  
   has window_handle : Eg::API::Windows::WindowHandle;
   
   static method new : Eg::API::Windows($options : object[] = undef) {
