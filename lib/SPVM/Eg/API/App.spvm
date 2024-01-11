@@ -1,0 +1,10 @@
+# Copyright (c) 2024 Yuki Kimoto
+# MIT License
+
+class Eg::API::App : interface_t {
+  
+  method open_main_window : void ($options : object[] = undef);
+  
+  method start_app : void ();
+  
+}

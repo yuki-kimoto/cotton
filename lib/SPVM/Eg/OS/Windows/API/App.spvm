@@ -1,5 +1,4 @@
 class Eg::OS::Windows::API::App {
-  interface Eg::API;
   
   use List;
   use Encode;

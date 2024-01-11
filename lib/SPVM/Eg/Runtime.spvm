@@ -1,13 +1,14 @@
 class Eg::Runtime {
   
   use Eg::Window;
-  use Eg::API;
+  
+  use Eg::API::App;
   use Eg::API::Window;
   
   # Fields
   has window : rw Eg::Window;
   
-  has api : rw Eg::API;
+  has api_app : rw Eg::API::App;
   
   has api_window : rw Eg::API::Window;
   
