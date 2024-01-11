@@ -48,11 +48,11 @@ class Eg::API::Windows {
   
   native method get_viewport_height : int ();
   
-  method repaint : void ($window : Eg::Window, $paint_info : object) {
+  method repaint : void ($paint_info : object) {
     
     my $runtime = $self->{runtime};
     
-    $window = $runtime->window;
+    my $window = $runtime->window;
     
     {
       my $body = (Eg::Node)$window->document->child_nodes_list->get(1);
