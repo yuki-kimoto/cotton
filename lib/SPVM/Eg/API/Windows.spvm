@@ -50,7 +50,7 @@ class Eg::API::Windows {
   
   method repaint : void ($window : Eg::Window, $paint_info : object) {
     
-    my $runtime = $window->runtime;
+    my $runtime = $self->{runtime};
     
     {
       my $body = (Eg::Node)$window->document->child_nodes_list->get(1);

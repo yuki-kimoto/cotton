@@ -2,10 +2,6 @@ class Eg::Window : interface_t {
   use Eg::Node;
   use Eg::Runtime;
   
-  method runtime : Eg::Runtime ();
-  
-  method set_runtime : void ($runtime_node : Eg::Runtime);
-  
   method document : Eg::Node ();
   
   method set_document : void ($document_node : Eg::Node);
