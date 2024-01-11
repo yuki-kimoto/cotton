@@ -1,22 +1,20 @@
 class Eg::Runtime {
   
+  use Eg::API;
   use Eg::Window;
   
-  use Eg::API::App;
-  use Eg::API::Window;
-  
   # Fields
+  has api : rw Eg::API;
+  
   has window : rw Eg::Window;
-  
-  has api_app : rw Eg::API::App;
-  
-  has api_window : rw Eg::API::Window;
   
   # Class Methods
   static method new : Eg::Runtime ($options : object[] = undef) {
     my $options_h = Hash->new($options);
     
     my $self = new Eg::Runtime;
+    
+    $self->{api} = Eg::API->new;
     
     return $self;
   }

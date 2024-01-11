@@ -26,25 +26,25 @@ class Eg::Window extends Eg::EventTarget {
   method outer_width : int () {
     my $runtime = $self->runtime;
     
-    return $runtime->api_window->outer_width;
+    return $runtime->api->window->outer_width;
   }
   
   method inner_width : int () {
     my $runtime = $self->runtime;
     
-    return $runtime->api_window->inner_width;
+    return $runtime->api->window->inner_width;
   }
   
   method outer_height : int () {
     my $runtime = $self->runtime;
     
-    return $runtime->api_window->outer_height;
+    return $runtime->api->window->outer_height;
   }
   
   method inner_height : int () {
     my $runtime = $self->runtime;
     
-    return $runtime->api_window->inner_height;
+    return $runtime->api->window->inner_height;
   }
   
 }

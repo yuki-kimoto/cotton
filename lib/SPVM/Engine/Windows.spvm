@@ -14,13 +14,13 @@ class Engine::Windows {
     
     $api_app->set_runtime($runtime);
     
-    $runtime->set_api_app($api_app);
+    $runtime->api->set_app($api_app);
     
     my $api_app_window = Eg::OS::Windows::API::Window->new;
     
     $api_app_window->set_runtime($runtime);
     
-    $runtime->set_api_window($api_app_window);
+    $runtime->api->set_window($api_app_window);
     
     Eg->SET_RUNTIME($runtime);
     
