@@ -40,6 +40,8 @@ class Engine::Windows {
     
     my $runtime = Eg::Runtime->new;
     
+    $runtime->set_window($window_impl);
+    
     $window_impl->set_runtime($runtime);
     
     my $api = Eg::API::Windows->new;
