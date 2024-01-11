@@ -52,6 +52,8 @@ class Eg::API::Windows {
     
     my $runtime = $self->{runtime};
     
+    $window = $runtime->window;
+    
     {
       my $body = (Eg::Node)$window->document->child_nodes_list->get(1);
       
