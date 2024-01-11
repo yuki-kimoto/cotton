@@ -14,3 +14,7 @@ Engine is a example of SPVM application on Windows.
   # Compile Engine - producetion mode
   spvmcc -o cotton -c cotton.production.config -I lib/SPVM Engine::Windows
 
+# Run Application
+
+  ./cotton
+
