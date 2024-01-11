@@ -1,6 +1,6 @@
 class Eg::API : interface_t {
   use Eg::Window;
-  use Eg::Node;
   
   # Interface Methods
+  method window : Eg::Window ();
 }
