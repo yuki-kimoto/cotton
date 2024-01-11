@@ -1,7 +1,11 @@
 class Eg::Runtime {
   
+  use Eg::Window;
+  
   # Fields
   has api : rw Eg::API;
+  
+  has window : rw Eg::Window;
   
   # Class Methods
   static method new : Eg::Runtime ($options : object[] = undef) {
