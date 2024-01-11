@@ -5,13 +5,15 @@ class Eg {
   version "0.008";
   
   use Eg::Node;
+  use Eg::Document;
+  
   use Hash;
   use List;
   use StringBuffer;
   
   our $RUNTIME : rw Eg::Runtime;
   
-  static method document : Eg::Node ($root_node : Eg::Node) {
+  static method document : Eg::Document ($root_node : Eg::Node) {
     unless ($root_node) {
       die "\$root_node must be defined.";
     }
@@ -20,9 +22,11 @@ class Eg {
       die "The tag name of \$root_node must be \"html\".";
     }
     
-    my $new_document_node = Eg::Node->new_document_node($root_node);
+    my $new_document = Eg::Document->new;
     
-    return $new_document_node;
+    $new_document->set_html($root_node);
+    
+    return $new_document;
   }
   
   static method text : Eg::Node ($text : string) {

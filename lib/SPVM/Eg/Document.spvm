@@ -4,9 +4,17 @@
 class Eg::Document {
   use Eg::Node;
   
-  has html : Eg::Node;
+  has html : rw Eg::Node;
   
   has title : string;
+  
+  # Class Methods
+  static method new : Eg::Document () {
+    
+    my $self = new Eg::Document;
+    
+    return $self;
+  }
   
   method head : Eg::Node () {
     my $root_node = $self->{html};

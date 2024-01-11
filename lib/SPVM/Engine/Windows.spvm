@@ -8,7 +8,27 @@ class Engine::Windows {
   use Eg::Runtime;
 
   static method main : int ($start_file : string, $args : string[]) {
-    my $window_impl = Eg::API::Windows::Window->new;
+    my $runtime = Eg::Runtime->new;
+    
+    my $api = Eg::API::Windows->new;
+    
+    $api->set_runtime($runtime);
+    
+    $runtime->set_api($api);
+    
+    my $api_window = Eg::API::Windows::Window->new;
+    
+    $api_window->set_runtime($runtime);
+    
+    $runtime->set_api_window($api_window);
+    
+    Eg->SET_RUNTIME($runtime);
+    
+    my $window = Eg::Window->new;
+    
+    $window->set_runtime($runtime);
+    
+    $runtime->set_window($window);
     
     # Add index page
     {
@@ -26,7 +46,7 @@ class Engine::Windows {
         Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "#FF0000"}}),
       ]);
       
-      my $document = Eg->html(
+      my $html = Eg->html(
         [
           Eg->head([
             Eg->title("コットン")
@@ -35,28 +55,10 @@ class Engine::Windows {
         ]
       );
       
-      $window_impl->set_document($document);
+      my $document = Eg->document($html);
+      
+      $window->set_document($document);
     }
-    
-    my $runtime = Eg::Runtime->new;
-    
-    $runtime->set_window($window_impl);
-    
-    $window_impl->set_runtime($runtime);
-    
-    my $api = Eg::API::Windows->new;
-    
-    $api->set_runtime($runtime);
-    
-    $runtime->set_api($api);
-    
-    my $api_window = Eg::API::Windows::Window->new;
-    
-    $api_window->set_runtime($runtime);
-    
-    $runtime->set_api_window($api_window);
-    
-    Eg->SET_RUNTIME($runtime);
     
     $api->open_main_window;
     

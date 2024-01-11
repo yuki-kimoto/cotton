@@ -1,9 +1,50 @@
-class Eg::Window : interface_t {
-  use Eg::Node;
-  use Eg::Runtime;
+# Copyright (c) 2024 Yuki Kimoto
+# MIT License
+
+class Eg::Window extends Eg::EventTarget {
+  use Eg::API;
+  use Eg::Location;
+  use Eg::History;
+  use Eg::Document;
   
-  method document : Eg::Node ();
+  # Class Methods
+  static method new : Eg::Window () {
+    
+    my $self = new Eg::Window;
+    
+    return $self;
+  }
   
-  method set_document : void ($document_node : Eg::Node);
+  has runtime : rw Eg::Runtime;
+  
+  has location : ro Eg::Location;
+  
+  has document : rw Eg::Document;
+  
+  has history : ro Eg::History;
+  
+  method outer_width : int () {
+    my $runtime = $self->runtime;
+    
+    return $runtime->api_window->outer_width;
+  }
+  
+  method inner_width : int () {
+    my $runtime = $self->runtime;
+    
+    return $runtime->api_window->inner_width;
+  }
+  
+  method outer_height : int () {
+    my $runtime = $self->runtime;
+    
+    return $runtime->api_window->outer_height;
+  }
+  
+  method inner_height : int () {
+    my $runtime = $self->runtime;
+    
+    return $runtime->api_window->inner_height;
+  }
   
 }
