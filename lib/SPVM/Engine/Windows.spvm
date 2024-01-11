@@ -4,23 +4,23 @@ class Engine::Windows {
   use Eg::Node;
   use List;
   
-  use Eg::OS::Windows::API;
+  use Eg::OS::Windows::API::App;
   use Eg::Runtime;
 
   static method main : int ($start_file : string, $args : string[]) {
     my $runtime = Eg::Runtime->new;
     
-    my $api = Eg::OS::Windows::API->new;
+    my $api_app = Eg::OS::Windows::API::App->new;
     
-    $api->set_runtime($runtime);
+    $api_app->set_runtime($runtime);
     
-    $runtime->set_api($api);
+    $runtime->set_api($api_app);
     
-    my $api_window = Eg::OS::Windows::API::Window->new;
+    my $api_app_window = Eg::OS::Windows::API::Window->new;
     
-    $api_window->set_runtime($runtime);
+    $api_app_window->set_runtime($runtime);
     
-    $runtime->set_api_window($api_window);
+    $runtime->set_api_window($api_app_window);
     
     Eg->SET_RUNTIME($runtime);
     
@@ -60,8 +60,8 @@ class Engine::Windows {
       $window->set_document($document);
     }
     
-    $api->open_main_window;
+    $api_app->open_main_window;
     
-    $api->start_app;
+    $api_app->start_app;
   }
 }
