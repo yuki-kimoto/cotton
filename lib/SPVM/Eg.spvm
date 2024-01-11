@@ -1021,8 +1021,6 @@ class Eg {
   }
   
   # Experimenta Features
-  our $WINDOW : rw Eg::Window;
-  
-  static method window : Eg::Window () { return $WINDOW; }
+  static method window : Eg::Window () { return undef; }
   
 }
