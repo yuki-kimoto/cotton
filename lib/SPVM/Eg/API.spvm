@@ -3,5 +3,4 @@ class Eg::API : interface_t {
   use Eg::Node;
   
   # Interface Methods
-  method paint_node : void ($paint_info : object, $node : Eg::Node);
 }

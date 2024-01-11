@@ -10,8 +10,10 @@ class Eg::API::Windows {
   use Eg::API::Windows::WindowHandle;
   use Eg::API::Windows::PaintInfo;
   
-  has window : rw Eg::Window;
   has runtime : rw Eg::Runtime;
+  
+  has window : rw Eg::Window;
+  
   has window_handle : Eg::API::Windows::WindowHandle;
   
   static method new : Eg::API::Windows($options : object[] = undef) {
@@ -20,8 +22,6 @@ class Eg::API::Windows {
     
     return $self;
   }
-  
-  native static method CW_USEDEFAULT : int ();
   
   method open_main_window : void ($options : object[] = undef) {
     
@@ -48,10 +48,6 @@ class Eg::API::Windows {
   
   native method get_viewport_height : int ();
   
-  native method paint_node : void ($paint_info : object, $node : Eg::Node);
-  
-  native method calc_text_height : int ($paint_info : Eg::API::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
-  
   method repaint : void ($window : Eg::Window, $paint_info : object) {
     
     my $runtime = $window->runtime;
@@ -74,8 +70,15 @@ class Eg::API::Windows {
           $text_string = $node->value_buffer->to_string;
         }
         
-        $runtime->api->paint_node($paint_info, $node);
+        $self->paint_node($paint_info, $node);
       }
     }
   }
+  
+  native method paint_node : void ($paint_info : object, $node : Eg::Node);
+  
+  native method calc_text_height : int ($paint_info : Eg::API::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
+  
+  native static method CW_USEDEFAULT : int ();
+  
 }
