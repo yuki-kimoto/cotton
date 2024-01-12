@@ -39,7 +39,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   native method start_event_loop : void ();
   
-  method repaint : void ($paint_info : object) {
+  private method repaint : void ($paint_info : object) {
     
     my $runtime = $self->{runtime};
     
@@ -68,9 +68,9 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     }
   }
   
-  native method paint_node : void ($paint_info : object, $node : Eg::Node);
+  private native method paint_node : void ($paint_info : object, $node : Eg::Node);
   
-  native static method CW_USEDEFAULT : int ();
+  private native static method CW_USEDEFAULT : int ();
   
   private method inner_width : int () {
     return $self->{runtime}->api->window->inner_width;
