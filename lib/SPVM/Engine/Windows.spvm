@@ -6,9 +6,15 @@ class Engine::Windows {
   
   use Eg::OS::Windows::API::App;
   use Eg::Runtime;
-
+  
+  # Fields
+  has runtime : Eg::Runtime;
+  
+  # Class Methods
   static method main : int ($start_file : string, $args : string[]) {
     my $runtime = Eg::Runtime->new;
+    
+    my $api = $runtime->api;
     
     my $api_app = Eg::OS::Windows::API::App->new;
     
@@ -56,8 +62,29 @@ class Engine::Windows {
       $window->set_document($document);
     }
     
-    $api_app->open_main_window;
+    my $engine = &new;
     
-    $api_app->start_app;
+    $engine->{runtime} = $runtime;
+    
+    $engine->start;
+  }
+  
+  static method new : Engine::Windows () {
+    
+    my $self = new Engine::Windows;
+    
+    return $self;
+  }
+  
+  # Instance Methods
+  method start : void () {
+    
+    my $runtime = $self->{runtime};
+    
+    my $api = $runtime->api;
+    
+    $api->app->open_main_window;
+    
+    $api->app->start_app;
   }
 }
