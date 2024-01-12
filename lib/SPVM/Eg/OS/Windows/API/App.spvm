@@ -9,8 +9,6 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   use Eg::OS::Windows::WindowHandle;
   use Eg::OS::Windows::PaintInfo;
   
-  has window_handle : Eg::OS::Windows::WindowHandle;
-  
   static method new : Eg::OS::Windows::API::App($runtime : Eg::Runtime) {
     
     my $self = new Eg::OS::Windows::API::App;

@@ -78,9 +78,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__open_main_window_native(SPVM_ENV* env, 
   void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::WindowHandle", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  env->set_field_object_by_name(env, stack, obj_self, "window_handle", obj_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
   stack[0].oval = obj_self;
   stack[1].oval = env->new_string_nolen(env, stack, "window_handle");
   stack[2].oval = obj_window_handle;
@@ -291,14 +288,11 @@ struct EG_STYLE_INFO {
 static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   int32_t error_id = 0;
   
-  void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
   stack[0].oval = obj_self;
   stack[1].oval = env->new_string_nolen(env, stack, "window_handle");
   env->call_instance_method_by_name(env, stack, "get_data", 2, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
-  obj_window_handle = stack[0].oval;
+  void* obj_window_handle = stack[0].oval;
   
   void* obj_runtime = env->get_field_object_by_name(env, stack, obj_self, "runtime", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
