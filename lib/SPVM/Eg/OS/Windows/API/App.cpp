@@ -391,7 +391,7 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   return 0;
 }
 
-int32_t SPVM__Eg__OS__Windows__API__App__calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -617,7 +617,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       stack[1].oval = obj_paint_info;
       stack[2].oval = obj_text;
       stack[3].ival = width;
-      env->call_instance_method_by_name(env, stack, "calc_text_height", 4, &error_id, __func__, FILE_NAME, __LINE__);
+      calc_text_height(env, stack);
       if (error_id) { return error_id; }
       height = stack[0].ival;
     }

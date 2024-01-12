@@ -70,8 +70,6 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   native method paint_node : void ($paint_info : object, $node : Eg::Node);
   
-  native method calc_text_height : int ($paint_info : Eg::OS::Windows::PaintInfo, $text : string, $width : int, $font_styles : string[]);
-  
   native static method CW_USEDEFAULT : int ();
   
   private method inner_width : int () {
