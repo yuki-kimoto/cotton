@@ -1,4 +1,5 @@
 class Eg::Runtime {
+  allow Eg::OS::API;
   
   use Eg::API;
   use Eg::Window;

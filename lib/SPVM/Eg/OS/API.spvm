@@ -1,0 +1,16 @@
+class Eg::OS::API {
+  
+  has runtime : rw Eg::Runtime;
+  
+  method get_data : object ($name : string) {
+    
+    my $runtime = $self->{runtime};
+    
+    my $data_h = $runtime->{data_h};
+    
+    my $value = $data_h->get($name);
+    
+    return $value;
+  }
+  
+}
