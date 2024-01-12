@@ -8,6 +8,8 @@ class Eg::Runtime {
   
   has window : ro Eg::Window;
   
+  has data_h : Hash;
+  
   # Class Methods
   static method new : Eg::Runtime ($options : object[] = undef) {
     my $options_h = Hash->new($options);
@@ -23,6 +25,8 @@ class Eg::Runtime {
     $window->{runtime} = $self;
     
     weaken $window->{runtime};
+    
+    $self->{data_h} = Hash->new;
     
     return $self;
   }
