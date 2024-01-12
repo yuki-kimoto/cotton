@@ -45,7 +45,7 @@ class Eg::OS::Windows::API::App {
   
   native method inner_width : int ();
   
-  native method get_viewport_height : int ();
+  native method inner_height : int ();
   
   method repaint : void ($paint_info : object) {
     

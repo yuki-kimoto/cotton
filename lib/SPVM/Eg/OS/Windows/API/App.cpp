@@ -819,7 +819,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__inner_width(SPVM_ENV* env, SPVM_VALUE* 
 }
 
 
-int32_t SPVM__Eg__OS__Windows__API__App__get_viewport_height(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__App__inner_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
