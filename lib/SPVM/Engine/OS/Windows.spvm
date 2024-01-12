@@ -1,4 +1,4 @@
-class Engine::Windows {
+class Engine::OS::Windows {
   use Eg::Window;
   use Eg::OS::Windows::API::Window;
   use Eg::Node;
@@ -14,7 +14,7 @@ class Engine::Windows {
   static method main : int ($start_file : string, $args : string[]) {
     my $runtime = Eg::Runtime->new;
     
-    my $engine = Engine::Windows->new($runtime);
+    my $engine = Engine::OS::Windows->new($runtime);
     
     Eg->SET_RUNTIME($runtime);
     
@@ -27,9 +27,9 @@ class Engine::Windows {
     $engine->start_app;
   }
   
-  static method new : Engine::Windows ($runtime : Eg::Runtime) {
+  static method new : Engine::OS::Windows ($runtime : Eg::Runtime) {
     
-    my $self = new Engine::Windows;
+    my $self = new Engine::OS::Windows;
     
     $self->{runtime} = $runtime;
     

@@ -9,10 +9,10 @@ Engine is a example of SPVM application on Windows.
 # Executable File Generating
 
   # Compile Engine - development mode
-  spvmcc -o cotton -c cotton.config -I lib/SPVM Engine::Windows
+  spvmcc -o cotton -c cotton.config -I lib/SPVM Engine::OS::Windows
 
   # Compile Engine - producetion mode
-  spvmcc -o cotton -c cotton.production.config -I lib/SPVM Engine::Windows
+  spvmcc -o cotton -c cotton.production.config -I lib/SPVM Engine::OS::Windows
 
 # Run Application
 
