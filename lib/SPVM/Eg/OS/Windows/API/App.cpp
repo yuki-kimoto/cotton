@@ -301,18 +301,21 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   
   // Draw page title
   {
-    void* obj_window_name = env->new_string(env, stack, "コットン", strlen("コットン"));
+    stack[0].oval = obj_self;
+    env->call_instance_method_by_name(env, stack, "document_title", 1, &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    void* obj_document_title = stack[0].oval;
     
-    void* obj_window_name_utf8_to_utf16 = NULL;
+    void* obj_document_title_utf8_to_utf16 = NULL;
     {
-      stack[0].oval = obj_window_name;
+      stack[0].oval = obj_document_title;
       env->call_class_method_by_name(env, stack, "Encode", "encode_utf16", 1, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
-      obj_window_name_utf8_to_utf16 = stack[0].oval;
+      obj_document_title_utf8_to_utf16 = stack[0].oval;
     }
-    int16_t* window_name_utf8_to_utf16 = env->get_elems_short(env, stack, obj_window_name_utf8_to_utf16);
+    int16_t* document_title_utf8_to_utf16 = env->get_elems_short(env, stack, obj_document_title_utf8_to_utf16);
     
-    SetWindowTextW(window_handle, (LPCWSTR)window_name_utf8_to_utf16);
+    SetWindowTextW(window_handle, (LPCWSTR)document_title_utf8_to_utf16);
   }
   
   // Draw parent area

@@ -6,7 +6,7 @@ class Eg::Document {
   
   has html : rw Eg::Node;
   
-  has title : string;
+  has title : rw string;
   
   # Class Methods
   static method new : Eg::Document () {

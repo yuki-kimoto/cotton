@@ -69,16 +69,20 @@ class Cotton {
       Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "#FF0000"}}),
     ]);
     
+    my $title = "コットン";
+    
     my $html = Eg->html(
       [
         Eg->head([
-          Eg->title("コットン")
+          Eg->title($title)
         ]),
         $body
       ]
     );
     
     my $document = Eg->document($html);
+    
+    $document->set_title($title);
     
     return $document;
   }
