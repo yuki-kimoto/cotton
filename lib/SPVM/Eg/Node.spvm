@@ -366,4 +366,29 @@ class Eg::Node {
     }
   }
   
+  method before : void ($node : Eg::Node) {
+    
+    unless ($node) {
+      die "\$node must be defined.";
+    }
+    
+    my $parent = $self->{parent};
+    
+    unless ($node) {
+      die "The parent of \$node must be defined.";
+    }
+    
+    my $sibling_nodes_list = $parent->{child_nodes_list};
+    
+    my $sibling_nodes_length = $sibling_nodes_list->length;
+    
+    for (my $i = 0; $i < $sibling_nodes_length; $i++) {
+      my $sibling = $sibling_nodes_list->get($i);
+      
+      if ($sibling == $self) {
+        $sibling_nodes_list->insert($i, $node);
+        last;
+      }
+    }
+  }
 }
