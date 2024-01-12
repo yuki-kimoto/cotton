@@ -22,37 +22,11 @@ class Engine::Windows {
     
     Eg->SET_RUNTIME($runtime);
     
+    my $document = &document;
+    
     my $window = $runtime->window;
     
-    # Add index page
-    {
-      my $text1 = Eg->text("あああああ");
-      $text1->set_css("color" => "#0000FF");
-      $text1->set_css("background-color" => "#00FF00");
-      
-      my $div1 = Eg->div_({style => {
-        "background-color" => "#00FF00"
-      }}, [$text1]);
-      
-      my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
-        $div1,
-        Eg->div_({style => {left => "300px", top => "500px", width => "400px", height => "400px", "background-color" => "#FF0000"}}),
-        Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "#FF0000"}}),
-      ]);
-      
-      my $html = Eg->html(
-        [
-          Eg->head([
-            Eg->title("コットン")
-          ]),
-          $body
-        ]
-      );
-      
-      my $document = Eg->document($html);
-      
-      $window->set_document($document);
-    }
+    $window->set_document($document);
     
     $engine->start_app;
   }
@@ -84,6 +58,36 @@ class Engine::Windows {
     $runtime->api->set_window($api_app_window);
   }
   
+  static method document : Eg::Document () {
+    
+    my $text1 = Eg->text("あああああ");
+    $text1->set_css("color" => "#0000FF");
+    $text1->set_css("background-color" => "#00FF00");
+    
+    my $div1 = Eg->div_({style => {
+      "background-color" => "#00FF00"
+    }}, [$text1]);
+    
+    my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
+      $div1,
+      Eg->div_({style => {left => "300px", top => "500px", width => "400px", height => "400px", "background-color" => "#FF0000"}}),
+      Eg->div_({style => {left => "400px", top => "600px", width => "500px", height => "500px", "background-color" => "#FF0000"}}),
+    ]);
+    
+    my $html = Eg->html(
+      [
+        Eg->head([
+          Eg->title("コットン")
+        ]),
+        $body
+      ]
+    );
+    
+    my $document = Eg->document($html);
+    
+    return $document;
+  }
+  
   method start_app : void () {
     
     my $runtime = $self->{runtime};
@@ -94,4 +98,5 @@ class Engine::Windows {
     
     $api->app->start_event_loop;
   }
+  
 }
