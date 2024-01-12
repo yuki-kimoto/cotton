@@ -317,4 +317,17 @@ class Eg::Node {
     
     return $child_nodes;
   }
+  
+  method append : void ($node : Eg::Node) {
+    
+    unless ($node) {
+      die "\$node must be defined.";
+    }
+    
+    my $child_nodes_list = $self->{child_nodes_list};
+    
+    $child_nodes_list->push($node);
+  }
+  
+  
 }
