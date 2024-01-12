@@ -43,7 +43,7 @@ class Eg::OS::Windows::API::App {
   
   native method start_event_loop : void ();
   
-  native method get_viewport_width : int ();
+  native method inner_width : int ();
   
   native method get_viewport_height : int ();
   

@@ -589,7 +589,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   // Windows Inner width(viewport)
   {
     stack[0].oval = obj_self;
-    env->call_instance_method_by_name(env, stack, "get_viewport_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
+    env->call_instance_method_by_name(env, stack, "inner_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     width = stack[0].ival;
   }
@@ -799,7 +799,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   return 0;
 }
 
-int32_t SPVM__Eg__OS__Windows__API__App__get_viewport_width(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__App__inner_width(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
