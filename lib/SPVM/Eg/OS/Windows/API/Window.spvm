@@ -16,4 +16,8 @@ class Eg::OS::Windows::API::Window extends Eg::OS::API {
   
   native method inner_height : int ();
   
+  native method outer_width : int ();
+  
+  native method outer_height : int ();
+  
 }

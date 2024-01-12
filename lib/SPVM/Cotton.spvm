@@ -34,6 +34,14 @@ class Cotton {
     
     $api->app->open_main_window;
     
+    warn $api->window->inner_width;
+    
+    warn $api->window->inner_height;
+    
+    warn $api->window->outer_width;
+    
+    warn $api->window->outer_height;
+    
     $api->app->start_event_loop;
   }
   
