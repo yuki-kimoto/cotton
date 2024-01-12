@@ -1,4 +1,0 @@
-Compile cotton
-
-  spvmcc -I lib/SPVM -o cotton Cotton
-
