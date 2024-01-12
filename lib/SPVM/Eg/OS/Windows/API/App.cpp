@@ -294,6 +294,12 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
+  stack[0].oval = obj_self;
+  stack[1].oval = env->new_string_nolen(env, stack, "window_handle");
+  env->call_instance_method_by_name(env, stack, "get_data", 2, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  obj_window_handle = stack[0].oval;
+  
   void* obj_runtime = env->get_field_object_by_name(env, stack, obj_self, "runtime", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
