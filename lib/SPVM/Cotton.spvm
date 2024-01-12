@@ -36,11 +36,19 @@ class Cotton {
     
     warn $api->window->inner_width;
     
+    warn Eg->window->inner_width;
+    
     warn $api->window->inner_height;
+    
+    warn Eg->window->inner_height;
     
     warn $api->window->outer_width;
     
+    warn Eg->window->outer_width;
+    
     warn $api->window->outer_height;
+    
+    warn Eg->window->outer_height;
     
     $api->app->start_event_loop;
   }

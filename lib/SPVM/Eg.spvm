@@ -1027,6 +1027,8 @@ class Eg {
   }
   
   # Experimenta Features
-  static method window : Eg::Window () { $RUNTIME->window; }
+  static method window : Eg::Window () {
+    return $RUNTIME->window;
+  }
   
 }

@@ -25,9 +25,9 @@ class Eg::Runtime {
     
     $window->{runtime} = $self;
     
-    weaken $window->{runtime};
-    
     $self->{data_h} = Hash->new;
+    
+    warn dump $self;
     
     return $self;
   }
