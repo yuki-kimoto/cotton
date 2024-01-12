@@ -13,4 +13,13 @@ class Eg::OS::API {
     return $value;
   }
   
+  method set_data : void ($name : string, $value : object) {
+    
+    my $runtime = $self->{runtime};
+    
+    my $data_h = $runtime->{data_h};
+    
+    $data_h->set($name, $value);
+  }
+  
 }
