@@ -7,6 +7,7 @@ class Eg {
   use Eg::Node;
   use Eg::Document;
   use Eg::Element;
+  use Eg::Text;
   
   use Hash;
   use List;
@@ -29,9 +30,9 @@ class Eg {
     return $new_document;
   }
   
-  static method text : Eg::Node ($text : string) {
+  static method text : Eg::Text ($text : string) {
     
-    my $new_text_node = Eg::Node->new_text_node($text);
+    my $new_text_node = Eg::Text->new($text);
     
     return $new_text_node;
   }
@@ -41,7 +42,7 @@ class Eg {
     my $child_nodes = (Eg::Node[])undef;
     if ($child_nodes_or_text) {
       if ($child_nodes_or_text is_type string) {
-        $child_nodes = [Eg::Node->new_text_node((string)$child_nodes_or_text)];
+        $child_nodes = [Eg::Text->new((string)$child_nodes_or_text)];
       }
       elsif ($child_nodes_or_text isa Eg::Node[]) {
         $child_nodes = (Eg::Node[])$child_nodes_or_text;
@@ -535,7 +536,7 @@ class Eg {
     my $child_nodes = (Eg::Node[])undef;
     if ($child_nodes_or_text) {
       if ($child_nodes_or_text is_type string) {
-        $child_nodes = [Eg::Node->new_text_node((string)$child_nodes_or_text)];
+        $child_nodes = [Eg::Text->new((string)$child_nodes_or_text)];
       }
       elsif ($child_nodes_or_text isa Eg::Node[]) {
         $child_nodes = (Eg::Node[])$child_nodes_or_text;

@@ -7,6 +7,7 @@ class Eg::Node {
   use Hash;
   use List;
   use StringBuffer;
+  use Eg::Text;
   
   enum {
     TYPE_ELEMENT_NODE = 1,
@@ -41,50 +42,6 @@ class Eg::Node {
     my $self = new Eg::Node;
     
     $self->init($type, $child_nodes);
-    
-    return $self;
-  }
-  
-  static method new_element_node : Eg::Node ($tag_name : string, $attribute_pairs : object[] = undef, $child_nodes : Eg::Node[] = undef) {
-    
-    unless ($tag_name) {
-      die "\$tag_namet must be defined.";
-    }
-    
-    my $self = Eg::Node->new(Eg::Node->TYPE_ELEMENT_NODE, $child_nodes);
-    
-    $self->{tag_name} = $tag_name;
-    
-    if ($attribute_pairs) {
-      $self->{attributes_h} = Hash->new($attribute_pairs);
-      
-      my $attributes_h = $self->{attributes_h};
-      
-      my $style_pairs = (object[])$attributes_h->delete("style");
-      
-      if ($style_pairs) {
-        my $styles_h = Hash->new($style_pairs);
-        
-        $self->{styles_h} = $styles_h;
-      }
-    }
-    
-    return $self;
-  }
-  
-  static method new_text_node : Eg::Node ($text : string) {
-    
-    unless ($text) {
-      die "\$text must be defined.";
-    }
-    
-    my $self = Eg::Node->new(Eg::Node->TYPE_TEXT_NODE);
-    
-    my $value_buffer = StringBuffer->new;
-    
-    $value_buffer->push($text);
-    
-    $self->{value_buffer} = $value_buffer;
     
     return $self;
   }
@@ -298,7 +255,7 @@ class Eg::Node {
       }
     }
     else {
-      $self->{child_nodes_list} = List->new([&new_text_node($text)]);
+      $self->{child_nodes_list} = List->new([Eg::Text->new($text)]);
     }
     
   }

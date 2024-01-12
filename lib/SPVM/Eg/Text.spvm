@@ -1,0 +1,27 @@
+# Copyright (c) 2024 Yuki Kimoto
+# MIT License
+
+class Eg::Text extends Eg::Node {
+  allow Eg;
+  
+  # Class Methods
+  static method new : Eg::Text ($text : string) {
+    
+    my $self = new Eg::Text;
+    
+    $self->init(Eg::Node->TYPE_TEXT_NODE);
+    
+    unless ($text) {
+      die "\$text must be defined.";
+    }
+    
+    my $value_buffer = StringBuffer->new;
+    
+    $value_buffer->push($text);
+    
+    $self->{value_buffer} = $value_buffer;
+    
+    return $self;
+  }
+  
+}
