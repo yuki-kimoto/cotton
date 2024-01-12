@@ -39,10 +39,6 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   native method start_event_loop : void ();
   
-  native method inner_width : int ();
-  
-  native method inner_height : int ();
-  
   method repaint : void ($paint_info : object) {
     
     my $runtime = $self->{runtime};
@@ -78,4 +74,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   native static method CW_USEDEFAULT : int ();
   
+  private method inner_width : int () {
+    return $self->{runtime}->api->window->inner_width;
+  }
 }
