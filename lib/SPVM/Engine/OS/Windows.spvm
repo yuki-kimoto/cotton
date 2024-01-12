@@ -2,12 +2,13 @@ class Engine::OS::Windows {
   use Eg;
   use Eg::Runtime;
   use Eg::OS::Windows;
+  use Eg::OS;
   
   # Class Methods
   static method main : int ($start_file : string, $args : string[]) {
     my $runtime = Eg::Runtime->new;
     
-    my $os = Eg::OS::Windows->new;
+    my $os = (Eg::OS)Eg::OS::Windows->new;
     
     $os->build_runtime($runtime);
     
