@@ -40,6 +40,13 @@ class Eg::Node {
     
     my $self = new Eg::Node;
     
+    $self->init($type, $child_nodes);
+    
+    return $self;
+  }
+  
+  protected method init : void ($type : int, $child_nodes : Eg::Node[] = undef) {
+    
     $self->{type} = $type;
     
     unless ($child_nodes) {
@@ -54,14 +61,6 @@ class Eg::Node {
       }
     }
     
-    return $self;
-  }
-  
-  static method new_document_node : Eg::Node ($root_node : Eg::Node) {
-    
-    my $self = Eg::Node->new(Eg::Node->TYPE_DOCUMENT_NODE, [$root_node]);
-    
-    return $self;
   }
   
   static method new_element_node : Eg::Node ($tag_name : string, $attribute_pairs : object[] = undef, $child_nodes : Eg::Node[] = undef) {
@@ -391,4 +390,5 @@ class Eg::Node {
       }
     }
   }
+  
 }

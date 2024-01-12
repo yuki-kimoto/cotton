@@ -14,6 +14,7 @@ class Eg {
   our $RUNTIME : rw Eg::Runtime;
   
   static method new_document : Eg::Document ($root_node : Eg::Node) {
+    
     unless ($root_node) {
       die "\$root_node must be defined.";
     }
@@ -22,9 +23,7 @@ class Eg {
       die "The tag name of \$root_node must be \"html\".";
     }
     
-    my $new_document = Eg::Document->new;
-    
-    $new_document->set_html($root_node);
+    my $new_document = Eg::Document->new($root_node);
     
     return $new_document;
   }
