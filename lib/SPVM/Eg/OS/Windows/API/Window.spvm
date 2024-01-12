@@ -11,4 +11,9 @@ class Eg::OS::Windows::API::Window extends Eg::OS::API {
     
     return $self;
   }
+  
+  native method inner_width : int ();
+  
+  native method inner_height : int ();
+  
 }

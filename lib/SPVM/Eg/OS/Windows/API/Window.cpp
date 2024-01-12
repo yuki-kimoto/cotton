@@ -8,14 +8,21 @@
 #include <d3dcompiler.h>
 #include<memory>
 
+static const char* FILE_NAME = "Eg/OS/Windows/API/Window.cpp";
+
+extern "C" {
+
 int32_t SPVM__Eg__OS__Windows__API__Window__inner_width(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
   void* obj_self = stack[0].oval;
   
-  void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
+  stack[0].oval = obj_self;
+  stack[1].oval = env->new_string_nolen(env, stack, "window_handle");
+  env->call_instance_method_by_name(env, stack, "get_data", 2, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
+  void* obj_window_handle = stack[0].oval;
   
   HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
@@ -34,8 +41,11 @@ int32_t SPVM__Eg__OS__Windows__API__Window__inner_height(SPVM_ENV* env, SPVM_VAL
   
   void* obj_self = stack[0].oval;
   
-  void* obj_window_handle = env->get_field_object_by_name(env, stack, obj_self, "window_handle", &error_id, __func__, FILE_NAME, __LINE__);
+  stack[0].oval = obj_self;
+  stack[1].oval = env->new_string_nolen(env, stack, "window_handle");
+  env->call_instance_method_by_name(env, stack, "get_data", 2, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
+  void* obj_window_handle = stack[0].oval;
   
   HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
