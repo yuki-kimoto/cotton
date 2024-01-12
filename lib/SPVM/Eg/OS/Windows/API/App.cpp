@@ -81,6 +81,12 @@ int32_t SPVM__Eg__OS__Windows__API__App__open_main_window_native(SPVM_ENV* env, 
   env->set_field_object_by_name(env, stack, obj_self, "window_handle", obj_window_handle, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
+  stack[0].oval = obj_self;
+  stack[1].oval = env->new_string_nolen(env, stack, "window_handle");
+  stack[2].oval = obj_window_handle;
+  env->call_instance_method_by_name(env, stack, "set_data", 3, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
   // Renderer
   {
     RECT window_rect;
