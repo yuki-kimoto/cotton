@@ -80,7 +80,7 @@ class Cotton {
       ]
     );
     
-    my $document = Eg->document($html);
+    my $document = Eg->new_document($html);
     
     $document->set_title($title);
     

@@ -13,7 +13,7 @@ class Eg {
   
   our $RUNTIME : rw Eg::Runtime;
   
-  static method document : Eg::Document ($root_node : Eg::Node) {
+  static method new_document : Eg::Document ($root_node : Eg::Node) {
     unless ($root_node) {
       die "\$root_node must be defined.";
     }
