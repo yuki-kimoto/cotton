@@ -21,16 +21,12 @@ class Eg::OS::Windows {
     
     my $api = $runtime->api;
     
-    my $api_app = Eg::OS::Windows::API::App->new;
-    
-    $api_app->set_runtime($runtime);
+    my $api_app = Eg::OS::Windows::API::App->new($runtime);
     
     $api->set_app($api_app);
     
-    my $api_app_window = Eg::OS::Windows::API::Window->new;
+    my $api_window = Eg::OS::Windows::API::Window->new($runtime);
     
-    $api_app_window->set_runtime($runtime);
-    
-    $api->set_window($api_app_window);
+    $api->set_window($api_window);
   }
 }

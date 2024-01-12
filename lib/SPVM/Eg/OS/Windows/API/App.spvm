@@ -13,9 +13,11 @@ class Eg::OS::Windows::API::App {
   
   has window_handle : Eg::OS::Windows::WindowHandle;
   
-  static method new : Eg::OS::Windows::API::App($options : object[] = undef) {
+  static method new : Eg::OS::Windows::API::App($runtime : Eg::Runtime) {
     
     my $self = new Eg::OS::Windows::API::App;
+    
+    $self->{runtime} = $runtime;
     
     return $self;
   }

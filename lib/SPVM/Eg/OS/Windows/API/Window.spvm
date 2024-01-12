@@ -6,8 +6,11 @@ class Eg::OS::Windows::API::Window {
   # Fields
   has runtime : rw Eg::Runtime;
   
-  static method new : Eg::OS::Windows::API::Window() {
+  static method new : Eg::OS::Windows::API::Window ($runtime : Eg::Runtime) {
+    
     my $self = new Eg::OS::Windows::API::Window;
+    
+    $self->{runtime} = $runtime;
     
     return $self;
   }
