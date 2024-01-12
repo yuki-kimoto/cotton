@@ -6,8 +6,6 @@ class Eg::OS::Windows::API::Window {
   # Fields
   has runtime : rw Eg::Runtime;
   
-  has document : rw Eg::Node;
-  
   static method new : Eg::OS::Windows::API::Window() {
     my $self = new Eg::OS::Windows::API::Window;
     
