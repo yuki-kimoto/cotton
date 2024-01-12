@@ -1,10 +1,7 @@
-class Eg::OS::Windows::API::Window {
+class Eg::OS::Windows::API::Window extends Eg::OS::API {
   use List;
   use Eg::Node;
   use Eg::Runtime;
-  
-  # Fields
-  has runtime : rw Eg::Runtime;
   
   static method new : Eg::OS::Windows::API::Window ($runtime : Eg::Runtime) {
     
