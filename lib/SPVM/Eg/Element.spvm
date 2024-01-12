@@ -2,8 +2,7 @@
 # MIT License
 
 class Eg::Element extends Eg::Node {
-  
-  has title : rw string;
+  allow Eg;
   
   # Class Methods
   static method new : Eg::Element ($tag_name : string, $attribute_pairs : object[] = undef, $child_nodes : Eg::Node[] = undef) {

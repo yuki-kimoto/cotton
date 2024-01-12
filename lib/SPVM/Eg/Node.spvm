@@ -45,24 +45,6 @@ class Eg::Node {
     return $self;
   }
   
-  protected method init : void ($type : int, $child_nodes : Eg::Node[] = undef) {
-    
-    $self->{type} = $type;
-    
-    unless ($child_nodes) {
-      $child_nodes = new Eg::Node[0];
-    }
-    $self->{child_nodes_list} = List->new($child_nodes);
-    
-    if ($child_nodes) {
-      for my $node (@$child_nodes) {
-        $node->{parent} = $self;
-        weaken $node->{parent};
-      }
-    }
-    
-  }
-  
   static method new_element_node : Eg::Node ($tag_name : string, $attribute_pairs : object[] = undef, $child_nodes : Eg::Node[] = undef) {
     
     unless ($tag_name) {
@@ -108,6 +90,24 @@ class Eg::Node {
   }
   
   # Instance Methods
+  protected method init : void ($type : int, $child_nodes : Eg::Node[] = undef) {
+    
+    $self->{type} = $type;
+    
+    unless ($child_nodes) {
+      $child_nodes = new Eg::Node[0];
+    }
+    $self->{child_nodes_list} = List->new($child_nodes);
+    
+    if ($child_nodes) {
+      for my $node (@$child_nodes) {
+        $node->{parent} = $self;
+        weaken $node->{parent};
+      }
+    }
+    
+  }
+  
   method attr : string ($name : string) {
     
     my $attributes_h = $self->{attributes_h};

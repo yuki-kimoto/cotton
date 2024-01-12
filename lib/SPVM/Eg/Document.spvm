@@ -2,6 +2,7 @@
 # MIT License
 
 class Eg::Document extends Eg::Node {
+  allow Eg;
   
   has title : rw string;
   
