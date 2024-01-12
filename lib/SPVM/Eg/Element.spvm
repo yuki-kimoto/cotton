@@ -1,0 +1,38 @@
+# Copyright (c) 2024 Yuki Kimoto
+# MIT License
+
+class Eg::Element extends Eg::Node {
+  
+  has title : rw string;
+  
+  # Class Methods
+  static method new : Eg::Element ($tag_name : string, $attribute_pairs : object[] = undef, $child_nodes : Eg::Node[] = undef) {
+    
+    my $self = new Eg::Element;
+    
+    unless ($tag_name) {
+      die "\$tag_namet must be defined.";
+    }
+    
+    $self->init(Eg::Node->TYPE_ELEMENT_NODE, $child_nodes);
+    
+    $self->{tag_name} = $tag_name;
+    
+    if ($attribute_pairs) {
+      $self->{attributes_h} = Hash->new($attribute_pairs);
+      
+      my $attributes_h = $self->{attributes_h};
+      
+      my $style_pairs = (object[])$attributes_h->delete("style");
+      
+      if ($style_pairs) {
+        my $styles_h = Hash->new($style_pairs);
+        
+        $self->{styles_h} = $styles_h;
+      }
+    }
+    
+    return $self;
+  }
+  
+}

@@ -6,6 +6,7 @@ class Eg {
   
   use Eg::Node;
   use Eg::Document;
+  use Eg::Element;
   
   use Hash;
   use List;
