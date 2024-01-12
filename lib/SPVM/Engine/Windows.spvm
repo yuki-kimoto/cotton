@@ -66,7 +66,7 @@ class Engine::Windows {
     
     $engine->{runtime} = $runtime;
     
-    $engine->start;
+    $engine->start_app;
   }
   
   static method new : Engine::Windows () {
@@ -77,7 +77,7 @@ class Engine::Windows {
   }
   
   # Instance Methods
-  method start : void () {
+  method start_app : void () {
     
     my $runtime = $self->{runtime};
     
@@ -85,6 +85,6 @@ class Engine::Windows {
     
     $api->app->open_main_window;
     
-    $api->app->start_app;
+    $api->app->start_event_loop;
   }
 }

@@ -39,7 +39,7 @@ class Eg::OS::Windows::API::App {
   
   native method open_main_window_native : void ($left : int, $top : int, $width : int, $height : int);
   
-  native method start_app : void ();
+  native method start_event_loop : void ();
   
   native method get_viewport_width : int ();
   

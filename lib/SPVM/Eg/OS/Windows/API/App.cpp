@@ -178,7 +178,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__CW_USEDEFAULT(SPVM_ENV* env, SPVM_VALUE
   return 0;
 }
 
-int32_t SPVM__Eg__OS__Windows__API__App__start_app(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__App__start_event_loop(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   // Get and dispatch message
   MSG message;
