@@ -22,7 +22,7 @@ class Eg::Node {
   }
   
   # Fields
-  has type : ro int;
+  has node_type : ro int;
   
   has child_nodes_list : ro List of Eg::Node;
   
@@ -33,11 +33,11 @@ class Eg::Node {
   has node_value_buffer : ro StringBuffer;
   
   # Class Methods
-  static method new : Eg::Node ($type : int, $child_nodes : Eg::Node[] = undef) {
+  static method new : Eg::Node ($node_type : int, $child_nodes : Eg::Node[] = undef) {
     
     my $self = new Eg::Node;
     
-    $self->init($type, $child_nodes);
+    $self->init($node_type, $child_nodes);
     
     return $self;
   }
@@ -84,9 +84,9 @@ class Eg::Node {
   }
   
   # Instance Methods
-  protected method init : void ($type : int, $child_nodes : Eg::Node[] = undef) {
+  protected method init : void ($node_type : int, $child_nodes : Eg::Node[] = undef) {
     
-    $self->{type} = $type;
+    $self->{node_type} = $node_type;
     
     if ($child_nodes) {
       unless ($child_nodes is_type Eg::Node[]) {

@@ -200,7 +200,7 @@ class Eg::Element extends Eg::Node {
     if ($child_nodes_length > 0) {
       my $first_child = (Eg::Node)$child_nodes->get(0);
       
-      if ($first_child->type == Eg::Node->TYPE_TEXT_NODE) {
+      if ($first_child->node_type == Eg::Node->TYPE_TEXT_NODE) {
         $text = $first_child->(Eg::Text)->node_value_buffer->to_string;
       }
       else {
@@ -222,7 +222,7 @@ class Eg::Element extends Eg::Node {
     if ($child_nodes_length > 0) {
       my $first_child = (Eg::Node)$child_nodes->get(0);
       
-      if ($first_child->type == Eg::Node->TYPE_TEXT_NODE) {
+      if ($first_child->node_type == Eg::Node->TYPE_TEXT_NODE) {
         $first_child->(Eg::Text)->node_value_buffer->set($text);
       }
       else {
@@ -248,7 +248,7 @@ class Eg::Element extends Eg::Node {
     elsif ($child_nodes_length == 1) {
       my $first_child = (Eg::Node)$child_nodes->get(0);
       
-      if ($first_child->type == Eg::Node->TYPE_TEXT_NODE) {
+      if ($first_child->node_type == Eg::Node->TYPE_TEXT_NODE) {
         $text = $first_child->(Eg::Text)->node_value_buffer->to_string;
       }
       else {
