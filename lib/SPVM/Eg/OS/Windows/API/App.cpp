@@ -683,7 +683,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   }
   
   // Block rect
-  D2D1_RECT_F block_rect = D2D1::RectF(css_box.left, css_box.top, css_box.width, css_box.height);
+  D2D1_RECT_F block_rect = D2D1::RectF(css_box.left, css_box.top, css_box.left + css_box.width + 1, css_box.top + css_box.height + 1);
   
   // Draw block
   {
