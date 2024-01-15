@@ -266,7 +266,7 @@ struct COTTON_RUNTIME_PAINT_INFO {
   ID2D1HwndRenderTarget* renderer;
 };
 
-struct EG_CSS_BOX {
+struct EG_LAYOUT_BOX {
   float color_red;
   float color_green;
   float color_blue;
@@ -280,9 +280,9 @@ struct EG_CSS_BOX {
   int32_t top;
   int32_t width;
   int32_t height;
-  struct EG_CSS_BOX* first;
-  struct EG_CSS_BOX* last;
-  struct EG_CSS_BOX* sibparent;
+  struct EG_LAYOUT_BOX* first;
+  struct EG_LAYOUT_BOX* last;
+  struct EG_LAYOUT_BOX* sibparent;
   int8_t moresib;
   const char* text;
 };
@@ -590,7 +590,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
   
-  struct EG_CSS_BOX css_box = {0};
+  struct EG_LAYOUT_BOX css_box = {0};
   
   css_box.left = 0;
   css_box.top = 0;
