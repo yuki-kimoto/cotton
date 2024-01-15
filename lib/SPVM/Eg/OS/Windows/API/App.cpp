@@ -291,9 +291,6 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
   if (error_id) { return error_id; }
   void* obj_window_handle = stack[0].oval;
   
-  void* obj_runtime = env->get_field_object_by_name(env, stack, obj_self, "runtime", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
   HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
   // Draw page title
@@ -407,9 +404,9 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
     
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
-
+    
     RECT parent_rect = {.left = 0, .top = 0, .right = draw_width};
-
+    
     // Get parent width and heigth
     // Plus 1 becuase Windows don't contain right and bottom pixcel
     int32_t parent_width = parent_rect.right + 1;
@@ -428,7 +425,7 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
     
     IDWriteFactory* direct_write_factory = NULL;
     com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
-
+    
     // Create text format
     IDWriteTextFormat* text_format = NULL;
     direct_write_factory->CreateTextFormat(
