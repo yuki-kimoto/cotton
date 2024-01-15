@@ -18,7 +18,7 @@ extern "C" {
 
 static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPARAM wparam , LPARAM lparam);
 
-static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self);
+static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self);
 
 static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message);
 
@@ -218,14 +218,12 @@ static LRESULT CALLBACK window_procedure(HWND window_handle , UINT message , WPA
       obj_self = (void*)wm_create_args[1];
       stack = (SPVM_VALUE*)wm_create_args[2];
       
-      // alert(env, stack, "ハローワールド");
       return 0;
     }
     case WM_PAINT: {
       int32_t error_id = 0;
       
-      // Draw node
-      error_id = repaint(env, stack, obj_self);
+      error_id = paint_event_handler(env, stack, obj_self);
       
       if (error_id) {
         alert(env, stack, env->get_chars(env, stack, env->get_exception(env, stack)));
@@ -284,7 +282,7 @@ struct EG_STYLE_INFO {
   struct EG_STYLE_INFO* parent;
 };
 
-static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
+static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   int32_t error_id = 0;
   
   stack[0].oval = obj_self;
