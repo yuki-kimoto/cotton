@@ -69,7 +69,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     }
   }
   
-  private method paint_nodes_v2 : void ($paint_info : object) {
+  private precompile method paint_nodes_v2 : void ($paint_info : object) {
     
     my $runtime = $self->{runtime};
     
