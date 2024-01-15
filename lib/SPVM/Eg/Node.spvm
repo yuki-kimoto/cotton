@@ -28,11 +28,11 @@ class Eg::Node {
   
   has parent_node : ro Eg::Node;
   
-  has next_sibling : ro Eg::Node;
+  has next_sibling : rw Eg::Node;
   
-  has first_child : ro Eg::Node;
+  has first_child : rw Eg::Node;
   
-  has last_child : ro Eg::Node;
+  has last_child : rw Eg::Node;
   
   has node_value_buffer : ro StringBuffer;
   
