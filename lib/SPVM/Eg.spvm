@@ -21,7 +21,7 @@ class Eg {
       die "\$root_node must be defined.";
     }
     
-    unless ($root_node->{tag_name}&& $root_node->{tag_name} eq "html") {
+    unless ($root_node is_type Eg::Element && $root_node->(Eg::Element)->tag_name && $root_node->(Eg::Element)->tag_name eq "html") {
       die "The tag name of \$root_node must be \"html\".";
     }
     
@@ -277,11 +277,11 @@ class Eg {
       die "\$child_nodes_length must be 2.";
     }
     
-    unless ($child_nodes->[0]->{tag_name} eq "head") {
+    unless ($child_nodes->[0] is_type Eg::Element && $child_nodes->[0]->(Eg::Element)->tag_name eq "head") {
       die "The tag name of the 1th element of \$child_nodes must be \"head\".";
     }
     
-    unless ($child_nodes->[1]->{tag_name} eq "body") {
+    unless ($child_nodes->[1] is_type Eg::Element && $child_nodes->[1]->(Eg::Element)->tag_name eq "body") {
       die "The tag name of the 1th element of \$child_nodes must be \"body\".";
     }
     
@@ -771,11 +771,11 @@ class Eg {
       die "\$child_nodes_length must be 2.";
     }
     
-    unless ($child_nodes->[0]->{tag_name} eq "head") {
+    unless ($child_nodes->[0] is_type Eg::Element && $child_nodes->[0]->(Eg::Element)->tag_name eq "head") {
       die "The tag name of the 1th element of \$child_nodes must be \"head\".";
     }
     
-    unless ($child_nodes->[1]->{tag_name} eq "body") {
+    unless ($child_nodes->[1] is_type Eg::Element && $child_nodes->[1]->(Eg::Element)->tag_name eq "body") {
       die "The tag name of the 1th element of \$child_nodes must be \"body\".";
     }
     
