@@ -265,7 +265,6 @@ static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
 
 struct COTTON_RUNTIME_PAINT_INFO {
   HDC hdc;
-  HWND window_handle;
   ID2D1HwndRenderTarget* renderer;
 };
 
@@ -366,7 +365,6 @@ static int32_t repaint(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
       
       struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
       paint_info->hdc = hdc;
-      paint_info->window_handle = window_handle;
       paint_info->renderer = renderer;
       
       void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
