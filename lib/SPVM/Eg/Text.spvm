@@ -4,8 +4,6 @@
 class Eg::Text extends Eg::Node {
   allow Eg;
   
-  has value_buffer : ro StringBuffer;
-  
   # Class Methods
   static method new : Eg::Text ($text : string) {
     
@@ -17,11 +15,11 @@ class Eg::Text extends Eg::Node {
       die "\$text must be defined.";
     }
     
-    my $value_buffer = StringBuffer->new;
+    my $node_value_buffer = StringBuffer->new;
     
-    $value_buffer->push($text);
+    $node_value_buffer->push($text);
     
-    $self->{value_buffer} = $value_buffer;
+    $self->{node_value_buffer} = $node_value_buffer;
     
     return $self;
   }

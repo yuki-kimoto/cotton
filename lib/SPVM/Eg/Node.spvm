@@ -30,6 +30,8 @@ class Eg::Node {
   
   has next_sibling : ro Eg::Node;
   
+  has node_value_buffer : ro StringBuffer;
+  
   # Class Methods
   static method new : Eg::Node ($type : int, $child_nodes : Eg::Node[] = undef) {
     
