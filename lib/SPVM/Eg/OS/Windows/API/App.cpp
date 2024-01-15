@@ -370,7 +370,7 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
       
       stack[0].oval = obj_self;
       stack[1].oval = obj_paint_info;
-      env->call_instance_method_by_name(env, stack, "repaint", 2, &error_id, __func__, FILE_NAME, __LINE__);
+      env->call_instance_method_by_name(env, stack, "paint_nodes", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
       free(paint_info);

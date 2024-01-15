@@ -39,7 +39,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   native method start_event_loop : void ();
   
-  private method repaint : void ($paint_info : object) {
+  private method paint_nodes : void ($paint_info : object) {
     
     my $runtime = $self->{runtime};
     
