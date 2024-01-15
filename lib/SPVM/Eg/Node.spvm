@@ -192,4 +192,21 @@ class Eg::Node {
     }
   }
   
+  method siblings : Eg::Node[] ($node : Eg::Node) {
+    
+    unless ($node) {
+      die "\$node must be defined.";
+    }
+    
+    my $parent_node = $node->parent;
+    
+    unless ($node) {
+      die "The parent of \$node must be defined.";
+    }
+    
+    my $sibling_nodes = $parent_node->children;
+    
+    return $sibling_nodes;
+  }
+  
 }
