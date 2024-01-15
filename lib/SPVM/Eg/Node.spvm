@@ -26,10 +26,9 @@ class Eg::Node {
   
   has child_nodes_list : ro List of Eg::Node;
   
-  has parent : ro Eg::Node;
+  has parent_node : ro Eg::Node;
   
   has next_sibling : ro Eg::Node;
-  
   
   # Class Methods
   static method new : Eg::Node ($type : int, $child_nodes : Eg::Node[] = undef) {
@@ -100,8 +99,8 @@ class Eg::Node {
     
     if ($child_nodes) {
       for my $node (@$child_nodes) {
-        $node->{parent} = $self;
-        weaken $node->{parent};
+        $node->{parent_node} = $self;
+        weaken $node->{parent_node};
       }
     }
     
