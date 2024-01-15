@@ -1,1 +1,1 @@
-class CSS::Box : pointer;
+class Layout::Box : pointer;
