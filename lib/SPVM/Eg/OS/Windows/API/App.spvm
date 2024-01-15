@@ -93,7 +93,9 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
       if ($child_nodes_list_length > 0) {
         $current_node = (Eg::Node)$child_nodes_list->get($current_node_index);
         
-        $self->paint_node($paint_info, $current_node);
+        if ($current_node->type == Eg::Node->TYPE_ELEMENT_NODE) {
+          $self->paint_node($paint_info, $current_node);
+        }
         
         if ($current_node_index + 1 < $child_nodes_list_length) {
           $current_parent_node_stack->push($current_parent_node);
