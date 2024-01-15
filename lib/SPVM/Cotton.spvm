@@ -3,6 +3,8 @@ class Cotton {
   use Eg::Runtime;
   use Eg::OS;
   use Sys::OS;
+  use Eg::Layout::Box;
+  
   
   # Class Methods
   static method main : int ($start_file : string, $args : string[]) {

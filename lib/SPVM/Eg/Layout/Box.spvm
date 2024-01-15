@@ -1,1 +1,9 @@
-class Layout::Box : pointer;
+class Eg::Layout::Box : pointer {
+  
+  # Class Methods
+  native static method new : Eg::Layout::Box ();
+  
+  # Instance Methods
+  native method DESTROY : void ();
+
+}
