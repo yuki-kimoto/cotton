@@ -271,6 +271,7 @@ struct EG_CSS_BOX {
   float color_green;
   float color_blue;
   float color_alpha;
+  int32_t has_background_color;
   float background_color_red;
   float background_color_green;
   float background_color_blue;
@@ -619,11 +620,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     }
   }
   
-  int32_t has_background_color = 0;
-  float background_color_red = 1;
-  float background_color_green = 1;
-  float background_color_blue = 1;
-  float background_color_alpha = 1;
+  struct EG_CSS_BOX css_box = {0};
+  
+  css_box.has_background_color = 0;
+  css_box.background_color_red = 1;
+  css_box.background_color_green = 1;
+  css_box.background_color_blue = 1;
+  css_box.background_color_alpha = 1;
   int32_t has_color = 0;
   float color_red = 0;
   float color_green = 0;
@@ -643,9 +646,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
         
         if (strcmp(style_name, "background-color") == 0) {
           
-          has_background_color = 1;
+          css_box.has_background_color = 1;
           
-          parse_css_color(env, stack, style_value, style_value_length, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
+          parse_css_color(env, stack, style_value, style_value_length, &css_box.background_color_red, &css_box.background_color_green, &css_box.background_color_blue, &css_box.background_color_alpha);
         }
         
         break;
@@ -703,8 +706,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   {
     D2D1::ColorF background_color_f = {0};
     
-    if (has_background_color) {
-      background_color_f = D2D1::ColorF(background_color_red, background_color_green, background_color_blue, background_color_alpha);
+    if (css_box.has_background_color) {
+      background_color_f = D2D1::ColorF(css_box.background_color_red, css_box.background_color_green, css_box.background_color_blue, css_box.background_color_alpha);
     }
     else {
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1);
