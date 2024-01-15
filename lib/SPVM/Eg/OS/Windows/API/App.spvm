@@ -41,35 +41,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   native method start_event_loop : void ();
   
-  private method paint_nodes : void ($paint_info : object) {
-    
-    my $runtime = $self->{runtime};
-    
-    my $window = $runtime->window;
-    
-    {
-      my $html = $window->document->document_element;
-      
-      my $body = $window->document->body;
-      
-      my $nodes = [(Eg::Node)
-        $body,
-        (Eg::Node)$body->child_nodes->[0],
-        $body->child_nodes->[0]->(Eg::Node)->child_nodes->[0]->(Eg::Node),
-        $body->child_nodes->[1]->(Eg::Node),
-        $body->child_nodes->[2]->(Eg::Node),
-      ];
-      for (my $i = 0; $i < @$nodes; $i++) {
-        my $node = $nodes->[$i];
-        
-        unless ($node->node_type == Eg::Node->TYPE_TEXT_NODE) {
-          $self->paint_node($paint_info, $node);
-        }
-      }
-    }
-  }
-  
-  private precompile method paint_nodes_v2 : void ($paint_info : object) {
+  private precompile method paint_nodes : void ($paint_info : object) {
     
     my $runtime = $self->{runtime};
     
