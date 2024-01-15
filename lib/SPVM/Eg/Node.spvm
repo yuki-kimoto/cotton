@@ -192,4 +192,19 @@ class Eg::Node {
     }
   }
   
+  method select : void ($selector : string) {
+    
+    unless ($selector) {
+      die "\$selector must be defined.";
+    }
+    
+    $selector = Fn->trim($selector);
+    
+    if ($selector eq "*") {
+      
+    }
+    else {
+      die "The selector \"$selector\" is not supported.";
+    }
+  }
 }
