@@ -17,7 +17,7 @@ class Eg::Document extends Eg::Node {
   }
   
   method document_element : Eg::Element () {
-    my $root_node = (Eg::Element)$self->child_nodes_list->get(0);
+    my $root_node = (Eg::Element)$self->first_child;
     
     return $root_node;
   }
@@ -25,13 +25,13 @@ class Eg::Document extends Eg::Node {
   method head : Eg::Element () {
     my $root_node = $self->document_element;
     
-    return (Eg::Element)$root_node->child_nodes_list->get(0);
+    return (Eg::Element)$root_node->first_child;
   }
   
   method body : Eg::Element () {
     my $root_node = $self->document_element;
     
-    return (Eg::Element)$root_node->child_nodes_list->get(1);
+    return (Eg::Element)$root_node->first_child->next_sibling;
   }
   
 }
