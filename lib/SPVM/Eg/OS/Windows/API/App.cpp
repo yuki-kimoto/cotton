@@ -266,7 +266,7 @@ struct COTTON_RUNTIME_PAINT_INFO {
   ID2D1HwndRenderTarget* renderer;
 };
 
-struct EG_STYLE_INFO {
+struct EG_CSS_BOX {
   float color_red;
   float color_green;
   float color_blue;
@@ -279,7 +279,10 @@ struct EG_STYLE_INFO {
   int32_t top;
   int32_t width;
   int32_t height;
-  struct EG_STYLE_INFO* parent;
+  struct EG_CSS_BOX* first;
+  struct EG_CSS_BOX* last;
+  struct EG_CSS_BOX* sibparent;
+  int8_t moresib;
 };
 
 static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
@@ -293,7 +296,7 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
   
   HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
-  // Draw page title
+  // Set window text
   {
     stack[0].oval = obj_self;
     env->call_instance_method_by_name(env, stack, "document_title", 1, &error_id, __func__, FILE_NAME, __LINE__);
@@ -312,7 +315,7 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     SetWindowTextW(window_handle, (LPCWSTR)document_title_utf8_to_utf16);
   }
   
-  // Draw parent area
+  // Paint nodes
   {
     // Begin paint and get Device context
     PAINTSTRUCT ps;
