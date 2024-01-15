@@ -63,8 +63,10 @@ class Cotton {
     
     my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
       $div1,
-      Eg->div_({style => {left => "300px", top => "500px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
-      Eg->div_({style => {left => "400px", top => "600px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
+      Eg->div_({style => {left => "300px", top => "400px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
+      Eg->div_({style => {left => "400px", top => "500px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
+      Eg->div_({style => {left => "100px", top => "100px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
+      Eg->div_({style => {left => "200px", top => "200px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
     ]);
     
     my $title = "コットン";
