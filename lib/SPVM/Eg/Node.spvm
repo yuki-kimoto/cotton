@@ -30,6 +30,10 @@ class Eg::Node {
   
   has next_sibling : ro Eg::Node;
   
+  has first_child : ro Eg::Node;
+  
+  has last_child : ro Eg::Node;
+  
   has node_value_buffer : ro StringBuffer;
   
   # Class Methods
@@ -99,13 +103,30 @@ class Eg::Node {
     
     $self->{child_nodes_list} = List->new($child_nodes);
     
+    # Tree
     if ($child_nodes) {
-      for my $node (@$child_nodes) {
-        $node->{parent_node} = $self;
-        weaken $node->{parent_node};
+      
+      my $child_nodes_length = @$child_nodes;
+      
+      if ($child_nodes_length > 0) {
+        
+        $self->{first_child} = $child_nodes->[0];
+        
+        $self->{last_child} = $child_nodes->[$child_nodes_length - 1];
+        
+        for (my $i = 0; $i < $child_nodes_length; $i++) {
+          my $child_node = $child_nodes->[$i];
+          
+          if ($i + 1 < $child_nodes_length) {
+            my $sigling_node = $child_nodes->[$i + 1];
+            $child_node->{next_sibling} = $sigling_node;
+          }
+          
+          $child_node->{parent_node} = $self;
+          weaken $child_node->{parent_node};
+        }
       }
     }
-    
   }
   
 }
