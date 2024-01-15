@@ -234,4 +234,33 @@ class Eg::Node {
     return $next_node;
   }
   
+  method prev : Eg::Node () {
+    
+    my $parent_node = $self->parent;
+    
+    unless ($parent_node) {
+      die "The parent node must be defined.";
+    }
+    
+    my $sibling_nodes_list = $parent_node->child_nodes_list;
+    
+    my $sibling_nodes_length = $sibling_nodes_list->length;
+    
+    my $match_index = -1;
+    for (my $i = 0; $i < $sibling_nodes_length; $i++) {
+      if ($self == $sibling_nodes_list->get($i)) {
+        $match_index = $i;
+        last;
+      }
+    }
+    
+    my $prev_node = (Eg::Node)undef;
+    
+    if ($match_index - 1 >= 0) {
+      $prev_node = (Eg::Node)$sibling_nodes_list->get($match_index - 1);
+    }
+    
+    return $prev_node;
+  }
+  
 }
