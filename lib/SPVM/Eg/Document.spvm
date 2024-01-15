@@ -1,13 +1,13 @@
 # Copyright (c) 2024 Yuki Kimoto
 # MIT License
 
-class Eg::Document extends Eg::Node {
+class Eg::Document extends Eg::Element {
   allow Eg;
   
   has title : rw string;
   
   # Class Methods
-  static method new : Eg::Document ($root_node : Eg::Node) {
+  static method new : Eg::Document ($root_node : Eg::Element) {
     
     my $self = new Eg::Document;
     
@@ -16,22 +16,22 @@ class Eg::Document extends Eg::Node {
     return $self;
   }
   
-  method document_element : Eg::Node () {
-    my $root_node = (Eg::Node)$self->child_nodes_list->get(0);
+  method document_element : Eg::Element () {
+    my $root_node = (Eg::Element)$self->child_nodes_list->get(0);
     
     return $root_node;
   }
   
-  method head : Eg::Node () {
-    my $root_node = (Eg::Node)$self->document_element;
+  method head : Eg::Element () {
+    my $root_node = $self->document_element;
     
-    return (Eg::Node)$root_node->child_nodes_list->get(0);
+    return (Eg::Element)$root_node->child_nodes_list->get(0);
   }
   
-  method body : Eg::Node () {
-    my $root_node = (Eg::Node)$self->document_element;
+  method body : Eg::Element () {
+    my $root_node = $self->document_element;
     
-    return (Eg::Node)$root_node->child_nodes_list->get(1);
+    return (Eg::Element)$root_node->child_nodes_list->get(1);
   }
   
 }

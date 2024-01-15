@@ -48,9 +48,11 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     my $window = $runtime->window;
     
     {
-      my $body = (Eg::Node)$window->document->body;
+      my $html = $window->document->document_element;
       
-      my $nodes = [
+      my $body = $window->document->body;
+      
+      my $nodes = [(Eg::Node)
         $body,
         (Eg::Node)$body->child_nodes_list->get(0),
         $body->child_nodes_list->get(0)->(Eg::Node)->child_nodes_list->get(0)->(Eg::Node),
