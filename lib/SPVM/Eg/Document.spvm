@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Yuki Kimoto
 # MIT License
 
-class Eg::Document extends Eg::Element {
+class Eg::Document extends Eg::Node {
   allow Eg;
   
   has title : rw string;
