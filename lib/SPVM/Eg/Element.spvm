@@ -261,4 +261,164 @@ class Eg::Element extends Eg::Node {
     
     return $text;
   }
+  
+  method children : Eg::Node[] () {
+    my $child_nodes_list = $self->{child_nodes_list};
+    
+    my $child_nodes = (Eg::Node[])undef;
+    if ($child_nodes_list) {
+      $child_nodes = (Eg::Node[])$child_nodes_list->to_array;
+    }
+    else {
+      $child_nodes = new Eg::Node[0];
+    }
+    
+    return $child_nodes;
+  }
+  
+  method append : void ($node : Eg::Node) {
+    
+    unless ($node) {
+      die "\$node must be defined.";
+    }
+    
+    my $child_nodes_list = $self->{child_nodes_list};
+    
+    $child_nodes_list->push($node);
+  }
+  
+  method prepend : void ($node : Eg::Node) {
+    
+    unless ($node) {
+      die "\$node must be defined.";
+    }
+    
+    my $child_nodes_list = $self->{child_nodes_list};
+    
+    $child_nodes_list->unshift($node);
+  }
+  
+  method after : void ($node : Eg::Node) {
+    
+    unless ($node) {
+      die "\$node must be defined.";
+    }
+    
+    my $parent = $self->{parent};
+    
+    unless ($node) {
+      die "The parent of \$node must be defined.";
+    }
+    
+    my $sibling_nodes_list = $parent->child_nodes_list;
+    
+    my $sibling_nodes_length = $sibling_nodes_list->length;
+    
+    for (my $i = 0; $i < $sibling_nodes_length; $i++) {
+      my $sibling = $sibling_nodes_list->get($i);
+      
+      if ($sibling == $self) {
+        $sibling_nodes_list->insert($i + 1, $node);
+        last;
+      }
+    }
+  }
+  
+  method before : void ($node : Eg::Node) {
+    
+    unless ($node) {
+      die "\$node must be defined.";
+    }
+    
+    my $parent = $self->{parent};
+    
+    unless ($node) {
+      die "The parent of \$node must be defined.";
+    }
+    
+    my $sibling_nodes_list = $parent->child_nodes_list;
+    
+    my $sibling_nodes_length = $sibling_nodes_list->length;
+    
+    for (my $i = 0; $i < $sibling_nodes_length; $i++) {
+      my $sibling = $sibling_nodes_list->get($i);
+      
+      if ($sibling == $self) {
+        $sibling_nodes_list->insert($i, $node);
+        last;
+      }
+    }
+  }
+  
+  method siblings : Eg::Node[] () {
+    
+    my $parent_node = $self->parent;
+    
+    unless ($parent_node) {
+      die "The parent node must be defined.";
+    }
+    
+    my $sibling_nodes = $parent_node->(Eg::Element)->children;
+    
+    return $sibling_nodes;
+  }
+  
+  method next : Eg::Node () {
+    
+    my $parent_node = $self->parent;
+    
+    unless ($parent_node) {
+      die "The parent node must be defined.";
+    }
+    
+    my $sibling_nodes_list = $parent_node->child_nodes_list;
+    
+    my $sibling_nodes_length = $sibling_nodes_list->length;
+    
+    my $match_index = -1;
+    for (my $i = 0; $i < $sibling_nodes_length; $i++) {
+      if ($self == $sibling_nodes_list->get($i)) {
+        $match_index = $i;
+        last;
+      }
+    }
+    
+    my $next_node = (Eg::Node)undef;
+    
+    if ($match_index + 1 < $sibling_nodes_length) {
+      $next_node = (Eg::Node)$sibling_nodes_list->get($match_index + 1);
+    }
+    
+    return $next_node;
+  }
+  
+  method prev : Eg::Node () {
+    
+    my $parent_node = $self->parent;
+    
+    unless ($parent_node) {
+      die "The parent node must be defined.";
+    }
+    
+    my $sibling_nodes_list = $parent_node->child_nodes_list;
+    
+    my $sibling_nodes_length = $sibling_nodes_list->length;
+    
+    my $match_index = -1;
+    for (my $i = 0; $i < $sibling_nodes_length; $i++) {
+      if ($self == $sibling_nodes_list->get($i)) {
+        $match_index = $i;
+        last;
+      }
+    }
+    
+    my $prev_node = (Eg::Node)undef;
+    
+    if ($match_index - 1 >= 0) {
+      $prev_node = (Eg::Node)$sibling_nodes_list->get($match_index - 1);
+    }
+    
+    return $prev_node;
+  }
+  
 }
