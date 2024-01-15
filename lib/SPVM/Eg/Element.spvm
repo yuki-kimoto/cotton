@@ -191,14 +191,14 @@ class Eg::Element extends Eg::Node {
   }
   
   method text : string () {
-    my $child_nodes = $self->{child_nodes_list};
+    my $child_nodes = $self->child_nodes;
     
-    my $child_nodes_length = $child_nodes->length;
+    my $child_nodes_length = @$child_nodes;
     
     my $text = (string)undef;
     
     if ($child_nodes_length > 0) {
-      my $first_child = (Eg::Node)$child_nodes->get(0);
+      my $first_child = (Eg::Node)$child_nodes->[0];
       
       if ($first_child->node_type == Eg::Node->TYPE_TEXT_NODE) {
         $text = $first_child->(Eg::Text)->node_value_buffer->to_string;
@@ -215,12 +215,12 @@ class Eg::Element extends Eg::Node {
   }
   
   method set_text : string ($text : string) {
-    my $child_nodes = $self->{child_nodes_list};
+    my $child_nodes = $self->child_nodes;
     
-    my $child_nodes_length = $child_nodes->length;
+    my $child_nodes_length = @$child_nodes;
     
     if ($child_nodes_length > 0) {
-      my $first_child = (Eg::Node)$child_nodes->get(0);
+      my $first_child = (Eg::Node)$child_nodes->[0];
       
       if ($first_child->node_type == Eg::Node->TYPE_TEXT_NODE) {
         $first_child->(Eg::Text)->node_value_buffer->set($text);
