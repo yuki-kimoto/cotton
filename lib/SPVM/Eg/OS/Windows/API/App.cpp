@@ -628,10 +628,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   css_box.background_color_blue = 1;
   css_box.background_color_alpha = 1;
   int32_t has_color = 0;
-  float color_red = 0;
-  float color_green = 0;
-  float color_blue = 0;
-  float color_alpha = 1;
+  css_box.color_red = 0;
+  css_box.color_green = 0;
+  css_box.color_blue = 0;
+  css_box.color_alpha = 1;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
@@ -659,7 +659,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
           
           has_color = 1;
           
-          parse_css_color(env, stack, style_value, style_value_length, &color_red, &color_green, &color_blue, &color_alpha);
+          parse_css_color(env, stack, style_value, style_value_length, &css_box.color_red, &css_box.color_green, &css_box.color_blue, &css_box.color_alpha);
         }
         
         break;
@@ -752,7 +752,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     
     D2D1::ColorF color_f = {0};
     if (has_color) {
-      color_f = D2D1::ColorF(color_red, color_green, color_blue, color_alpha);
+      color_f = D2D1::ColorF(css_box.color_red, css_box.color_green, css_box.color_blue, css_box.color_alpha);
     }
     else {
       color_f = D2D1::ColorF(0, 0, 0, 0);
