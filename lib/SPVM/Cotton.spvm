@@ -55,11 +55,9 @@ class Cotton {
   
   static method document : Eg::Document () {
     
-    my $text1 = Eg->text("あああああ");
-    
     my $div1 = Eg->div_({style => {
       "background-color" => "#00FF00", "color" => "#0000FF"
-    }}, [$text1]);
+    }}, "あああああ");
     
     my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
       $div1,
