@@ -4,6 +4,8 @@
 class Eg::Text extends Eg::Node {
   allow Eg;
   
+  has value_buffer : ro StringBuffer;
+  
   # Class Methods
   static method new : Eg::Text ($text : string) {
     

@@ -32,8 +32,6 @@ class Eg::Node {
   
   has tag_name : ro string;
   
-  has value_buffer : ro StringBuffer;
-  
   has parent : ro Eg::Node;
   
   # Class Methods
@@ -273,7 +271,7 @@ class Eg::Node {
       my $first_child = (Eg::Node)$child_nodes->get(0);
       
       if ($first_child->type == &TYPE_TEXT_NODE) {
-        $text = $first_child->{value_buffer}->to_string;
+        $text = $first_child->(Eg::Text)->value_buffer->to_string;
       }
       else {
         die "The first child is not a text node.";
@@ -295,7 +293,7 @@ class Eg::Node {
       my $first_child = (Eg::Node)$child_nodes->get(0);
       
       if ($first_child->type == &TYPE_TEXT_NODE) {
-        $first_child->{value_buffer}->set($text);
+        $first_child->(Eg::Text)->value_buffer->set($text);
       }
       else {
         die "The first child is not a text node.";
@@ -409,7 +407,7 @@ class Eg::Node {
       my $first_child = (Eg::Node)$child_nodes->get(0);
       
       if ($first_child->type == &TYPE_TEXT_NODE) {
-        $text = $first_child->{value_buffer}->to_string;
+        $text = $first_child->(Eg::Text)->value_buffer->to_string;
       }
       else {
         # Do nothing
