@@ -589,15 +589,18 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
   
-  int32_t left = 0;
-  int32_t top = 0;
-  int32_t width = 0;
+  struct EG_CSS_BOX css_box = {0};
+  
+  css_box.left = 0;
+  css_box.top = 0;
+  css_box.width = 0;
+  
   // Windows Inner width(viewport)
   {
     stack[0].oval = obj_self;
     env->call_instance_method_by_name(env, stack, "inner_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    width = stack[0].ival;
+    css_box.width = stack[0].ival;
   }
   int32_t height = 0;
   {
@@ -613,14 +616,12 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       stack[0].oval = obj_self;
       stack[1].oval = obj_paint_info;
       stack[2].oval = obj_text;
-      stack[3].ival = width;
+      stack[3].ival = css_box.width;
       calc_text_height(env, stack);
       if (error_id) { return error_id; }
       height = stack[0].ival;
     }
   }
-  
-  struct EG_CSS_BOX css_box = {0};
   
   css_box.has_background_color = 0;
   css_box.background_color_red = 1;
@@ -667,7 +668,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -675,7 +676,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          top = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.top = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -683,7 +684,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'w' : {
         
         if (strcmp(style_name, "width") == 0) {
-          width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -691,7 +692,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -700,7 +701,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   }
   
   // Block rect
-  D2D1_RECT_F block_rect = D2D1::RectF(left, top, width, height);
+  D2D1_RECT_F block_rect = D2D1::RectF(css_box.left, css_box.top, css_box.width, css_box.height);
   
   // Draw block
   {
