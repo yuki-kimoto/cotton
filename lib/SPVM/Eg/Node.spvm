@@ -136,13 +136,12 @@ class Eg::Node {
     my $child_nodes_list = List->new(new Eg::Node[0]);
     
     while (1) {
-      $child_nodes_list->push($current_node);
-      if ($current_node->{next_sibling}) {
-        $current_node = $current_node->{next_sibling};
-      }
-      else {
+      unless ($current_node) {
         last;
       }
+      
+      $child_nodes_list->push($current_node);
+      $current_node = $current_node->{next_sibling};
     }
     
     my $child_nodes = (Eg::Node[])$child_nodes_list->to_array;
