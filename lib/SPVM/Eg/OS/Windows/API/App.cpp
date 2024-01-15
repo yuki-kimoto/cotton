@@ -284,6 +284,7 @@ struct EG_CSS_BOX {
   struct EG_CSS_BOX* last;
   struct EG_CSS_BOX* sibparent;
   int8_t moresib;
+  const char* text;
 };
 
 static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
