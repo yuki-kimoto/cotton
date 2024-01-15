@@ -69,6 +69,46 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     }
   }
   
+  private method paint_nodes_v2 : void ($paint_info : object) {
+    
+    my $runtime = $self->{runtime};
+    
+    my $window = $runtime->window;
+    
+    my $document = $window->document;
+    
+    my $current_parent_node_stack = List->new;
+    my $current_node_index_stack = IntList->new;
+    
+    my $current_parent_node = (Eg::Node)$document;
+    my $current_node = (Eg::Node)undef;
+    my $current_node_index = 0;
+    
+    while (1) {
+      
+      my $child_nodes_list = $current_parent_node->child_nodes_list;
+      
+      my $child_nodes_list_length = $child_nodes_list->length;
+      
+      if ($child_nodes_list_length > 0) {
+        $current_node = (Eg::Node)$child_nodes_list->get($current_node_index);
+        
+        $self->paint_node($paint_info, $current_node);
+        
+        if ($current_node_index + 1 < $child_nodes_list_length) {
+          $current_parent_node_stack->push($current_parent_node);
+          $current_node_index_stack->push($current_node_index + 1);
+        }
+      }
+      else {
+        if ($current_parent_node_stack->length > 0) {
+          $current_parent_node = (Eg::Node)$current_parent_node_stack->pop;
+          $current_node_index = $current_node_index_stack->pop;
+        }
+      }
+    }
+  }
+  
   private native method paint_node : void ($paint_info : object, $node : Eg::Node);
   
   private native static method CW_USEDEFAULT : int ();
