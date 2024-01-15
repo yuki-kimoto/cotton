@@ -412,11 +412,11 @@ class Eg::Node {
         $text = $first_child->{value_buffer}->to_string;
       }
       else {
-        die "The first child must be a text node.";
+        # Do nothing
       }
     }
     else {
-      die "The lenght of the child nodes must be 1.";
+      # Do nothing
     }
     
     return $text;

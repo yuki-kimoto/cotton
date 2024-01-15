@@ -595,6 +595,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   css_box.left = 0;
   css_box.top = 0;
   css_box.width = 0;
+  css_box.height = 0;
   
   // Windows Inner width(viewport)
   {
@@ -603,25 +604,24 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     if (error_id) { return error_id; }
     css_box.width = stack[0].ival;
   }
-  int32_t height = 0;
-  {
-    void* obj_value_buffer = env->get_field_object_by_name(env, stack, obj_node, "value_buffer", &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) { return error_id; }
+  
+  stack[0].oval = obj_node;
+  env->call_instance_method_by_name(env, stack, "get_text_for_css_box", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  void* obj_text = stack[0].oval;
+  
+  if (obj_text) {
+    const char* text = env->get_chars(env, stack, obj_text);
     
-    if (obj_value_buffer) {
-      stack[0].oval = obj_value_buffer;
-      env->call_instance_method_by_name(env, stack, "to_string", 0, &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-      void* obj_text = stack[0].oval;
-      
-      stack[0].oval = obj_self;
-      stack[1].oval = obj_paint_info;
-      stack[2].oval = obj_text;
-      stack[3].ival = css_box.width;
-      calc_text_height(env, stack);
-      if (error_id) { return error_id; }
-      height = stack[0].ival;
-    }
+    stack[0].oval = obj_self;
+    stack[1].oval = obj_paint_info;
+    stack[2].oval = obj_text;
+    stack[3].ival = css_box.width;
+    calc_text_height(env, stack);
+    if (error_id) { return error_id; }
+    css_box.height = stack[0].ival;
+    
+    spvm_warn("LINE %d %d %s", __LINE__, css_box.height, text);
   }
   
   css_box.has_background_color = 0;
@@ -730,17 +730,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     background_brush->Release();
   }
   
-  void* obj_value_buffer = env->get_field_object_by_name(env, stack, obj_node, "value_buffer", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
-  if (obj_value_buffer) {
+  if (obj_text) {
     
     // Render block which has text
-    
-    stack[0].oval = obj_value_buffer;
-    env->call_instance_method_by_name(env, stack, "to_string", 0, &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) { return error_id; }
-    void* obj_text = stack[0].oval;
     
     const char* text = env->get_chars(env, stack, obj_text);
     

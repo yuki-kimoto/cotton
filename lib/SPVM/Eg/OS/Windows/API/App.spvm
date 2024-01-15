@@ -58,12 +58,9 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
       for (my $i = 0; $i < @$nodes; $i++) {
         my $node = $nodes->[$i];
         
-        my $text_string = (string)undef;
-        if ($node->value_buffer) {
-          $text_string = $node->value_buffer->to_string;
+        unless ($node->type == Eg::Node->TYPE_TEXT_NODE) {
+          $self->paint_node($paint_info, $node);
         }
-        
-        $self->paint_node($paint_info, $node);
       }
     }
   }
