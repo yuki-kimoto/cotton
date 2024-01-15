@@ -192,30 +192,4 @@ class Eg::Node {
     }
   }
   
-  method get_text_for_css_box : string () {
-    my $child_nodes = $self->{child_nodes_list};
-    
-    my $child_nodes_length = $child_nodes->length;
-    
-    my $text = (string)undef;
-    
-    if ($child_nodes_length == 0) {
-      # Do nothing
-    }
-    elsif ($child_nodes_length == 1) {
-      my $first_child = (Eg::Node)$child_nodes->get(0);
-      
-      if ($first_child->type == &TYPE_TEXT_NODE) {
-        $text = $first_child->(Eg::Text)->value_buffer->to_string;
-      }
-      else {
-        # Do nothing
-      }
-    }
-    else {
-      # Do nothing
-    }
-    
-    return $text;
-  }
 }
