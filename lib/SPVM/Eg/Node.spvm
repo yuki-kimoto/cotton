@@ -24,8 +24,6 @@ class Eg::Node {
   # Fields
   has node_type : ro int;
   
-  has child_nodes_list : ro List of Eg::Node;
-  
   has parent_node : ro Eg::Node;
   
   has next_sibling : rw Eg::Node;
@@ -100,8 +98,6 @@ class Eg::Node {
     else {
       $child_nodes = new Eg::Node[0];
     }
-    
-    $self->{child_nodes_list} = List->new($child_nodes);
     
     # Tree
     if ($child_nodes) {
