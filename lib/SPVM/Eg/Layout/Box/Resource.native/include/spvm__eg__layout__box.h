@@ -19,10 +19,10 @@ struct spvm__eg__layout__box {
   int32_t top;
   int32_t width;
   int32_t height;
-  struct spvm__eg__layout__box* first;
-  struct spvm__eg__layout__box* last;
-  struct spvm__eg__layout__box* sibparent;
-  int8_t moresib;
+  struct spvm__eg__layout__box* first_child;
+  struct spvm__eg__layout__box* last_child;
+  struct spvm__eg__layout__box* next_sibling;
+  struct spvm__eg__layout__box* parent_node;
   const char* text;
   int8_t box_sizing;
 };
