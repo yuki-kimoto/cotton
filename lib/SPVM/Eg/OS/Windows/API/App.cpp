@@ -448,7 +448,7 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-static double parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length) {
+static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length) {
   
   const char* css_length_pattern = "^(\\d+)(px)$";
   
