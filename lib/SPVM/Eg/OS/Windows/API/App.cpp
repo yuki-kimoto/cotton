@@ -851,10 +851,22 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
           layout_box->has_background_color = 1;
           
           int32_t style_value_type = -1;
-          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
+          float background_color_red;
+          float background_color_green;
+          float background_color_blue;
+          float background_color_alpha;
+          
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
           
           if (success) {
             layout_box->background_color_value_type = style_value_type;
+            
+            if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
+              layout_box->background_color_red = background_color_red;
+              layout_box->background_color_green = background_color_green;
+              layout_box->background_color_blue = background_color_blue;
+              layout_box->background_color_alpha = background_color_alpha;
+            }
           }
           else {
             layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
