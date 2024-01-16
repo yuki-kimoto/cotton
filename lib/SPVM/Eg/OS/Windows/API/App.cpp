@@ -848,8 +848,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
         
         if (strcmp(style_name, "background-color") == 0) {
           
-          layout_box->has_background_color = 1;
-          
           int32_t style_value_type = -1;
           float background_color_red;
           float background_color_green;
@@ -885,13 +883,26 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
           layout_box->color_value_type = EG_STYLE_VALUE_TYPE_VALUE;
           
           int32_t style_value_type = -1;
-          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
+          float color_red;
+          float color_green;
+          float color_blue;
+          float color_alpha;
+          
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &color_red, &color_green, &color_blue, &color_alpha);
+          
           if (success) {
             if (style_value_type == EG_STYLE_VALUE_TYPE_TRANSPARENT) {
               layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
             }
             else {
               layout_box->background_color_value_type = style_value_type;
+              
+              if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
+                layout_box->color_red = color_red;
+                layout_box->color_green = color_green;
+                layout_box->color_blue = color_blue;
+                layout_box->color_alpha = color_alpha;
+              }
             }
           }
           else {
