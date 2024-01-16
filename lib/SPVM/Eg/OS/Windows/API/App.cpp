@@ -448,7 +448,7 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-static double parse_css_length (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length) {
+static double parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length) {
   
   const char* css_length_pattern = "^(\\d+)(px)$";
   
@@ -498,7 +498,7 @@ static double parse_css_length (SPVM_ENV* env, SPVM_VALUE* stack, const char* st
   return pixel;
 }
 
-static void parse_css_color (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, float* red, float* green, float* blue, float* alpha) {
+static void parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, float* red, float* green, float* blue, float* alpha) {
   
   const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
   
@@ -631,7 +631,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
           
           css_box.has_background_color = 1;
           
-          parse_css_color(env, stack, style_value, style_value_length, &css_box.background_color_red, &css_box.background_color_green, &css_box.background_color_blue, &css_box.background_color_alpha);
+          parse_css_color_value(env, stack, style_value, style_value_length, &css_box.background_color_red, &css_box.background_color_green, &css_box.background_color_blue, &css_box.background_color_alpha);
         }
         
         break;
@@ -642,7 +642,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
           
           has_color = 1;
           
-          parse_css_color(env, stack, style_value, style_value_length, &css_box.color_red, &css_box.color_green, &css_box.color_blue, &css_box.color_alpha);
+          parse_css_color_value(env, stack, style_value, style_value_length, &css_box.color_red, &css_box.color_green, &css_box.color_blue, &css_box.color_alpha);
         }
         
         break;
@@ -650,7 +650,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          css_box.left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.left = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -658,7 +658,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          css_box.top = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.top = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -666,7 +666,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'w' : {
         
         if (strcmp(style_name, "width") == 0) {
-          css_box.width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.width = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -674,7 +674,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          css_box.height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          css_box.height = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         
         break;
@@ -816,7 +816,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
           
           layout_box->has_background_color = 1;
           
-          parse_css_color(env, stack, style_value, style_value_length, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
+          parse_css_color_value(env, stack, style_value, style_value_length, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
         }
         else {
           layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_TRANSPARENT;
@@ -830,7 +830,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
           
           layout_box->color_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_VALUE;
           
-          parse_css_color(env, stack, style_value, style_value_length, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
+          parse_css_color_value(env, stack, style_value, style_value_length, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
         }
         else {
           layout_box->color_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT;
@@ -841,7 +841,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          layout_box->left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          layout_box->left = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         else {
           layout_box->height_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
@@ -852,7 +852,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          layout_box->top = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          layout_box->top = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         else {
           layout_box->height_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
@@ -863,7 +863,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
       case 'w' : {
         
         if (strcmp(style_name, "width") == 0) {
-          layout_box->width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          layout_box->width = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         else {
           layout_box->width_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
@@ -874,7 +874,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          layout_box->height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+          layout_box->height = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
         else {
           layout_box->height_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
