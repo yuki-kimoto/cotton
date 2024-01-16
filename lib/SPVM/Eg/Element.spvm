@@ -8,6 +8,8 @@ class Eg::Element extends Eg::Node {
   
   has styles_h : ro Hash of string;
   
+  has merged_styles_h : rw Hash of string;
+  
   has tag_name : ro string;
   
   # Class Methods
@@ -188,6 +190,34 @@ class Eg::Element extends Eg::Node {
     }
     
     return $style_pairs;
+  }
+  
+  method merged_style_pairs : string[] () {
+    
+    my $merged_styles_h = $self->{merged_styles_h};
+    
+    my $merged_style_pairs = (string[])undef;
+    
+    if ($merged_styles_h) {
+      my $names = $merged_styles_h->keys;
+      
+      Sort->sort_string_asc($names);
+      
+      my $merged_style_pairs_list = StringList->new;
+      for my $name (@$names) {
+        my $value = $merged_styles_h->get_string($name);
+        
+        $merged_style_pairs_list->push($name);
+        $merged_style_pairs_list->push($value);
+      }
+      
+      $merged_style_pairs = $merged_style_pairs_list->to_array;
+    }
+    else {
+      $merged_style_pairs = new string[0];
+    }
+    
+    return $merged_style_pairs;
   }
   
   method text : string () {

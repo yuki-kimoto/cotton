@@ -148,4 +148,16 @@ class Eg::Node {
     return $child_nodes;
   }
   
+  method node_value : string () {
+    
+    my $node_value_buffer = $self->{node_value_buffer};
+    
+    my $node_value = (string)undef;
+    if ($node_value_buffer) {
+      $node_value = $node_value_buffer->to_string;
+    }
+    
+    return $node_value;
+  }
+
 }

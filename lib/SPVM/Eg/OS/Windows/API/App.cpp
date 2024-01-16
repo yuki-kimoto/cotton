@@ -782,4 +782,119 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   return 0;
 }
 
+int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  void* obj_self = stack[0].oval;
+  void* obj_node = stack[1].oval;
+  
+  stack[0].oval = obj_node;
+  env->call_instance_method_by_name(env, stack, "merged_style_pairs", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  void* obj_style_pairs = stack[0].oval;
+  
+  int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
+  
+  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->new_memory_block(env, stack, sizeof(struct spvm__eg__layout__box));
+  
+  layout_box->left = 0;
+  layout_box->top = 0;
+  layout_box->width = 0;
+  layout_box->height = 0;
+  
+  stack[0].oval = obj_node;
+  env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  void* obj_text = stack[0].oval;
+  
+  if (obj_text) {
+    layout_box->text = env->get_chars(env, stack, obj_text);
+  }
+  
+  layout_box->has_background_color = 0;
+  layout_box->background_color_red = 1;
+  layout_box->background_color_green = 1;
+  layout_box->background_color_blue = 1;
+  layout_box->background_color_alpha = 1;
+  int32_t has_color = 0;
+  layout_box->color_red = 0;
+  layout_box->color_green = 0;
+  layout_box->color_blue = 0;
+  layout_box->color_alpha = 1;
+  
+  for (int32_t i = 0; i < style_pairs_length; i += 2) {
+    void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
+    void* obj_style_value = env->get_elem_object(env, stack, obj_style_pairs, i + 1);
+    
+    const char* style_name = env->get_chars(env, stack, obj_style_name);
+    const char* style_value = env->get_chars(env, stack, obj_style_value);
+    int32_t style_value_length = env->length(env, stack, obj_style_value);
+    
+    switch (style_name[0]) {
+      case 'b' : {
+        
+        if (strcmp(style_name, "background-color") == 0) {
+          
+          layout_box->has_background_color = 1;
+          
+          parse_css_color(env, stack, style_value, style_value_length, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
+        }
+        
+        break;
+      }
+      case 'c' : {
+        
+        if (strcmp(style_name, "color") == 0) {
+          
+          has_color = 1;
+          
+          parse_css_color(env, stack, style_value, style_value_length, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
+        }
+        
+        break;
+      }
+      case 'l' : {
+        
+        if (strcmp(style_name, "left") == 0) {
+          layout_box->left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+        }
+        
+        break;
+      }
+      case 't' : {
+        
+        if (strcmp(style_name, "top") == 0) {
+          layout_box->top = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+        }
+        
+        break;
+      }
+      case 'w' : {
+        
+        if (strcmp(style_name, "width") == 0) {
+          layout_box->width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+        }
+        
+        break;
+      }
+      case 'h' : {
+        
+        if (strcmp(style_name, "height") == 0) {
+          layout_box->height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+        }
+        
+        break;
+      }
+    }
+  }
+  
+  void* obj_layout_box = env->new_pointer_object_by_name(env, stack, "Eg::Layout::Box", layout_box, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  env->set_field_object_by_name(env, stack, obj_node, "layout_box", obj_layout_box, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  return 0;
+}
 }
