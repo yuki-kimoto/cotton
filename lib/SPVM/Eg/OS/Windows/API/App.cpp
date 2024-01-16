@@ -798,6 +798,30 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box(SPVM_ENV* env, SPVM_VA
   
   struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->new_memory_block(env, stack, sizeof(struct spvm__eg__layout__box));
   
+  void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  void* obj_parent_layout_box = NULL;
+  struct spvm__eg__layout__box* parent_layout_box = NULL;
+  if (obj_parent_node) {
+    obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+  }
+  
+  if (obj_parent_layout_box) {
+    layout_box->color_red = parent_layout_box->color_red;
+    layout_box->color_green = parent_layout_box->color_green;
+    layout_box->color_blue = parent_layout_box->color_blue;
+    layout_box->color_alpha = parent_layout_box->color_alpha;
+  }
+  else {
+    layout_box->color_red = 0;
+    layout_box->color_green = 0;
+    layout_box->color_blue = 0;
+    layout_box->color_alpha = 1;
+  }
+  
   layout_box->left = 0;
   layout_box->top = 0;
   layout_box->width = 0;
@@ -818,10 +842,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box(SPVM_ENV* env, SPVM_VA
   layout_box->background_color_blue = 1;
   layout_box->background_color_alpha = 1;
   int32_t has_color = 0;
-  layout_box->color_red = 0;
-  layout_box->color_green = 0;
-  layout_box->color_blue = 0;
-  layout_box->color_alpha = 1;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
