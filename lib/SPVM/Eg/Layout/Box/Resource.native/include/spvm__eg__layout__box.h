@@ -45,6 +45,5 @@ struct spvm__eg__layout__box {
   int8_t height_value_type;
   int8_t color_value_type;
   int8_t background_color_value_type;
-  int8_t has_color;
   int8_t has_background_color;
 };
