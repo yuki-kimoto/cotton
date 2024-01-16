@@ -1,5 +1,10 @@
 #include <spvm_native.h>
 
+enum {
+  BOX_SIZING_CONTENT_BOX = 0,
+  BOX_SIZING_BORDER_BOX = 1
+}
+
 struct spvm__eg__layout__box {
   float color_red;
   float color_green;
@@ -19,4 +24,5 @@ struct spvm__eg__layout__box {
   struct spvm__eg__layout__box* sibparent;
   int8_t moresib;
   const char* text;
+  int8_t box_sizing;
 };
