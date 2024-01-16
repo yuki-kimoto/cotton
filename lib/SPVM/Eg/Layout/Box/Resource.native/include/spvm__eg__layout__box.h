@@ -15,7 +15,6 @@ struct spvm__eg__layout__box {
   int32_t top;
   int32_t width;
   int32_t height;
-  int32_t has_background_color;
   float color_red;
   float color_green;
   float color_blue;
@@ -26,4 +25,5 @@ struct spvm__eg__layout__box {
   float background_color_alpha;
   int8_t box_sizing;
   int8_t is_anon_box;
+  int8_t has_background_color;
 };
