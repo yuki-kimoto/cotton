@@ -806,6 +806,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
+  spvm_warn("LINE %d %p", __LINE__, obj_layout_box);
+  
   if (!obj_layout_box) {
     return 0;
   }
@@ -815,6 +817,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
   HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
+  
+  spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
   
   D2D1_RECT_F block_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
   
