@@ -448,7 +448,9 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-static void parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* length) {
+static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* length) {
+  
+  int32_t success = 0;
   
   const char* css_length_pattern = "^(\\d+)(px)$";
   
@@ -464,7 +466,7 @@ static void parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char
   std::string error_arg = re2->error_arg();
   
   if (!re2->ok()) {
-    return;
+    return success;
   }
   
   int32_t captures_length = re2->NumberOfCapturingGroups();
@@ -478,6 +480,8 @@ static void parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char
   int32_t pixel = 0;
   
   if (match) {
+    success = 1;
+    
     char* number_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
     memcpy(number_string, submatch[1].data(), submatch[1].length());
     char* end;
@@ -495,6 +499,8 @@ static void parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char
     
     *length = pixel;
   }
+  
+  return success;
 }
 
 static int32_t parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, float* red, float* green, float* blue, float* alpha) {
@@ -924,7 +930,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             layout_box->left_value_type = style_value_type;
           }
           else {
-            parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->left);
+            int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->left);
           }
         }
         
@@ -937,7 +943,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             layout_box->top_value_type = style_value_type;
           }
           else {
-            parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->top);
+            int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->top);
           }
         }
         
@@ -950,7 +956,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             layout_box->width_value_type = style_value_type;
           }
           else {
-            parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->width);
+            int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->width);
           }
         }
         
@@ -963,7 +969,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             layout_box->height_value_type = style_value_type;
           }
           else {
-            parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->height);
+            int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->height);
           }
         }
         
