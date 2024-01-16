@@ -43,6 +43,8 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   private precompile method paint_nodes : void ($paint_info : object) {
     
+    $self->build_layout_box_tree($paint_info);
+    
     my $runtime = $self->{runtime};
     
     my $window = $runtime->window;
@@ -88,8 +90,6 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
         }
       }
     }
-    
-    $self->build_layout_box_tree($paint_info);
     
   }
   
