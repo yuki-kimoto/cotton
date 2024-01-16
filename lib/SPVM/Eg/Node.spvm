@@ -8,6 +8,7 @@ class Eg::Node {
   use List;
   use StringBuffer;
   use Eg::Text;
+  use Eg::Layout::Box;
   
   enum {
     TYPE_ELEMENT_NODE = 1,
@@ -33,6 +34,8 @@ class Eg::Node {
   has last_child : rw Eg::Node;
   
   has node_value_buffer : ro StringBuffer;
+  
+  has layout_box : rw Eg::Layout::Box;
   
   # Class Methods
   static method new : Eg::Node ($node_type : int, $child_nodes : Eg::Node[] = undef) {

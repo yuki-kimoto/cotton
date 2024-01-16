@@ -3,7 +3,7 @@
 enum {
   BOX_SIZING_CONTENT_BOX = 0,
   BOX_SIZING_BORDER_BOX = 1
-}
+};
 
 struct spvm__eg__layout__box {
   struct spvm__eg__layout__box* first_child;
