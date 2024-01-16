@@ -782,12 +782,17 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   return 0;
 }
 
-int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
   void* obj_self = stack[0].oval;
   void* obj_node = stack[1].oval;
+  
+  void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
   
   stack[0].oval = obj_node;
   env->call_instance_method_by_name(env, stack, "merged_style_pairs", 1, &error_id, __func__, FILE_NAME, __LINE__);
@@ -795,8 +800,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box(SPVM_ENV* env, SPVM_VA
   void* obj_style_pairs = stack[0].oval;
   
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
-  
-  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->new_memory_block(env, stack, sizeof(struct spvm__eg__layout__box));
   
   void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
@@ -903,18 +906,70 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box(SPVM_ENV* env, SPVM_VA
         if (strcmp(style_name, "height") == 0) {
           layout_box->height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
+        else {
+          
+        }
         
         break;
       }
     }
   }
   
-  void* obj_layout_box = env->new_pointer_object_by_name(env, stack, "Eg::Layout::Box", layout_box, &error_id, __func__, FILE_NAME, __LINE__);
+  return 0;
+}
+
+int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  void* obj_self = stack[0].oval;
+  void* obj_node = stack[1].oval;
+  
+  void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  env->set_field_object_by_name(env, stack, obj_node, "layout_box", obj_layout_box, &error_id, __func__, FILE_NAME, __LINE__);
+  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  
+  void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
+  
+  void* obj_parent_layout_box = NULL;
+  struct spvm__eg__layout__box* parent_layout_box = NULL;
+  if (obj_parent_node) {
+    obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+  }
+  
+  if (obj_parent_layout_box) {
+    layout_box->height = parent_layout_box->color_red;
+  }
+  else {
+    layout_box->color_red = 0;
+  }
+  
+  layout_box->left = 0;
+  layout_box->top = 0;
+  layout_box->width = 0;
+  layout_box->height = 0;
+  
+  stack[0].oval = obj_node;
+  env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  void* obj_text = stack[0].oval;
+  
+  if (obj_text) {
+    layout_box->text = env->get_chars(env, stack, obj_text);
+  }
+  
+  layout_box->has_background_color = 0;
+  layout_box->background_color_red = 1;
+  layout_box->background_color_green = 1;
+  layout_box->background_color_blue = 1;
+  layout_box->background_color_alpha = 1;
+  int32_t has_color = 0;
   
   return 0;
 }
+
 }

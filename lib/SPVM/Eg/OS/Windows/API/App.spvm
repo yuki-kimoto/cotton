@@ -110,7 +110,11 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
           $node_cur->(Eg::Element)->set_merged_styles_h($node_cur->(Eg::Element)->styles_h);
         }
         
-        $self->build_layout_box($node_cur);
+        my $layout_box = Eg::Layout::Box->new;
+        
+        $node_cur->set_layout_box($layout_box);
+        
+        $self->build_layout_box_descendant($node_cur);
       }
       
       if ($node_cur->first_child) {
@@ -119,6 +123,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
       else {
         while (1) {
           # [START]Postorder traversal position
+          $self->build_layout_box_ascendant($node_cur);
           
           if ($node_cur == $node_root) {
             
@@ -144,7 +149,9 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     }
   }
   
-  private native method build_layout_box : void ($node : Eg::Node);
+  private native method build_layout_box_descendant : void ($node : Eg::Node);
+  
+  private native method build_layout_box_ascendant : void ($node : Eg::Node);
   
   private native method paint_node : void ($paint_info : object, $node : Eg::Node);
   
