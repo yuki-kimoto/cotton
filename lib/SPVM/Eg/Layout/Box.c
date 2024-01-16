@@ -13,7 +13,7 @@ int32_t SPVM__Eg__Layout__Box__new(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   struct tm* st_layout_box = env->new_memory_block(env, stack, sizeof(struct spvm__eg__layout__box));
   
-  void* obj_layout_box = env->new_pointer_object_by_name(env, stack, "Layout::Box", st_layout_box, &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_layout_box = env->new_pointer_object_by_name(env, stack, "Eg::Layout::Box", st_layout_box, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
   stack[0].oval = obj_layout_box;
