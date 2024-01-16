@@ -782,7 +782,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   return 0;
 }
 
-int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
@@ -801,51 +801,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
   
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
   
-  void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
-  void* obj_parent_layout_box = NULL;
-  struct spvm__eg__layout__box* parent_layout_box = NULL;
-  if (obj_parent_node) {
-    obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) { return error_id; }
-    parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
-  }
-  
-  if (obj_parent_layout_box) {
-    layout_box->color_red = parent_layout_box->color_red;
-    layout_box->color_green = parent_layout_box->color_green;
-    layout_box->color_blue = parent_layout_box->color_blue;
-    layout_box->color_alpha = parent_layout_box->color_alpha;
-  }
-  else {
-    layout_box->color_red = 0;
-    layout_box->color_green = 0;
-    layout_box->color_blue = 0;
-    layout_box->color_alpha = 1;
-  }
-  
-  layout_box->left = 0;
-  layout_box->top = 0;
-  layout_box->width = 0;
-  layout_box->height = 0;
-  
-  stack[0].oval = obj_node;
-  env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  void* obj_text = stack[0].oval;
-  
-  if (obj_text) {
-    layout_box->text = env->get_chars(env, stack, obj_text);
-  }
-  
-  layout_box->has_background_color = 0;
-  layout_box->background_color_red = 1;
-  layout_box->background_color_green = 1;
-  layout_box->background_color_blue = 1;
-  layout_box->background_color_alpha = 1;
-  int32_t has_color = 0;
-  
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
     void* obj_style_value = env->get_elem_object(env, stack, obj_style_pairs, i + 1);
@@ -863,6 +818,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
           
           parse_css_color(env, stack, style_value, style_value_length, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
         }
+        else {
+          layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_TRANSPARENT;
+        }
         
         break;
       }
@@ -870,9 +828,12 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
         
         if (strcmp(style_name, "color") == 0) {
           
-          has_color = 1;
+          layout_box->color_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_VALUE;
           
           parse_css_color(env, stack, style_value, style_value_length, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
+        }
+        else {
+          layout_box->color_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT;
         }
         
         break;
@@ -882,6 +843,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
         if (strcmp(style_name, "left") == 0) {
           layout_box->left = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
+        else {
+          layout_box->height_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
+        }
         
         break;
       }
@@ -890,6 +854,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
         if (strcmp(style_name, "top") == 0) {
           layout_box->top = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
+        else {
+          layout_box->height_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
+        }
         
         break;
       }
@@ -897,6 +864,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
         
         if (strcmp(style_name, "width") == 0) {
           layout_box->width = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
+        }
+        else {
+          layout_box->width_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
         }
         
         break;
@@ -907,12 +877,88 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
           layout_box->height = (int32_t)parse_css_length(env, stack, style_value, style_value_length);
         }
         else {
-          
+          layout_box->height_value_type = EG_STYLE_VALUE_TYPE_GLOBAL_AUTO;
         }
         
         break;
       }
     }
+  }
+  
+  return 0;
+}
+
+int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  void* obj_self = stack[0].oval;
+  void* obj_node = stack[1].oval;
+  void* obj_paint_info = stack[2].oval;
+  
+  void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  
+  void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  void* obj_parent_layout_box = NULL;
+  struct spvm__eg__layout__box* parent_layout_box = NULL;
+  if (obj_parent_node) {
+    obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+  }
+  
+  if (obj_parent_layout_box) {
+    if (layout_box->color_value_type == EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT) {
+      layout_box->color_red = parent_layout_box->color_red;
+      layout_box->color_green = parent_layout_box->color_green;
+      layout_box->color_blue = parent_layout_box->color_blue;
+      layout_box->color_alpha = parent_layout_box->color_alpha;
+    }
+    
+    if (layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT) {
+      layout_box->background_color_red = parent_layout_box->background_color_red;
+      layout_box->background_color_green = parent_layout_box->background_color_green;
+      layout_box->background_color_blue = parent_layout_box->background_color_blue;
+      layout_box->background_color_alpha = parent_layout_box->background_color_alpha;
+    }
+    
+    if (layout_box->left_value_type == EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT) {
+      layout_box->left = parent_layout_box->left;
+    }
+    
+    if (layout_box->top_value_type == EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT) {
+      layout_box->top = parent_layout_box->top;
+    }
+    
+    if (layout_box->width_value_type == EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT) {
+      layout_box->width = parent_layout_box->width;
+    }
+    
+    if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_GLOBAL_INHERIT) {
+      layout_box->height = parent_layout_box->height;
+    }
+  }
+  
+  stack[0].oval = obj_node;
+  env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  void* obj_text = stack[0].oval;
+  
+  if (obj_text) {
+    layout_box->text = env->get_chars(env, stack, obj_text);
+    
+    stack[0].oval = obj_self;
+    stack[1].oval = obj_paint_info;
+    stack[2].oval = obj_text;
+    stack[3].ival = layout_box->width;
+    calc_text_height(env, stack);
+    if (error_id) { return error_id; }
+    layout_box->height = stack[0].ival;
   }
   
   return 0;
@@ -942,32 +988,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
   }
   
   if (obj_parent_layout_box) {
-    layout_box->height = parent_layout_box->color_red;
+    if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_GLOBAL_AUTO) {
+      parent_layout_box->height = layout_box->height;
+    }
   }
-  else {
-    layout_box->color_red = 0;
-  }
-  
-  layout_box->left = 0;
-  layout_box->top = 0;
-  layout_box->width = 0;
-  layout_box->height = 0;
-  
-  stack[0].oval = obj_node;
-  env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  void* obj_text = stack[0].oval;
-  
-  if (obj_text) {
-    layout_box->text = env->get_chars(env, stack, obj_text);
-  }
-  
-  layout_box->has_background_color = 0;
-  layout_box->background_color_red = 1;
-  layout_box->background_color_green = 1;
-  layout_box->background_color_blue = 1;
-  layout_box->background_color_alpha = 1;
-  int32_t has_color = 0;
   
   return 0;
 }

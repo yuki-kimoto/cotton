@@ -90,7 +90,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     }
   }
   
-  private method build_layout_box_tree : void () {
+  private method build_layout_box_tree : void ($paint_info : object) {
     
     my $runtime = $self->{runtime};
     
@@ -114,7 +114,9 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
         
         $node_cur->set_layout_box($layout_box);
         
-        $self->build_layout_box_descendant($node_cur);
+        $self->build_layout_box_styles($node_cur);
+        
+        $self->build_layout_box_descendant($node_cur, $paint_info);
       }
       
       if ($node_cur->first_child) {
@@ -149,7 +151,9 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     }
   }
   
-  private native method build_layout_box_descendant : void ($node : Eg::Node);
+  private native method build_layout_box_styles : void ($node : Eg::Node);
+  
+  private native method build_layout_box_descendant : void ($node : Eg::Node, $paint_info : object);
   
   private native method build_layout_box_ascendant : void ($node : Eg::Node);
   

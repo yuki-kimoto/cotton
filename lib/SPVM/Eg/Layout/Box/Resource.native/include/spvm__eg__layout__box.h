@@ -15,7 +15,8 @@ enum {
   EG_STYLE_VALUE_TYPE_GLOBAL_INITIAL,
   EG_STYLE_VALUE_TYPE_GLOBAL_REVERT,
   EG_STYLE_VALUE_TYPE_GLOBAL_UNSET,
-  EG_STYLE_VALUE_TYPE_HEIGHT_AUTO,
+  EG_STYLE_VALUE_TYPE_GLOBAL_AUTO,
+  EG_STYLE_VALUE_TYPE_GLOBAL_TRANSPARENT,
 };
 
 struct spvm__eg__layout__box {
@@ -38,6 +39,12 @@ struct spvm__eg__layout__box {
   float background_color_alpha;
   int8_t box_sizing;
   int8_t is_anon_box;
-  int8_t has_background_color;
+  int8_t left_value_type;
+  int8_t top_value_type;
+  int8_t width_value_type;
   int8_t height_value_type;
+  int8_t color_value_type;
+  int8_t background_color_value_type;
+  int8_t has_color;
+  int8_t has_background_color;
 };
