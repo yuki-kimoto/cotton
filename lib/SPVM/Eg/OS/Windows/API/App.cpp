@@ -498,58 +498,90 @@ static double parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const ch
   return pixel;
 }
 
-static void parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, float* red, float* green, float* blue, float* alpha) {
+static int32_t parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, float* red, float* green, float* blue, float* alpha) {
   
-  const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
+  int32_t success = 0;
   
-  int32_t css_color_pattern_length = strlen(css_color_pattern);
-  
-  RE2::Options options;
-  options.set_log_errors(false);
-  re2::StringPiece stp_css_color_pattern(css_color_pattern, css_color_pattern_length);
-  
-  std::unique_ptr<RE2> re2(new RE2(stp_css_color_pattern, options));
-  
-  std::string error = re2->error();
-  std::string error_arg = re2->error_arg();
-  
-  if (!re2->ok()) {
-    abort();
+  if (strcmp(style_value, "currentcolor") == 0) {
+    success = 1;
+    *style_value_type = EG_STYLE_VALUE_TYPE_CURRENTCOLOR;
   }
-  
-  int32_t captures_length = re2->NumberOfCapturingGroups();
-  int32_t doller0_and_captures_length = captures_length + 1;
-  
-  int32_t offset = 0;
-  
-  std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
-  int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
-  
-  if (match) {
-    char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
-    memcpy(red_string, submatch[1].data(), submatch[1].length());
-    char* red_end;
-    *red = strtol(red_string, &red_end, 16);
-    *red /= UINT8_MAX;
-    env->free_memory_block(env, stack, red_string);
-    
-    char* green_string = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
-    memcpy(green_string, submatch[2].data(), submatch[2].length());
-    char* green_end;
-    *green = strtol(green_string, &green_end, 16);
-    *green /= UINT8_MAX;
-    env->free_memory_block(env, stack, green_string);
-    
-    char* blue_string = (char*)env->new_memory_block(env, stack, submatch[3].length() + 1);
-    memcpy(blue_string, submatch[3].data(), submatch[3].length());
-    char* blue_end;
-    *blue = strtol(blue_string, &blue_end, 16);
-    *blue /= UINT8_MAX;
-    env->free_memory_block(env, stack, blue_string);
+  else if (strcmp(style_value, "transparent") == 0) {
+    success = 1;
+    *style_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
+  }
+  else if (strcmp(style_value, "inherit") == 0) {
+    success = 1;
+    *style_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+  }
+  else if (strcmp(style_value, "initial") == 0) {
+    success = 1;
+    *style_value_type = EG_STYLE_VALUE_TYPE_INITIAL;
+  }
+  else if (strcmp(style_value, "revert") == 0) {
+    success = 1;
+    *style_value_type = EG_STYLE_VALUE_TYPE_REVERT;
+  }
+  else if (strcmp(style_value, "unset") == 0) {
+    success = 1;
+    *style_value_type = EG_STYLE_VALUE_TYPE_UNSET;
   }
   else {
-    abort();
+    const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
+    
+    int32_t css_color_pattern_length = strlen(css_color_pattern);
+    
+    RE2::Options options;
+    options.set_log_errors(false);
+    re2::StringPiece stp_css_color_pattern(css_color_pattern, css_color_pattern_length);
+    
+    std::unique_ptr<RE2> re2(new RE2(stp_css_color_pattern, options));
+    
+    std::string error = re2->error();
+    std::string error_arg = re2->error_arg();
+    
+    if (!re2->ok()) {
+      abort();
+    }
+    
+    int32_t captures_length = re2->NumberOfCapturingGroups();
+    int32_t doller0_and_captures_length = captures_length + 1;
+    
+    int32_t offset = 0;
+    
+    std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
+    int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
+    
+    if (match) {
+      
+      success = 1;
+      
+      *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
+      
+      char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
+      memcpy(red_string, submatch[1].data(), submatch[1].length());
+      char* red_end;
+      *red = strtol(red_string, &red_end, 16);
+      *red /= UINT8_MAX;
+      env->free_memory_block(env, stack, red_string);
+      
+      char* green_string = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
+      memcpy(green_string, submatch[2].data(), submatch[2].length());
+      char* green_end;
+      *green = strtol(green_string, &green_end, 16);
+      *green /= UINT8_MAX;
+      env->free_memory_block(env, stack, green_string);
+      
+      char* blue_string = (char*)env->new_memory_block(env, stack, submatch[3].length() + 1);
+      memcpy(blue_string, submatch[3].data(), submatch[3].length());
+      char* blue_end;
+      *blue = strtol(blue_string, &blue_end, 16);
+      *blue /= UINT8_MAX;
+      env->free_memory_block(env, stack, blue_string);
+    }
   }
+  
+  return success;
 }
 
 int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
@@ -631,7 +663,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
           
           css_box.has_background_color = 1;
           
-          parse_css_color_value(env, stack, style_value, style_value_length, &css_box.background_color_red, &css_box.background_color_green, &css_box.background_color_blue, &css_box.background_color_alpha);
+          int32_t style_value_type = -1;
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &css_box.background_color_red, &css_box.background_color_green, &css_box.background_color_blue, &css_box.background_color_alpha);
         }
         
         break;
@@ -642,7 +675,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
           
           has_color = 1;
           
-          parse_css_color_value(env, stack, style_value, style_value_length, &css_box.color_red, &css_box.color_green, &css_box.color_blue, &css_box.color_alpha);
+          int32_t style_value_type = -1;
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &css_box.color_red, &css_box.color_green, &css_box.color_blue, &css_box.color_alpha);
         }
         
         break;
@@ -816,7 +850,15 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
           
           layout_box->has_background_color = 1;
           
-          parse_css_color_value(env, stack, style_value, style_value_length, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
+          int32_t style_value_type = -1;
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
+          
+          if (success) {
+            layout_box->background_color_value_type = style_value_type;
+          }
+          else {
+            layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
+          }
         }
         else {
           layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
@@ -830,7 +872,14 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
           
           layout_box->color_value_type = EG_STYLE_VALUE_TYPE_VALUE;
           
-          parse_css_color_value(env, stack, style_value, style_value_length, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
+          int32_t style_value_type = -1;
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
+          if (success) {
+            layout_box->background_color_value_type = style_value_type;
+          }
+          else {
+            layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+          }
         }
         else {
           layout_box->color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;

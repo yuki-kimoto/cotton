@@ -17,6 +17,7 @@ enum {
   EG_STYLE_VALUE_TYPE_UNSET,
   EG_STYLE_VALUE_TYPE_AUTO,
   EG_STYLE_VALUE_TYPE_TRANSPARENT,
+  EG_STYLE_VALUE_TYPE_CURRENTCOLOR,
 };
 
 struct spvm__eg__layout__box {
@@ -45,4 +46,5 @@ struct spvm__eg__layout__box {
   int8_t height_value_type;
   int8_t color_value_type;
   int8_t background_color_value_type;
+  int8_t has_background_color;
 };
