@@ -502,83 +502,57 @@ static int32_t parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const ch
   
   int32_t success = 0;
   
-  if (strcmp(style_value, "currentcolor") == 0) {
-    success = 1;
-    *style_value_type = EG_STYLE_VALUE_TYPE_CURRENTCOLOR;
+  const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
+  
+  int32_t css_color_pattern_length = strlen(css_color_pattern);
+  
+  RE2::Options options;
+  options.set_log_errors(false);
+  re2::StringPiece stp_css_color_pattern(css_color_pattern, css_color_pattern_length);
+  
+  std::unique_ptr<RE2> re2(new RE2(stp_css_color_pattern, options));
+  
+  std::string error = re2->error();
+  std::string error_arg = re2->error_arg();
+  
+  if (!re2->ok()) {
+    abort();
   }
-  else if (strcmp(style_value, "transparent") == 0) {
+  
+  int32_t captures_length = re2->NumberOfCapturingGroups();
+  int32_t doller0_and_captures_length = captures_length + 1;
+  
+  int32_t offset = 0;
+  
+  std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
+  int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
+  
+  if (match) {
+    
     success = 1;
-    *style_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
-  }
-  else if (strcmp(style_value, "inherit") == 0) {
-    success = 1;
-    *style_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
-  }
-  else if (strcmp(style_value, "initial") == 0) {
-    success = 1;
-    *style_value_type = EG_STYLE_VALUE_TYPE_INITIAL;
-  }
-  else if (strcmp(style_value, "revert") == 0) {
-    success = 1;
-    *style_value_type = EG_STYLE_VALUE_TYPE_REVERT;
-  }
-  else if (strcmp(style_value, "unset") == 0) {
-    success = 1;
-    *style_value_type = EG_STYLE_VALUE_TYPE_UNSET;
-  }
-  else {
-    const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
     
-    int32_t css_color_pattern_length = strlen(css_color_pattern);
+    *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
     
-    RE2::Options options;
-    options.set_log_errors(false);
-    re2::StringPiece stp_css_color_pattern(css_color_pattern, css_color_pattern_length);
+    char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
+    memcpy(red_string, submatch[1].data(), submatch[1].length());
+    char* red_end;
+    *red = strtol(red_string, &red_end, 16);
+    *red /= UINT8_MAX;
+    env->free_memory_block(env, stack, red_string);
     
-    std::unique_ptr<RE2> re2(new RE2(stp_css_color_pattern, options));
+    char* green_string = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
+    memcpy(green_string, submatch[2].data(), submatch[2].length());
+    char* green_end;
+    *green = strtol(green_string, &green_end, 16);
+    *green /= UINT8_MAX;
+    env->free_memory_block(env, stack, green_string);
     
-    std::string error = re2->error();
-    std::string error_arg = re2->error_arg();
-    
-    if (!re2->ok()) {
-      abort();
-    }
-    
-    int32_t captures_length = re2->NumberOfCapturingGroups();
-    int32_t doller0_and_captures_length = captures_length + 1;
-    
-    int32_t offset = 0;
-    
-    std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
-    int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
-    
-    if (match) {
-      
-      success = 1;
-      
-      *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
-      
-      char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
-      memcpy(red_string, submatch[1].data(), submatch[1].length());
-      char* red_end;
-      *red = strtol(red_string, &red_end, 16);
-      *red /= UINT8_MAX;
-      env->free_memory_block(env, stack, red_string);
-      
-      char* green_string = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
-      memcpy(green_string, submatch[2].data(), submatch[2].length());
-      char* green_end;
-      *green = strtol(green_string, &green_end, 16);
-      *green /= UINT8_MAX;
-      env->free_memory_block(env, stack, green_string);
-      
-      char* blue_string = (char*)env->new_memory_block(env, stack, submatch[3].length() + 1);
-      memcpy(blue_string, submatch[3].data(), submatch[3].length());
-      char* blue_end;
-      *blue = strtol(blue_string, &blue_end, 16);
-      *blue /= UINT8_MAX;
-      env->free_memory_block(env, stack, blue_string);
-    }
+    char* blue_string = (char*)env->new_memory_block(env, stack, submatch[3].length() + 1);
+    memcpy(blue_string, submatch[3].data(), submatch[3].length());
+    char* blue_end;
+    *blue = strtol(blue_string, &blue_end, 16);
+    *blue /= UINT8_MAX;
+    env->free_memory_block(env, stack, blue_string);
   }
   
   return success;
@@ -843,35 +817,51 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
     const char* style_value = env->get_chars(env, stack, obj_style_value);
     int32_t style_value_length = env->length(env, stack, obj_style_value);
     
+    int32_t style_value_type = -1;
+    if (strcmp(style_value, "inherit") == 0) {
+      style_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
+    else if (strcmp(style_value, "initial") == 0) {
+      style_value_type = EG_STYLE_VALUE_TYPE_INITIAL;
+    }
+    else if (strcmp(style_value, "revert") == 0) {
+      style_value_type = EG_STYLE_VALUE_TYPE_REVERT;
+    }
+    else if (strcmp(style_value, "unset") == 0) {
+      style_value_type = EG_STYLE_VALUE_TYPE_UNSET;
+    }
+    
     switch (style_name[0]) {
       case 'b' : {
         
         if (strcmp(style_name, "background-color") == 0) {
           
-          int32_t style_value_type = -1;
-          float background_color_red;
-          float background_color_green;
-          float background_color_blue;
-          float background_color_alpha;
-          
-          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
-          
-          if (success) {
+          if (style_value_type >= 0) {
             layout_box->background_color_value_type = style_value_type;
-            
-            if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
-              layout_box->background_color_red = background_color_red;
-              layout_box->background_color_green = background_color_green;
-              layout_box->background_color_blue = background_color_blue;
-              layout_box->background_color_alpha = background_color_alpha;
-            }
           }
           else {
-            layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
+            int32_t style_value_type = -1;
+            float background_color_red;
+            float background_color_green;
+            float background_color_blue;
+            float background_color_alpha;
+            
+            int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
+            
+            if (success) {
+              layout_box->background_color_value_type = style_value_type;
+              
+              if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
+                layout_box->background_color_red = background_color_red;
+                layout_box->background_color_green = background_color_green;
+                layout_box->background_color_blue = background_color_blue;
+                layout_box->background_color_alpha = background_color_alpha;
+              }
+            }
+            else {
+              layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
+            }
           }
-        }
-        else {
-          layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
         }
         
         break;
@@ -909,9 +899,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
           }
         }
-        else {
-          layout_box->color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
-        }
         
         break;
       }
@@ -919,9 +906,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
         
         if (strcmp(style_name, "left") == 0) {
           layout_box->left = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
-        }
-        else {
-          layout_box->height_value_type = EG_STYLE_VALUE_TYPE_AUTO;
         }
         
         break;
@@ -931,9 +915,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
         if (strcmp(style_name, "top") == 0) {
           layout_box->top = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
-        else {
-          layout_box->height_value_type = EG_STYLE_VALUE_TYPE_AUTO;
-        }
         
         break;
       }
@@ -941,9 +922,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
         
         if (strcmp(style_name, "width") == 0) {
           layout_box->width = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
-        }
-        else {
-          layout_box->width_value_type = EG_STYLE_VALUE_TYPE_AUTO;
         }
         
         break;
@@ -953,13 +931,34 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
         if (strcmp(style_name, "height") == 0) {
           layout_box->height = (int32_t)parse_css_length_value(env, stack, style_value, style_value_length);
         }
-        else {
-          layout_box->height_value_type = EG_STYLE_VALUE_TYPE_AUTO;
-        }
         
         break;
       }
     }
+  }
+  
+  if (layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+    layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
+  }
+  
+  if (layout_box->color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+    layout_box->color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+  }
+  
+  if (layout_box->top_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+    layout_box->top_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+  }
+  
+  if (layout_box->left_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+    layout_box->left_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+  }
+  
+  if (layout_box->width_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+    layout_box->width_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+  }
+  
+  if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+    layout_box->height_value_type = EG_STYLE_VALUE_TYPE_AUTO;
   }
   
   return 0;
