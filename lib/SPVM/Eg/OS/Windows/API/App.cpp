@@ -875,7 +875,12 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
           int32_t style_value_type = -1;
           int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
           if (success) {
-            layout_box->background_color_value_type = style_value_type;
+            if (style_value_type == EG_STYLE_VALUE_TYPE_TRANSPARENT) {
+              layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+            }
+            else {
+              layout_box->background_color_value_type = style_value_type;
+            }
           }
           else {
             layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
