@@ -107,20 +107,16 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     while ($node_cur) {
       # [START]Preorder traversal position
       
-      if ($node_cur->node_type == Eg::Node->TYPE_ELEMENT_NODE || $node_cur->node_type ==  Eg::Node->TYPE_TEXT_NODE) {
-        
-        my $layout_box = Eg::Layout::Box->new;
-        
-        $node_cur->set_layout_box($layout_box);
-        
-        if ($node_cur->node_type == Eg::Node->TYPE_ELEMENT_NODE) {
-           $node_cur->(Eg::Element)->set_merged_styles_h($node_cur->(Eg::Element)->styles_h);
-           $self->build_layout_box_styles($node_cur);
-        }
-        
-        $self->build_layout_box_descendant($node_cur, $paint_info);
-        
+      my $layout_box = Eg::Layout::Box->new;
+      
+      $node_cur->set_layout_box($layout_box);
+      
+      if ($node_cur is_type Eg::Element) {
+       $node_cur->(Eg::Element)->set_merged_styles_h($node_cur->(Eg::Element)->styles_h);
+       $self->build_layout_box_styles($node_cur);
       }
+      
+      $self->build_layout_box_descendant($node_cur, $paint_info);
       
       if ($node_cur->first_child) {
         $node_cur = (Eg::Node)$node_cur->first_child;
