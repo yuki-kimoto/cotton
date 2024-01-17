@@ -448,7 +448,7 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   return 0;
 }
 
-static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* length) {
+static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, int32_t* length) {
   
   int32_t success = 0;
   
@@ -481,6 +481,8 @@ static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const c
   
   if (match) {
     success = 1;
+    
+    *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
     
     char* number_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
     memcpy(number_string, submatch[1].data(), submatch[1].length());
@@ -665,7 +667,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->left);
+          int32_t style_value_type = 0;
+          parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->left);
         }
         
         break;
@@ -673,7 +676,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->top);
+          int32_t style_value_type = 0;
+          parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->top);
         }
         
         break;
@@ -681,7 +685,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'w' : {
         
         if (strcmp(style_name, "width") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->width);
+          int32_t style_value_type = 0;
+          parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->width);
         }
         
         break;
@@ -689,7 +694,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->height);
+          int32_t style_value_type = 0;
+          parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->height);
         }
         
         break;
@@ -1030,9 +1036,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             }
             else {
               int32_t left;
-              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &left);
+              int32_t style_value_type = 0;
+              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &left);
               
               if (success) {
+                layout_box->left_value_type = style_value_type;
                 layout_box->left = left;
               }
               else {
@@ -1056,9 +1064,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             }
             else {
               int32_t top;
-              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &top);
+              int32_t style_value_type = 0;
+              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &top);
               
               if (success) {
+                layout_box->top_value_type = style_value_type;
                 layout_box->top = top;
               }
               else {
@@ -1082,9 +1092,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             }
             else {
               int32_t width;
-              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &width);
+              int32_t style_value_type = 0;
+              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &width);
               
               if (success) {
+                layout_box->width_value_type = style_value_type;
                 layout_box->width = width;
               }
               else {
@@ -1108,9 +1120,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             }
             else {
               int32_t height;
-              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &height);
+              int32_t style_value_type = 0;
+              int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &height);
               
               if (success) {
+                layout_box->height_value_type = style_value_type;
                 layout_box->height = height;
               }
               else {
@@ -1184,17 +1198,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
     }
   }
   
-  if (obj_parent_node) {
-    if (env->is_type_by_name(env, stack, obj_parent_node, "Eg::Document", 0)) {
-      
-      stack[0].oval = obj_self;
-      env->call_instance_method_by_name(env, stack, "inner_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-      int32_t inner_width = stack[0].ival;
-      
-      layout_box->width = inner_width;
-    }
-  }
   if (obj_parent_layout_box) {
     if (layout_box->color_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       if (is_root_node) {
