@@ -815,7 +815,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   
   D2D1_RECT_F box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
   
-  if (!(layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_TRANSPARENT)) {
+  if (!(layout_box->background_color_alpha == 0)) {
     spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
     spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
     
