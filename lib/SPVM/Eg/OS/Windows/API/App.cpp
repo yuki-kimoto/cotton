@@ -77,7 +77,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__open_main_window_native(SPVM_ENV* env, 
     window_parent_window_handle, window_id, instance_handle, window_wm_create_lparam
   );
   
-  void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::WindowHandle", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
+  void* obj_window_handle = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::HWND", window_handle, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
   stack[0].oval = obj_self;

@@ -1,1 +1,0 @@
-class Eg::OS::Windows::WindowHandle : pointer;
