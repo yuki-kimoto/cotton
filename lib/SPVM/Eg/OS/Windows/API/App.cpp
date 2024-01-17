@@ -1139,8 +1139,57 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
     }
   }
   
+  return 0;
+}
+
+int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_set_default_values(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  void* obj_self = stack[0].oval;
+  void* obj_node = stack[1].oval;
+  
+  void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  assert(obj_layout_box);
+  
+  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  
+  assert(layout_box);
+  
+  int32_t is_anon_box = 0;
+  if (env->is_type_by_name(env, stack, obj_node, "Eg::Text", 0)) {
+    is_anon_box = 1;
+  }
+  
   // Initial value
-  {
+  if (is_anon_box) {
+    if (layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
+    
+    if (layout_box->color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
+    
+    if (layout_box->top_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->top_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
+    
+    if (layout_box->left_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->left_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
+    
+    if (layout_box->width_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->width_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
+    
+    if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->height_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
+  }
+  else {
     if (layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
       layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
     }
@@ -1235,6 +1284,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
     
     if (layout_box->width_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       layout_box->width = parent_layout_box->width;
+      spvm_warn("LINE %d %d", __LINE__, layout_box->width);
     }
     else if (layout_box->width_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
       if (is_root_node) {
@@ -1253,6 +1303,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
       spvm_warn("LINE %d %d", __LINE__, layout_box->width);
     }
     
+    spvm_warn("LINE %d %d %d", __LINE__, layout_box->width, layout_box->width_value_type);
+  
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       layout_box->height = parent_layout_box->height;
     }
@@ -1300,6 +1352,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
       calc_text_height(env, stack);
       if (error_id) { return error_id; }
       layout_box->height = stack[0].ival;
+      spvm_warn("LINE %d %d %d", __LINE__, layout_box->width, layout_box->height);
     }
     
     if (parent_layout_box->height_value_type == EG_STYLE_VALUE_TYPE_AUTO) {

@@ -114,6 +114,8 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
         $node_cur = $body;
       }
       
+      warn "Pre:" . $node_cur->node_name;
+      
       # [START]Preorder traversal position
       my $layout_box = Eg::Layout::Box->new;
       
@@ -124,6 +126,8 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
        $self->build_layout_box_styles($node_cur);
       }
       
+      $self->build_layout_box_set_default_values($node_cur);
+      
       $self->build_layout_box_descendant($node_cur, $paint_info);
       
       if ($node_cur->first_child) {
@@ -132,6 +136,8 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
       else {
         while (1) {
           # [START]Postorder traversal position
+          warn "Post:" . $node_cur->node_name;
+      
           $self->build_layout_box_ascendant($node_cur, $paint_info);
           
           if ($node_cur == $node_root) {
@@ -159,6 +165,8 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   }
   
   private native method build_layout_box_styles : void ($node : Eg::Node);
+  
+  private native method build_layout_box_set_default_values : void ($node : Eg::Node);
   
   private native method build_layout_box_descendant : void ($node : Eg::Node, $paint_info : object);
   
