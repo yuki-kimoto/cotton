@@ -351,18 +351,11 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     {
       int32_t scope = env->enter_scope(env, stack);
       
-      struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
-      paint_info->renderer = renderer;
-      
-      void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-      
       stack[0].oval = obj_self;
-      stack[1].oval = obj_paint_info;
+      stack[1].oval = NULL;
       env->call_instance_method_by_name(env, stack, "paint_nodes", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
-      free(paint_info);
       env->leave_scope(env, stack, scope);
     }
     
@@ -592,8 +585,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   }
   
   struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
-  
-  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
   
   stack[0].oval = obj_self;
   stack[1].oval = env->new_string_nolen(env, stack, "renderer");
