@@ -264,7 +264,6 @@ static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
 }
 
 struct COTTON_RUNTIME_PAINT_INFO {
-  HDC hdc;
   ID2D1HwndRenderTarget* renderer;
 };
 
