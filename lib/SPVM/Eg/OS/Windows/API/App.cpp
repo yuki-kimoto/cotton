@@ -392,8 +392,6 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t draw_width = stack[3].ival;
   void* obj_font_styles = stack[4].oval;
   
-  struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
-  
   int32_t draw_height = 0;
   if (obj_text) {
     // Render block which has text
