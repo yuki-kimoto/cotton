@@ -567,7 +567,7 @@ static int32_t parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const ch
   return success;
 }
 
-int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE* stack) {
+int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
   
   int32_t error_id = 0;
   
