@@ -963,13 +963,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               if (success) {
                 layout_box->background_color_value_type = style_value_type;
                 
-                if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
-                  layout_box->background_color_red = background_color_red;
-                  layout_box->background_color_green = background_color_green;
-                  layout_box->background_color_blue = background_color_blue;
-                  layout_box->background_color_alpha = background_color_alpha;
-                  spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
-                }
+                layout_box->background_color_red = background_color_red;
+                layout_box->background_color_green = background_color_green;
+                layout_box->background_color_blue = background_color_blue;
+                layout_box->background_color_alpha = background_color_alpha;
+                spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
               }
               else {
                 layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
@@ -1001,18 +999,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &color_red, &color_green, &color_blue, &color_alpha);
               
               if (success) {
-                if (style_value_type == EG_STYLE_VALUE_TYPE_TRANSPARENT) {
-                  layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
-                }
-                else {
-                  layout_box->background_color_value_type = style_value_type;
-                  
-                  if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
-                    layout_box->color_red = color_red;
-                    layout_box->color_green = color_green;
-                    layout_box->color_blue = color_blue;
-                    layout_box->color_alpha = color_alpha;
-                  }
+                layout_box->color_value_type = style_value_type;
+                
+                if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
+                  layout_box->color_red = color_red;
+                  layout_box->color_green = color_green;
+                  layout_box->color_blue = color_blue;
+                  layout_box->color_alpha = color_alpha;
                 }
               }
               else {
@@ -1256,8 +1249,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
         layout_box->color_green = parent_layout_box->color_green;
         layout_box->color_blue = parent_layout_box->color_blue;
         layout_box->color_alpha = parent_layout_box->color_alpha;
+        spvm_warn("LINE %d %d %d %d", __LINE__, layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
       }
     }
+    spvm_warn("LINE %d %d %d %d", __LINE__, layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
     
     if (layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       if (is_root_node) {
@@ -1284,7 +1279,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
     
     if (layout_box->width_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       layout_box->width = parent_layout_box->width;
-      spvm_warn("LINE %d %d", __LINE__, layout_box->width);
     }
     else if (layout_box->width_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
       if (is_root_node) {
@@ -1297,14 +1291,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
       }
       else {
         layout_box->width = parent_layout_box->width;
-        spvm_warn("LINE %d %d", __LINE__, parent_layout_box->width);
       }
-      
-      spvm_warn("LINE %d %d", __LINE__, layout_box->width);
     }
     
-    spvm_warn("LINE %d %d %d", __LINE__, layout_box->width, layout_box->width_value_type);
-  
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       layout_box->height = parent_layout_box->height;
     }
