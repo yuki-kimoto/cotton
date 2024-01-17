@@ -558,6 +558,8 @@ static int32_t parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const ch
     *blue = strtol(blue_string, &blue_end, 16);
     *blue /= UINT8_MAX;
     env->free_memory_block(env, stack, blue_string);
+    
+    *alpha = 1;
   }
   
   return success;
@@ -612,8 +614,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     calc_text_height(env, stack);
     if (error_id) { return error_id; }
     css_box.height = stack[0].ival;
-    
-    spvm_warn("LINE %d %d %s", __LINE__, css_box.height, text);
   }
   
   css_box.has_background_color = 0;
@@ -708,6 +708,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     else {
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1);
     }
+    
+    spvm_warn("LINE %d %d %d %d %d", __LINE__, css_box.left, css_box.top, css_box.left + css_box.width + 1, css_box.top + css_box.height + 1);
+    spvm_warn("LINE %d %f %f %f %f", __LINE__, css_box.background_color_red, css_box.background_color_green, css_box.background_color_blue, css_box.background_color_alpha);
     
     // Create background brash
     ID2D1SolidColorBrush* background_brush = NULL;
@@ -806,8 +809,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  spvm_warn("LINE %d %p", __LINE__, obj_layout_box);
-  
   if (!obj_layout_box) {
     return 0;
   }
@@ -818,14 +819,16 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
   
-  spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
-  
-  D2D1_RECT_F block_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
-  
-  {
+  if (!(layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_TRANSPARENT)) {
+    spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
+    spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
+    
+    D2D1_RECT_F block_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
+    
     D2D1::ColorF background_color_f = {0};
     
     background_color_f = D2D1::ColorF(layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
+    
     
     ID2D1SolidColorBrush* background_brush = NULL;
     renderer->CreateSolidColorBrush(
@@ -837,61 +840,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
     renderer->FillRectangle(&block_rect, background_brush);
     
     background_brush->Release();
-  }
-  
-  const char* text = layout_box->text;
-  
-  if (text) {
-    
-    const int16_t* text_utf16 = encode_utf16(env, stack, text);
-    int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
-    
-    int32_t parent_width = block_rect.right + 1;
-    int32_t parent_height = block_rect.bottom + 1;
-    
-    D2D1::ColorF color_f = {0};
-    color_f = D2D1::ColorF(layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
-    
-    int32_t width = parent_width;
-    
-    HRESULT com_result;
-    
-    IDWriteFactory* direct_write_factory = NULL;
-    com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
-    
-    IDWriteTextFormat* text_format = NULL;
-    direct_write_factory->CreateTextFormat(
-      L"Meiryo",
-      NULL,
-      DWRITE_FONT_WEIGHT_NORMAL,
-      DWRITE_FONT_STYLE_NORMAL,
-      DWRITE_FONT_STRETCH_NORMAL,
-      40,
-      L"",
-      &text_format
-    );
-    
-    // Create text layout
-    IDWriteTextLayout* text_layout = NULL;
-    com_result = direct_write_factory->CreateTextLayout(
-          (const WCHAR*)text_utf16       // 文字列
-        , text_utf16_length        // 文字列の幅
-        ,text_format           // DWriteTextFormat
-        , width    // 枠の幅
-        , 0    // 枠の高さ
-        , &text_layout
-    );
-    
-    // Create text brush
-    ID2D1SolidColorBrush* text_brush = NULL;
-    renderer->CreateSolidColorBrush(
-      color_f,
-      &text_brush
-    );
-    
-    // Draw text
-    D2D1_POINT_2F point = {.x = (float)block_rect.left, .y = (float)block_rect.top};
-    renderer->DrawTextLayout(point, text_layout, text_brush);
   }
   
   return 0;
@@ -959,8 +907,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               float background_color_green;
               float background_color_blue;
               float background_color_alpha;
-              
               int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &background_color_red, &background_color_green, &background_color_blue, &background_color_alpha);
+              
+              spvm_warn("LINE %d %d %s %f %f %f %f", __LINE__, success, style_value, background_color_red, background_color_green, background_color_blue, background_color_alpha);
               
               if (success) {
                 layout_box->background_color_value_type = style_value_type;
@@ -970,6 +919,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
                   layout_box->background_color_green = background_color_green;
                   layout_box->background_color_blue = background_color_blue;
                   layout_box->background_color_alpha = background_color_alpha;
+                  spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
                 }
               }
               else {
