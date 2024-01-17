@@ -185,4 +185,33 @@ class Eg::Node {
     return $root_node;
   }
   
+  method node_name : string () {
+    
+    my $node_name = (string)undef;
+    
+    my $node_type = $self->{node_type};
+    
+    switch ($node_type) {
+      case &TYPE_DOCUMENT_NODE : {
+        $node_name = "#document";
+      }
+      case &TYPE_DOCUMENT_FRAGMENT_NODE : {
+        $node_name = "#document-fragment";
+      }
+      case &TYPE_ELEMENT_NODE : {
+        $node_name = Fn->uc($self->(Eg::Element)->tag_name);
+      }
+      case &TYPE_TEXT_NODE : {
+        $node_name = "#text";
+      }
+      case &TYPE_COMMENT_NODE : {
+        $node_name = "#comment";
+      }
+      default : {
+        die "The node type $node_type is not supported.";
+      }
+    }
+    
+    return $node_name;
+  }
 }
