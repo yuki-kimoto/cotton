@@ -846,16 +846,15 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   
   if (text) {
     
+    spvm_warn("LINE %d %s", __LINE__, text);
+    
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
-    
-    int32_t parent_width = block_rect.right + 1;
-    int32_t parent_height = block_rect.bottom + 1;
     
     D2D1::ColorF color_f = {0};
     color_f = D2D1::ColorF(layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
     
-    int32_t width = parent_width;
+    spvm_warn("LINE %d %f %f %f %f %d", __LINE__, layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha, layout_box->width);
     
     HRESULT com_result;
     
@@ -879,7 +878,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
           (const WCHAR*)text_utf16
         , text_utf16_length
         ,text_format
-        , width
+        , layout_box->width
         , 0
         , &text_layout
     );
@@ -1257,7 +1256,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
       }
       else {
         layout_box->width = parent_layout_box->width;
+        spvm_warn("LINE %d %d", __LINE__, parent_layout_box->width);
       }
+      
+      spvm_warn("LINE %d %d", __LINE__, layout_box->width);
     }
     
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
@@ -1271,6 +1273,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
   void* obj_text = stack[0].oval;
   
   if (obj_text) {
+    spvm_warn("LINE %d", __LINE__);
+    
     layout_box->text = env->get_chars(env, stack, obj_text);
     
     stack[0].oval = obj_self;
