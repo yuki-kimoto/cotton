@@ -61,7 +61,7 @@ class Cotton {
       "background-color" => "#00FF00", "color" => "#0000FF"
     }}, "あああああ");
     
-    my $body = Eg->body_({style => {"background-color" => "#00FF00"}},[
+    my $body = Eg->body_({},[
       $div1,
       Eg->div_({style => {left => "300px", top => "400px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
       Eg->div_({style => {left => "400px", top => "500px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
