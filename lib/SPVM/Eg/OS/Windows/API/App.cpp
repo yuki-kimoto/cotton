@@ -1279,22 +1279,12 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
   if (obj_parent_node) {
     struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
     
-    void* obj_parent_layout_box = NULL;
-    struct spvm__eg__layout__box* parent_layout_box = NULL;
+    void* obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    struct spvm__eg__layout__box* parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
     
-    if (obj_layout_box) {
-      if (obj_parent_node) {
-        obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
-        if (error_id) { return error_id; }
-        parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
-      }
-      
-      if (obj_parent_layout_box) {
-        if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
-         parent_layout_box->height = layout_box->height;
-        }
-      }
-      
+    if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
+      parent_layout_box->height = layout_box->height;
     }
     
     stack[0].oval = obj_node;
