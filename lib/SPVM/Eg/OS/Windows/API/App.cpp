@@ -345,7 +345,6 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
       int32_t scope = env->enter_scope(env, stack);
       
       struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)calloc(1, sizeof(struct COTTON_RUNTIME_PAINT_INFO));
-      paint_info->hdc = hdc;
       paint_info->renderer = renderer;
       
       void* obj_paint_info = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::PaintInfo", paint_info, &error_id, __func__, FILE_NAME, __LINE__);
@@ -379,9 +378,8 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   void* obj_text = stack[2].oval;
   int32_t draw_width = stack[3].ival;
   void* obj_font_styles = stack[4].oval;
-
+  
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
-  HDC hdc = paint_info->hdc;
   
   int32_t draw_height = 0;
   if (obj_text) {
@@ -585,7 +583,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
   
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
-  HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
   
   D2D1_RECT_F box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
