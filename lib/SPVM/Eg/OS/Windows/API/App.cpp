@@ -1175,7 +1175,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
   struct spvm__eg__layout__box* parent_layout_box = NULL;
   int32_t is_root_node = 0;
   if (obj_parent_node) {
-    obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+    obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
     
@@ -1300,7 +1300,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
     void* obj_parent_layout_box = NULL;
     struct spvm__eg__layout__box* parent_layout_box = NULL;
     if (obj_parent_node) {
-      obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+      obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
     }
