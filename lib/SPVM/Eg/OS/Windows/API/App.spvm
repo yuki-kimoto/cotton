@@ -9,7 +9,6 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   use Eg::Layout::Box;
   
   use Eg::OS::Windows::HWND;
-  use Eg::OS::Windows::PaintInfo;
   use Eg::OS::Windows::ID2D1HwndRenderTarget;
   
   static method new : Eg::OS::Windows::API::App($runtime : Eg::Runtime) {
@@ -42,9 +41,9 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   native method start_event_loop : void ();
   
-  private precompile method paint_nodes : void ($paint_info : object) {
+  private precompile method paint_nodes : void () {
     
-    $self->build_layout_box_tree($paint_info);
+    $self->build_layout_box_tree;
     
     my $runtime = $self->{runtime};
     
@@ -59,7 +58,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
       # [START]Preorder traversal position
       
       if ($node_cur->node_type == Eg::Node->TYPE_ELEMENT_NODE || $node_cur->node_type == Eg::Node->TYPE_TEXT_NODE) {
-        $self->paint_node($paint_info, $node_cur);
+        $self->paint_node($node_cur);
       }
       
       if ($node_cur->first_child) {
@@ -94,7 +93,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     
   }
   
-  private method build_layout_box_tree : void ($paint_info : object) {
+  private method build_layout_box_tree : void () {
     
     my $runtime = $self->{runtime};
     
@@ -129,7 +128,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
       
       $self->build_layout_box_set_default_values($node_cur);
       
-      $self->build_layout_box_descendant($node_cur, $paint_info);
+      $self->build_layout_box_descendant($node_cur);
       
       if ($node_cur->first_child) {
         $node_cur = (Eg::Node)$node_cur->first_child;
@@ -139,7 +138,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
           # [START]Postorder traversal position
           warn "Post:" . $node_cur->node_name;
       
-          $self->build_layout_box_ascendant($node_cur, $paint_info);
+          $self->build_layout_box_ascendant($node_cur);
           
           if ($node_cur == $node_root) {
             
@@ -169,11 +168,11 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   private native method build_layout_box_set_default_values : void ($node : Eg::Node);
   
-  private native method build_layout_box_descendant : void ($node : Eg::Node, $paint_info : object);
+  private native method build_layout_box_descendant : void ($node : Eg::Node);
   
-  private native method build_layout_box_ascendant : void ($node : Eg::Node, $paint_info : object);
+  private native method build_layout_box_ascendant : void ($node : Eg::Node);
   
-  private native method paint_node : void ($paint_info : object, $node : Eg::Node);
+  private native method paint_node : void ($node : Eg::Node);
   
   private native static method CW_USEDEFAULT : int ();
   

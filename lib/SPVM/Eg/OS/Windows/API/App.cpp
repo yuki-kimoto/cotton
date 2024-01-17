@@ -380,10 +380,9 @@ static int32_t calc_text_height(SPVM_ENV* env, SPVM_VALUE* stack) {
   int32_t error_id = 0;
   
   void* obj_self = stack[0].oval;
-  void* obj_paint_info = stack[1].oval;
-  void* obj_text = stack[2].oval;
-  int32_t draw_width = stack[3].ival;
-  void* obj_font_styles = stack[4].oval;
+  void* obj_text = stack[1].oval;
+  int32_t draw_width = stack[2].ival;
+  void* obj_font_styles = stack[3].oval;
   
   int32_t draw_height = 0;
   if (obj_text) {
@@ -574,8 +573,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   int32_t error_id = 0;
   
   void* obj_self = stack[0].oval;
-  void* obj_paint_info = stack[1].oval;
-  void* obj_node = stack[2].oval;
+  void* obj_node = stack[1].oval;
   
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
@@ -992,7 +990,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
   
   void* obj_self = stack[0].oval;
   void* obj_node = stack[1].oval;
-  void* obj_paint_info = stack[2].oval;
   
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
@@ -1083,7 +1080,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
   
   void* obj_self = stack[0].oval;
   void* obj_node = stack[1].oval;
-  void* obj_paint_info = stack[2].oval;
   
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
@@ -1110,9 +1106,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
     
     if (layout_box->text) {
       stack[0].oval = obj_self;
-      stack[1].oval = obj_paint_info;
-      stack[2].oval = obj_text;
-      stack[3].ival = layout_box->width;
+      stack[1].oval = obj_text;
+      stack[2].ival = layout_box->width;
       calc_text_height(env, stack);
       if (error_id) { return error_id; }
       layout_box->height = stack[0].ival;
