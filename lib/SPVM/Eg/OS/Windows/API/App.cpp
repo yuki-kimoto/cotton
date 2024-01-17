@@ -594,13 +594,18 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
   
   struct COTTON_RUNTIME_PAINT_INFO* paint_info = (struct COTTON_RUNTIME_PAINT_INFO*)env->get_pointer(env, stack, obj_paint_info);
-  ID2D1HwndRenderTarget* renderer = paint_info->renderer;
+  
+  stack[0].oval = obj_self;
+  stack[1].oval = env->new_string_nolen(env, stack, "renderer");
+  env->call_instance_method_by_name(env, stack, "get_data", 2, &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  void* obj_renderer = stack[0].oval;
+  assert(obj_renderer);
+  ID2D1HwndRenderTarget* renderer = (ID2D1HwndRenderTarget*)env->get_pointer(env, stack, obj_renderer);
   
   D2D1_RECT_F box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
   
   if (!(layout_box->background_color_alpha == 0)) {
-    spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->width, layout_box->height);
-    spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
     
     D2D1::ColorF background_color_f = {0};
     
@@ -623,15 +628,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   
   if (text) {
     
-    spvm_warn("LINE %d %s", __LINE__, text);
-    
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
     
     D2D1::ColorF color_f = {0};
     color_f = D2D1::ColorF(layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
-    
-    spvm_warn("LINE %d %f %f %f %f %d", __LINE__, layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha, layout_box->width);
     
     HRESULT com_result;
     
