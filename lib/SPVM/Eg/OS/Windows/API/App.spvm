@@ -101,12 +101,20 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     
     my $document = $window->document;
     
+    my $head = $document->head;
+    
+    my $body = $document->body;
+    
     my $node_root = (Eg::Node)$document;
     my $node_cur = $node_root;
     my $finish = 0;
     while ($node_cur) {
-      # [START]Preorder traversal position
       
+      if ($node_cur == $head) {
+        $node_cur = $body;
+      }
+      
+      # [START]Preorder traversal position
       my $layout_box = Eg::Layout::Box->new;
       
       $node_cur->set_layout_box($layout_box);
