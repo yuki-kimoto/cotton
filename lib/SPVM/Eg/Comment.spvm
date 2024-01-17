@@ -1,0 +1,27 @@
+# Copyright (c) 2024 Yuki Kimoto
+# MIT License
+
+class Eg::Comment extends Eg::CharacterData {
+  allow Eg;
+  
+  # Class Methods
+  static method new : Eg::Comment ($comment : string) {
+    
+    my $self = new Eg::Comment;
+    
+    $self->init(Eg::Node->TYPE_COMMENT_NODE);
+    
+    unless ($comment) {
+      die "\$comment must be defined.";
+    }
+    
+    my $node_value_buffer = StringBuffer->new;
+    
+    $node_value_buffer->push($comment);
+    
+    $self->{node_value_buffer} = $node_value_buffer;
+    
+    return $self;
+  }
+  
+}

@@ -1,7 +1,7 @@
 # Copyright (c) 2024 Yuki Kimoto
 # MIT License
 
-class Eg::Text extends Eg::Node {
+class Eg::Text extends Eg::CharacterData {
   allow Eg;
   
   # Class Methods

@@ -1,0 +1,22 @@
+# Copyright (c) 2024 Yuki Kimoto
+# MIT License
+
+class Eg::CharacterData extends Eg::Node {
+  allow Eg;
+  
+  method data : string () {
+    my $node_value_buffer = $self->{node_value_buffer};
+    
+    my $node_value = $node_value_buffer->to_string;
+    
+    return $node_value;
+  }
+  
+  method length : int () {
+    my $node_value_buffer = $self->{node_value_buffer};
+    
+    my $node_value_length = $node_value_buffer->length;
+    
+    return $node_value_length;
+  }
+}
