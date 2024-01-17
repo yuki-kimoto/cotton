@@ -38,15 +38,6 @@ class Eg::Node {
   has layout_box : rw Eg::Layout::Box;
   
   # Class Methods
-  static method new : Eg::Node ($node_type : int, $child_nodes : Eg::Node[] = undef) {
-    
-    my $self = new Eg::Node;
-    
-    $self->init($node_type, $child_nodes);
-    
-    return $self;
-  }
-  
   private static method copy_object_with_proto : object[] ($array : object[], $proto : object[], $cloner : Cloner = undef, $offset : int = 0, $length : int = -1) {
     
     unless ($array) {
@@ -194,9 +185,6 @@ class Eg::Node {
     switch ($node_type) {
       case &TYPE_DOCUMENT_NODE : {
         $node_name = "#document";
-      }
-      case &TYPE_DOCUMENT_FRAGMENT_NODE : {
-        $node_name = "#document-fragment";
       }
       case &TYPE_ELEMENT_NODE : {
         $node_name = Fn->uc($self->(Eg::Element)->tag_name);
