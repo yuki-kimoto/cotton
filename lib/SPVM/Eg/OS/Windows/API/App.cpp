@@ -1187,6 +1187,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
   
   void* obj_parent_layout_box = NULL;
   
+  // Not document node
   if (obj_parent_node) {
     int32_t is_root_node = env->is_type_by_name(env, stack, obj_parent_node, "Eg::Document", 0);
     
@@ -1255,7 +1256,47 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       layout_box->height = parent_layout_box->height;
     }
+  }
+  
+  return 0;
+}
+
+int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  void* obj_self = stack[0].oval;
+  void* obj_node = stack[1].oval;
+  void* obj_paint_info = stack[2].oval;
+  
+  void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
     
+  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  
+  void* obj_parent_layout_box = NULL;
+  struct spvm__eg__layout__box* parent_layout_box = NULL;
+  
+  if (obj_layout_box) {
+    if (obj_parent_node) {
+      obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+      if (error_id) { return error_id; }
+      parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+    }
+    
+    if (obj_parent_layout_box) {
+      if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
+       parent_layout_box->height = layout_box->height;
+      }
+    }
+    
+  }
+  
+  // Not document node
+  if (obj_parent_node) {
     stack[0].oval = obj_node;
     env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
@@ -1274,41 +1315,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
       if (error_id) { return error_id; }
       layout_box->height = stack[0].ival;
     }
-  }
-  
-  return 0;
-}
-
-int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* env, SPVM_VALUE* stack) {
-  
-  int32_t error_id = 0;
-  
-  void* obj_self = stack[0].oval;
-  void* obj_node = stack[1].oval;
-  
-  void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  
-  if (obj_layout_box) {
-    struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
     
-    void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) { return error_id; }
-    
-    void* obj_parent_layout_box = NULL;
-    struct spvm__eg__layout__box* parent_layout_box = NULL;
-    if (obj_parent_node) {
-      obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
-      if (error_id) { return error_id; }
-      parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+    if (obj_text) {
+      layout_box->text = env->get_chars(env, stack, obj_text);
     }
-    
-    if (obj_parent_layout_box) {
-      if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
-       parent_layout_box->height = layout_box->height;
-      }
-    }
-    
   }
   
   return 0;
