@@ -9,17 +9,7 @@ class Eg::Text extends Eg::CharacterData {
     
     my $self = new Eg::Text;
     
-    $self->init(Eg::Node->TYPE_TEXT_NODE);
-    
-    unless ($text) {
-      die "\$text must be defined.";
-    }
-    
-    my $node_value_buffer = StringBuffer->new;
-    
-    $node_value_buffer->push($text);
-    
-    $self->{node_value_buffer} = $node_value_buffer;
+    $self->init(Eg::Node->TYPE_TEXT_NODE, undef, $text);
     
     return $self;
   }
