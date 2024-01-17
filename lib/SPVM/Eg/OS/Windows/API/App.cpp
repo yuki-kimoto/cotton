@@ -584,23 +584,23 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
   
-  struct spvm__eg__layout__box css_box = {0};
+  struct spvm__eg__layout__box layout_box = {0};
   
-  css_box.left = 0;
-  css_box.top = 0;
-  css_box.width = 0;
-  css_box.height = 0;
+  layout_box.left = 0;
+  layout_box.top = 0;
+  layout_box.width = 0;
+  layout_box.height = 0;
   
   // Windows Inner width(viewport)
   {
     stack[0].oval = obj_self;
     env->call_instance_method_by_name(env, stack, "inner_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    css_box.width = stack[0].ival;
+    layout_box.width = stack[0].ival;
   }
   
   stack[0].oval = obj_node;
-  env->call_instance_method_by_name(env, stack, "get_text_for_css_box", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  env->call_instance_method_by_name(env, stack, "get_text_for_layout_box", 1, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   void* obj_text = stack[0].oval;
   
@@ -610,22 +610,22 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     stack[0].oval = obj_self;
     stack[1].oval = obj_paint_info;
     stack[2].oval = obj_text;
-    stack[3].ival = css_box.width;
+    stack[3].ival = layout_box.width;
     calc_text_height(env, stack);
     if (error_id) { return error_id; }
-    css_box.height = stack[0].ival;
+    layout_box.height = stack[0].ival;
   }
   
-  css_box.has_background_color = 0;
-  css_box.background_color_red = 1;
-  css_box.background_color_green = 1;
-  css_box.background_color_blue = 1;
-  css_box.background_color_alpha = 1;
+  layout_box.has_background_color = 0;
+  layout_box.background_color_red = 1;
+  layout_box.background_color_green = 1;
+  layout_box.background_color_blue = 1;
+  layout_box.background_color_alpha = 1;
   int32_t has_color = 0;
-  css_box.color_red = 0;
-  css_box.color_green = 0;
-  css_box.color_blue = 0;
-  css_box.color_alpha = 1;
+  layout_box.color_red = 0;
+  layout_box.color_green = 0;
+  layout_box.color_blue = 0;
+  layout_box.color_alpha = 1;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
@@ -640,10 +640,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
         
         if (strcmp(style_name, "background-color") == 0) {
           
-          css_box.has_background_color = 1;
+          layout_box.has_background_color = 1;
           
           int32_t style_value_type = -1;
-          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &css_box.background_color_red, &css_box.background_color_green, &css_box.background_color_blue, &css_box.background_color_alpha);
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box.background_color_red, &layout_box.background_color_green, &layout_box.background_color_blue, &layout_box.background_color_alpha);
         }
         
         break;
@@ -655,7 +655,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
           has_color = 1;
           
           int32_t style_value_type = -1;
-          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &css_box.color_red, &css_box.color_green, &css_box.color_blue, &css_box.color_alpha);
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box.color_red, &layout_box.color_green, &layout_box.color_blue, &layout_box.color_alpha);
         }
         
         break;
@@ -663,7 +663,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &css_box.left);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.left);
         }
         
         break;
@@ -671,7 +671,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &css_box.top);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.top);
         }
         
         break;
@@ -679,7 +679,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'w' : {
         
         if (strcmp(style_name, "width") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &css_box.width);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.width);
         }
         
         break;
@@ -687,7 +687,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &css_box.height);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.height);
         }
         
         break;
@@ -696,21 +696,21 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   }
   
   // Block rect
-  D2D1_RECT_F block_rect = D2D1::RectF(css_box.left, css_box.top, css_box.left + css_box.width + 1, css_box.top + css_box.height + 1);
+  D2D1_RECT_F block_rect = D2D1::RectF(layout_box.left, layout_box.top, layout_box.left + layout_box.width + 1, layout_box.top + layout_box.height + 1);
   
   // Draw block
   {
     D2D1::ColorF background_color_f = {0};
     
-    if (css_box.has_background_color) {
-      background_color_f = D2D1::ColorF(css_box.background_color_red, css_box.background_color_green, css_box.background_color_blue, css_box.background_color_alpha);
+    if (layout_box.has_background_color) {
+      background_color_f = D2D1::ColorF(layout_box.background_color_red, layout_box.background_color_green, layout_box.background_color_blue, layout_box.background_color_alpha);
     }
     else {
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1);
     }
     
-    spvm_warn("LINE %d %d %d %d %d", __LINE__, css_box.left, css_box.top, css_box.left + css_box.width + 1, css_box.top + css_box.height + 1);
-    spvm_warn("LINE %d %f %f %f %f", __LINE__, css_box.background_color_red, css_box.background_color_green, css_box.background_color_blue, css_box.background_color_alpha);
+    spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box.left, layout_box.top, layout_box.left + layout_box.width + 1, layout_box.top + layout_box.height + 1);
+    spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box.background_color_red, layout_box.background_color_green, layout_box.background_color_blue, layout_box.background_color_alpha);
     
     // Create background brash
     ID2D1SolidColorBrush* background_brush = NULL;
@@ -743,7 +743,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     
     D2D1::ColorF color_f = {0};
     if (has_color) {
-      color_f = D2D1::ColorF(css_box.color_red, css_box.color_green, css_box.color_blue, css_box.color_alpha);
+      color_f = D2D1::ColorF(layout_box.color_red, layout_box.color_green, layout_box.color_blue, layout_box.color_alpha);
     }
     else {
       color_f = D2D1::ColorF(0, 0, 0, 0);

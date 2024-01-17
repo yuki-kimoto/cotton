@@ -269,7 +269,7 @@ class Eg::Element extends Eg::Node {
     
   }
   
-  method get_text_for_css_box : string () {
+  method get_text_for_layout_box : string () {
     my $child_nodes = $self->child_nodes;
     
     my $child_nodes_length = @$child_nodes;
