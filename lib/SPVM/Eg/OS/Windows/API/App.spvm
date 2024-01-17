@@ -57,8 +57,8 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     while ($node_cur) {
       # [START]Preorder traversal position
       
-      if ($node_cur->node_type == Eg::Node->TYPE_ELEMENT_NODE) {
-        $self->paint_node($paint_info, $node_cur);
+      if ($node_cur->node_type == Eg::Node->TYPE_ELEMENT_NODE || $node_cur->node_type == Eg::Node->TYPE_TEXT_NODE) {
+        $self->paint_node_v2($paint_info, $node_cur);
       }
       
       if ($node_cur->first_child) {

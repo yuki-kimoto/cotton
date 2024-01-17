@@ -1186,19 +1186,14 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
   if (error_id) { return error_id; }
   
   void* obj_parent_layout_box = NULL;
-  struct spvm__eg__layout__box* parent_layout_box = NULL;
-  int32_t is_root_node = 0;
+  
   if (obj_parent_node) {
+    int32_t is_root_node = env->is_type_by_name(env, stack, obj_parent_node, "Eg::Document", 0);
+    
     obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+    struct spvm__eg__layout__box* parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
     
-    if (env->is_type_by_name(env, stack, obj_parent_node, "Eg::Document", 0)) {
-      is_root_node = 1;
-    }
-  }
-  
-  if (obj_parent_layout_box) {
     if (layout_box->color_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       if (is_root_node) {
         layout_box->color_red = 0;
@@ -1260,25 +1255,25 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       layout_box->height = parent_layout_box->height;
     }
-  }
-  
-  stack[0].oval = obj_node;
-  env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
-  if (error_id) { return error_id; }
-  void* obj_text = stack[0].oval;
-  
-  if (obj_text) {
-    spvm_warn("LINE %d", __LINE__);
     
-    layout_box->text = env->get_chars(env, stack, obj_text);
-    
-    stack[0].oval = obj_self;
-    stack[1].oval = obj_paint_info;
-    stack[2].oval = obj_text;
-    stack[3].ival = layout_box->width;
-    calc_text_height(env, stack);
+    stack[0].oval = obj_node;
+    env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    layout_box->height = stack[0].ival;
+    void* obj_text = stack[0].oval;
+    
+    if (obj_text) {
+      spvm_warn("LINE %d", __LINE__);
+      
+      layout_box->text = env->get_chars(env, stack, obj_text);
+      
+      stack[0].oval = obj_self;
+      stack[1].oval = obj_paint_info;
+      stack[2].oval = obj_text;
+      stack[3].ival = layout_box->width;
+      calc_text_height(env, stack);
+      if (error_id) { return error_id; }
+      layout_box->height = stack[0].ival;
+    }
   }
   
   return 0;
