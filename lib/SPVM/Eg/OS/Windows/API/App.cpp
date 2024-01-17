@@ -819,11 +819,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
   
+  D2D1_RECT_F block_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
+  
   if (!(layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_TRANSPARENT)) {
     spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
     spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
-    
-    D2D1_RECT_F block_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
     
     D2D1::ColorF background_color_f = {0};
     
@@ -840,6 +840,58 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
     renderer->FillRectangle(&block_rect, background_brush);
     
     background_brush->Release();
+  }
+  
+  const char* text = layout_box->text;
+  
+  if (text) {
+    
+    const int16_t* text_utf16 = encode_utf16(env, stack, text);
+    int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
+    
+    int32_t parent_width = block_rect.right + 1;
+    int32_t parent_height = block_rect.bottom + 1;
+    
+    D2D1::ColorF color_f = {0};
+    color_f = D2D1::ColorF(layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
+    
+    int32_t width = parent_width;
+    
+    HRESULT com_result;
+    
+    IDWriteFactory* direct_write_factory = NULL;
+    com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
+    
+    IDWriteTextFormat* text_format = NULL;
+    direct_write_factory->CreateTextFormat(
+      L"Meiryo",
+      NULL,
+      DWRITE_FONT_WEIGHT_NORMAL,
+      DWRITE_FONT_STYLE_NORMAL,
+      DWRITE_FONT_STRETCH_NORMAL,
+      40,
+      L"",
+      &text_format
+    );
+    
+    IDWriteTextLayout* text_layout = NULL;
+    com_result = direct_write_factory->CreateTextLayout(
+          (const WCHAR*)text_utf16
+        , text_utf16_length
+        ,text_format
+        , width
+        , 0
+        , &text_layout
+    );
+    
+    ID2D1SolidColorBrush* text_brush = NULL;
+    renderer->CreateSolidColorBrush(
+      color_f,
+      &text_brush
+    );
+    
+    D2D1_POINT_2F point = {.x = (float)block_rect.left, .y = (float)block_rect.top};
+    renderer->DrawTextLayout(point, text_layout, text_brush);
   }
   
   return 0;
