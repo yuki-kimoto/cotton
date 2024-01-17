@@ -332,7 +332,15 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
       fprintf(stderr, "Fail CreateHwndRenderTarget\n");
       return 1;
     }
-        
+    
+    void* obj_renderer = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::ID2D1HwndRenderTarget", renderer, &error_id, __func__, FILE_NAME, __LINE__);
+    
+    stack[0].oval = obj_self;
+    stack[1].oval = env->new_string_nolen(env, stack, "renderer");
+    stack[2].oval = obj_renderer;
+    env->call_instance_method_by_name(env, stack, "set_data", 3, &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    
     // Start Draw
     renderer->BeginDraw();
     
@@ -360,7 +368,13 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     
     // End draw
     renderer->EndDraw();
-            
+    
+    stack[0].oval = obj_self;
+    stack[1].oval = env->new_string_nolen(env, stack, "renderer");
+    stack[2].oval = NULL;
+    env->call_instance_method_by_name(env, stack, "set_data", 3, &error_id, __func__, FILE_NAME, __LINE__);
+    if (error_id) { return error_id; }
+    
     // End paint
     EndPaint(window_handle , &ps);
   }
