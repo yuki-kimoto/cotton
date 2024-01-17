@@ -584,19 +584,21 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   
   int32_t style_pairs_length = env->length(env, stack, obj_style_pairs);
   
-  struct spvm__eg__layout__box layout_box = {0};
+  struct spvm__eg__layout__box layout_box_tmp = {0};
   
-  layout_box.left = 0;
-  layout_box.top = 0;
-  layout_box.width = 0;
-  layout_box.height = 0;
+  struct spvm__eg__layout__box* layout_box = &layout_box_tmp;
+  
+  layout_box->left = 0;
+  layout_box->top = 0;
+  layout_box->width = 0;
+  layout_box->height = 0;
   
   // Windows Inner width(viewport)
   {
     stack[0].oval = obj_self;
     env->call_instance_method_by_name(env, stack, "inner_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    layout_box.width = stack[0].ival;
+    layout_box->width = stack[0].ival;
   }
   
   stack[0].oval = obj_node;
@@ -610,22 +612,22 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     stack[0].oval = obj_self;
     stack[1].oval = obj_paint_info;
     stack[2].oval = obj_text;
-    stack[3].ival = layout_box.width;
+    stack[3].ival = layout_box->width;
     calc_text_height(env, stack);
     if (error_id) { return error_id; }
-    layout_box.height = stack[0].ival;
+    layout_box->height = stack[0].ival;
   }
   
-  layout_box.has_background_color = 0;
-  layout_box.background_color_red = 1;
-  layout_box.background_color_green = 1;
-  layout_box.background_color_blue = 1;
-  layout_box.background_color_alpha = 1;
+  layout_box->has_background_color = 0;
+  layout_box->background_color_red = 1;
+  layout_box->background_color_green = 1;
+  layout_box->background_color_blue = 1;
+  layout_box->background_color_alpha = 1;
   int32_t has_color = 0;
-  layout_box.color_red = 0;
-  layout_box.color_green = 0;
-  layout_box.color_blue = 0;
-  layout_box.color_alpha = 1;
+  layout_box->color_red = 0;
+  layout_box->color_green = 0;
+  layout_box->color_blue = 0;
+  layout_box->color_alpha = 1;
   
   for (int32_t i = 0; i < style_pairs_length; i += 2) {
     void* obj_style_name = env->get_elem_object(env, stack, obj_style_pairs, i);
@@ -640,10 +642,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
         
         if (strcmp(style_name, "background-color") == 0) {
           
-          layout_box.has_background_color = 1;
+          layout_box->has_background_color = 1;
           
           int32_t style_value_type = -1;
-          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box.background_color_red, &layout_box.background_color_green, &layout_box.background_color_blue, &layout_box.background_color_alpha);
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->background_color_red, &layout_box->background_color_green, &layout_box->background_color_blue, &layout_box->background_color_alpha);
         }
         
         break;
@@ -655,7 +657,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
           has_color = 1;
           
           int32_t style_value_type = -1;
-          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box.color_red, &layout_box.color_green, &layout_box.color_blue, &layout_box.color_alpha);
+          int32_t success = parse_css_color_value(env, stack, style_value, style_value_length, &style_value_type, &layout_box->color_red, &layout_box->color_green, &layout_box->color_blue, &layout_box->color_alpha);
         }
         
         break;
@@ -663,7 +665,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.left);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->left);
         }
         
         break;
@@ -671,7 +673,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.top);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->top);
         }
         
         break;
@@ -679,7 +681,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'w' : {
         
         if (strcmp(style_name, "width") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.width);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->width);
         }
         
         break;
@@ -687,7 +689,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box.height);
+          parse_css_length_value(env, stack, style_value, style_value_length, &layout_box->height);
         }
         
         break;
@@ -695,24 +697,22 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     }
   }
   
-  // Block rect
-  D2D1_RECT_F block_rect = D2D1::RectF(layout_box.left, layout_box.top, layout_box.left + layout_box.width + 1, layout_box.top + layout_box.height + 1);
+  D2D1_RECT_F box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
   
-  // Draw block
+  // Draw box
   {
     D2D1::ColorF background_color_f = {0};
     
-    if (layout_box.has_background_color) {
-      background_color_f = D2D1::ColorF(layout_box.background_color_red, layout_box.background_color_green, layout_box.background_color_blue, layout_box.background_color_alpha);
+    if (layout_box->has_background_color) {
+      background_color_f = D2D1::ColorF(layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
     }
     else {
       background_color_f = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1);
     }
     
-    spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box.left, layout_box.top, layout_box.left + layout_box.width + 1, layout_box.top + layout_box.height + 1);
-    spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box.background_color_red, layout_box.background_color_green, layout_box.background_color_blue, layout_box.background_color_alpha);
+    spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
+    spvm_warn("LINE %d %f %f %f %f", __LINE__, layout_box->background_color_red, layout_box->background_color_green, layout_box->background_color_blue, layout_box->background_color_alpha);
     
-    // Create background brash
     ID2D1SolidColorBrush* background_brush = NULL;
     renderer->CreateSolidColorBrush(
       background_color_f,
@@ -720,46 +720,37 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     );
     assert(background_brush);
     
-    // 四角形の描画
-    renderer->FillRectangle(&block_rect, background_brush);
+    renderer->FillRectangle(&box_rect, background_brush);
     
-    // ブラシの破棄
     background_brush->Release();
   }
   
+  // Draw text
   if (obj_text) {
-    
-    // Render block which has text
     
     const char* text = env->get_chars(env, stack, obj_text);
     
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
     
-    // Get parent width and heigth
-    // Plus 1 becuase Windows don't contain right and bottom pixcel
-    int32_t parent_width = block_rect.right + 1;
-    int32_t parent_height = block_rect.bottom + 1;
+    int32_t parent_width = box_rect.right + 1;
+    int32_t parent_height = box_rect.bottom + 1;
     
     D2D1::ColorF color_f = {0};
     if (has_color) {
-      color_f = D2D1::ColorF(layout_box.color_red, layout_box.color_green, layout_box.color_blue, layout_box.color_alpha);
+      color_f = D2D1::ColorF(layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
     }
     else {
       color_f = D2D1::ColorF(0, 0, 0, 0);
     }
     
-    // draw width
     int32_t width = parent_width;
     
-    // COM result
     HRESULT com_result;
     
-    // DirectWrite factory
     IDWriteFactory* direct_write_factory = NULL;
     com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
 
-    // Create text format
     IDWriteTextFormat* text_format = NULL;
     direct_write_factory->CreateTextFormat(
       L"Meiryo",
@@ -772,26 +763,23 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
       &text_format
     );
     
-    // Create text layout
     IDWriteTextLayout* text_layout = NULL;
     com_result = direct_write_factory->CreateTextLayout(
-          (const WCHAR*)text_utf16       // 文字列
-        , text_utf16_length        // 文字列の幅
-        ,text_format           // DWriteTextFormat
-        , width    // 枠の幅
-        , 0    // 枠の高さ
+          (const WCHAR*)text_utf16
+        , text_utf16_length
+        ,text_format
+        , width
+        , 0
         , &text_layout
     );
-
-    // Create text brush
+    
     ID2D1SolidColorBrush* text_brush = NULL;
     renderer->CreateSolidColorBrush(
       color_f,
       &text_brush
     );
     
-    // Draw text
-    D2D1_POINT_2F point = {.x = (float)block_rect.left, .y = (float)block_rect.top};
+    D2D1_POINT_2F point = {.x = (float)box_rect.left, .y = (float)box_rect.top};
     renderer->DrawTextLayout(point, text_layout, text_brush);
   }
 
@@ -819,7 +807,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
   HDC hdc = paint_info->hdc;
   ID2D1HwndRenderTarget* renderer = paint_info->renderer;
   
-  D2D1_RECT_F block_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
+  D2D1_RECT_F box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
   
   if (!(layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_TRANSPARENT)) {
     spvm_warn("LINE %d %d %d %d %d", __LINE__, layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
@@ -837,7 +825,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
     );
     assert(background_brush);
     
-    renderer->FillRectangle(&block_rect, background_brush);
+    renderer->FillRectangle(&box_rect, background_brush);
     
     background_brush->Release();
   }
@@ -889,7 +877,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node_v2(SPVM_ENV* env, SPVM_VALUE
       &text_brush
     );
     
-    D2D1_POINT_2F point = {.x = (float)block_rect.left, .y = (float)block_rect.top};
+    D2D1_POINT_2F point = {.x = (float)box_rect.left, .y = (float)box_rect.top};
     renderer->DrawTextLayout(point, text_layout, text_brush);
   }
   
