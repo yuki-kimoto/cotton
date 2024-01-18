@@ -97,4 +97,16 @@ class Eg::CSS::BoxBuilder {
   native method build_box_descendant : void ($node : Eg::Node);
   
   native method build_box_ascendant : void ($node : Eg::Node);
+  
+  private method text_metrics_height : int ($text_node : Eg::Text) {
+    return $self->{runtime}->api->app->text_metrics_height($text_node);
+  }
+  
+  private method inner_width : int () {
+    return $self->{runtime}->api->window->inner_width;
+  }
+  
+  private method document_title : string () {
+    return $self->{runtime}->window->document->title;
+  }
 }

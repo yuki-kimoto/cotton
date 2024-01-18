@@ -3,8 +3,11 @@
 
 class Eg::API::App : interface_t {
   
+  use Eg::Text;
+  
   method open_main_window : void ($options : object[] = undef);
   
   method start_event_loop : void ();
   
+  method text_metrics_height : int ($text_node : Eg::Text);
 }
