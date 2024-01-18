@@ -13,6 +13,8 @@ class Eg {
   use List;
   use StringBuffer;
   
+  use Eg::CSS::Parser;
+  
   our $RUNTIME : rw Eg::Runtime;
   
   static method new_document : Eg::Document ($root_node : Eg::Element) {

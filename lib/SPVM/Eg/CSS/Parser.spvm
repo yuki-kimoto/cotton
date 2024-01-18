@@ -1,0 +1,19 @@
+class Eg::CSS::Parser {
+  
+  use List;
+  use Encode;
+  use Eg::Window;
+  use Eg::Node;
+  use Hash;
+  
+  use Eg::CSS::Box;
+  
+  static method new : Eg::CSS::Parser() {
+    
+    my $self = new Eg::CSS::Parser;
+    
+    return $self;
+  }
+  
+  
+}
