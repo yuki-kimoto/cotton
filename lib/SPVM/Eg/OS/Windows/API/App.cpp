@@ -741,7 +741,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               style_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
             }
             else {
-              int32_t style_value_type = -1;
+              int32_t style_value_type = EG_STYLE_VALUE_TYPE_UNKNOWN;
               float background_color_red;
               float background_color_green;
               float background_color_blue;
@@ -774,7 +774,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               style_value_type = EG_STYLE_VALUE_TYPE_CURRENTCOLOR;
             }
             else {
-              int32_t style_value_type = -1;
+              int32_t style_value_type = EG_STYLE_VALUE_TYPE_UNKNOWN;
               float color_red;
               float color_green;
               float color_blue;
@@ -806,7 +806,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
             layout_box->font_size_value_type = style_value_type;
           }
           else {
-            int32_t style_value_type = -1;
+            int32_t style_value_type = EG_STYLE_VALUE_TYPE_UNKNOWN;
             double font_size;
             
             int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &font_size);
