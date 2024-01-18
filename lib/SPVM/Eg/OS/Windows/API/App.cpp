@@ -12,7 +12,7 @@
 
 #include "re2/re2.h"
 
-#include "spvm__eg__layout__box.h"
+#include "spvm__eg__css__box.h"
 
 static const char* FILE_NAME = "Eg/OS/Windows/API/App.cpp";
 
@@ -392,7 +392,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__text_metrics_height(SPVM_ENV* env, SPVM
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_text_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  struct spvm__eg__css__box* layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_layout_box);
   
   const char* text = layout_box->text;
   
@@ -591,7 +591,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     return 0;
   }
   
-  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  struct spvm__eg__css__box* layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_layout_box);
   
   D2D1_RECT_F layout_box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
   
@@ -698,7 +698,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
   
   assert(obj_layout_box);
   
-  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  struct spvm__eg__css__box* layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_layout_box);
   
   assert(layout_box);
   
@@ -948,7 +948,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_set_default_values(SPV
   
   assert(obj_layout_box);
   
-  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  struct spvm__eg__css__box* layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_layout_box);
   
   assert(layout_box);
   
@@ -1031,7 +1031,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  struct spvm__eg__css__box* layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_layout_box);
   
   void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
@@ -1044,7 +1044,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
     
     obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    struct spvm__eg__layout__box* parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+    struct spvm__eg__css__box* parent_layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_parent_layout_box);
     
     if (layout_box->color_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       if (is_root_node) {
@@ -1130,11 +1130,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
     
   // Not document node
   if (obj_parent_node) {
-    struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+    struct spvm__eg__css__box* layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_layout_box);
     
     void* obj_parent_layout_box = env->get_field_object_by_name(env, stack, obj_parent_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    struct spvm__eg__layout__box* parent_layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_parent_layout_box);
+    struct spvm__eg__css__box* parent_layout_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_parent_layout_box);
     
     stack[0].oval = obj_node;
     env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);

@@ -3,7 +3,7 @@ class Cotton {
   use Eg::Runtime;
   use Eg::OS;
   use Sys::OS;
-  use Eg::Layout::Box;
+  use Eg::CSS::Box;
   
   
   # Class Methods

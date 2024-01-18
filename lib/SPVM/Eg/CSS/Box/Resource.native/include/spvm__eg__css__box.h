@@ -21,11 +21,11 @@ enum {
   EG_STYLE_VALUE_TYPE_CURRENTCOLOR,
 };
 
-struct spvm__eg__layout__box {
-  struct spvm__eg__layout__box* first_child;
-  struct spvm__eg__layout__box* last_child;
-  struct spvm__eg__layout__box* next_sibling;
-  struct spvm__eg__layout__box* parent_node;
+struct spvm__eg__css__box {
+  struct spvm__eg__css__box* first_child;
+  struct spvm__eg__css__box* last_child;
+  struct spvm__eg__css__box* next_sibling;
+  struct spvm__eg__css__box* parent_node;
   const char* text;
   int32_t left;
   int32_t top;
