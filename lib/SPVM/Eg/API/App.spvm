@@ -14,7 +14,7 @@ class Eg::API::App : interface_t {
   
   method text_metrics_height : int ($text_node : Eg::Text);
   
-  precompile method paint_nodes : void () {
+  precompile method repaint : void () {
     
     my $runtime = $self->runtime;
     
