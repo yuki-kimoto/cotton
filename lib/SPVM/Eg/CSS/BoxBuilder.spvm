@@ -40,8 +40,6 @@ class Eg::CSS::BoxBuilder {
         $node_cur = $body;
       }
       
-      warn "Pre:" . $node_cur->node_name;
-      
       # [START]Preorder traversal position
       my $box = Eg::CSS::Box->new;
       
@@ -62,8 +60,6 @@ class Eg::CSS::BoxBuilder {
       else {
         while (1) {
           # [START]Postorder traversal position
-          warn "Post:" . $node_cur->node_name;
-      
           $self->build_box_ascendant($node_cur);
           
           if ($node_cur == $node_root) {
@@ -104,9 +100,5 @@ class Eg::CSS::BoxBuilder {
   
   private method inner_width : int () {
     return $self->{runtime}->api->window->inner_width;
-  }
-  
-  private method document_title : string () {
-    return $self->{runtime}->window->document->title;
   }
 }
