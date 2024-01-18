@@ -41,4 +41,7 @@ class Eg::Document extends Eg::Node {
     return (Eg::Element)$root_node->first_child->next_sibling;
   }
   
+  method parent_node : Eg::Node () {
+    return undef;
+  }
 }
