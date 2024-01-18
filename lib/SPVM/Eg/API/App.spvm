@@ -14,13 +14,18 @@ class Eg::API::App : interface_t {
   
   method text_metrics_height : int ($text_node : Eg::Text);
   
-  precompile method repaint : void () {
+  method reflow : void () {
     
     my $runtime = $self->runtime;
     
     my $box_builder = Eg::CSS::BoxBuilder->new($runtime);
     
     $box_builder->build;
+  }
+  
+  precompile method repaint : void () {
+    
+    my $runtime = $self->runtime;
     
     my $window = $runtime->window;
     

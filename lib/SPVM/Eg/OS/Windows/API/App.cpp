@@ -352,6 +352,17 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
       
       stack[0].oval = obj_self;
       stack[1].oval = NULL;
+      env->call_instance_method_by_name(env, stack, "reflow", 2, &error_id, __func__, FILE_NAME, __LINE__);
+      if (error_id) { return error_id; }
+      
+      env->leave_scope(env, stack, scope);
+    }
+    
+    {
+      int32_t scope = env->enter_scope(env, stack);
+      
+      stack[0].oval = obj_self;
+      stack[1].oval = NULL;
       env->call_instance_method_by_name(env, stack, "repaint", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       
