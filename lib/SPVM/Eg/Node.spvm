@@ -209,4 +209,32 @@ class Eg::Node {
     
     return $node_name;
   }
+  
+  method owner_document : Eg::Document () {
+    
+    my $current_node = $self;
+    
+    my $document_node = (Eg::Document)undef;
+    
+    unless ($current_node is_type Eg::Document) {
+      
+      while (1) {
+        my $parent_node = $current_node->{parent_node};
+        
+        unless ($parent_node) {
+          last;
+        }
+        
+        if ($parent_node is_type Eg::Document) {
+          $document_node = (Eg::Document)$current_node;
+          last;
+        }
+        else {
+          $current_node = $parent_node;
+        }
+      }
+    }
+    
+    return $document_node;
+  }
 }
