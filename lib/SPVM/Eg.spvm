@@ -13,8 +13,6 @@ class Eg {
   use List;
   use StringBuffer;
   
-  use Eg::CSS::BoxBuilder;
-  
   our $RUNTIME : rw Eg::Runtime;
   
   static method new_document : Eg::Document ($root_node : Eg::Element) {
