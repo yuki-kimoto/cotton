@@ -394,11 +394,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__text_metrics_height(SPVM_ENV* env, SPVM
   
   struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
   
-  int32_t width = layout_box->width;
-  
   const char* text = layout_box->text;
   
-  int32_t font_size = 40;
+  int32_t width = layout_box->width;
+  int32_t font_size = layout_box->font_size;
+  
+  spvm_warn("LINE %d %d", __LINE__, font_size);
+  
   DWRITE_FONT_WEIGHT font_weight_native = DWRITE_FONT_WEIGHT_NORMAL;
   DWRITE_FONT_STYLE font_style_native = DWRITE_FONT_STYLE_NORMAL;
   
@@ -626,6 +628,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   const char* text = layout_box->text;
   if (text) {
     
+    int32_t font_size = layout_box->font_size;
+    DWRITE_FONT_WEIGHT font_weight_native = DWRITE_FONT_WEIGHT_NORMAL;
+    DWRITE_FONT_STYLE font_style_native = DWRITE_FONT_STYLE_NORMAL;
+    
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
     int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
     
@@ -645,10 +651,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     direct_write_factory->CreateTextFormat(
       L"Meiryo",
       NULL,
-      DWRITE_FONT_WEIGHT_NORMAL,
-      DWRITE_FONT_STYLE_NORMAL,
+      font_weight_native,
+      font_style_native,
       DWRITE_FONT_STRETCH_NORMAL,
-      40,
+      font_size,
       L"",
       &text_format
     );
@@ -801,7 +807,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
       case 'f' : {
         
         if (strcmp(style_name, "font-size") == 0) {
-          
+                spvm_warn("LINE %d", __LINE__);
           if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
             layout_box->font_size_value_type = style_value_type;
           }
@@ -816,6 +822,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               
               if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
                 layout_box->font_size = (float)font_size;
+                spvm_warn("LINE %d %f", __LINE__, layout_box->font_size);
               }
             }
           }
@@ -975,6 +982,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_set_default_values(SPV
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
       layout_box->height_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
     }
+    
+    if (layout_box->font_size_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->font_size_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    }
   }
   else {
     if (layout_box->background_color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
@@ -999,6 +1010,11 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_set_default_values(SPV
     
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
       layout_box->height_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+    }
+    
+    if (layout_box->font_size_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
+      layout_box->font_size_value_type = EG_STYLE_VALUE_TYPE_VALUE;
+      layout_box->font_size = 16;
     }
   }
   
@@ -1089,6 +1105,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_descendant(SPVM_ENV* e
     
     if (layout_box->height_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
       layout_box->height = parent_layout_box->height;
+    }
+    
+    if (layout_box->font_size_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+      layout_box->font_size = parent_layout_box->font_size;
     }
   }
   
