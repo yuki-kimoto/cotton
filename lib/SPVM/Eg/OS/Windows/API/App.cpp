@@ -569,7 +569,12 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   int32_t error_id = 0;
   
   void* obj_self = stack[0].oval;
+  
   void* obj_node = stack[1].oval;
+  
+  if (!obj_node) {
+    return env->die(env, stack, "$node must be defined.", __func__, FILE_NAME, __LINE__);
+  }
   
   void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
@@ -580,6 +585,9 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   
   struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
   
+  D2D1_RECT_F layout_box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
+  
+  // Renderer
   stack[0].oval = obj_self;
   stack[1].oval = env->new_string_nolen(env, stack, "renderer");
   env->call_instance_method_by_name(env, stack, "get_data", 2, &error_id, __func__, FILE_NAME, __LINE__);
@@ -588,8 +596,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
   assert(obj_renderer);
   ID2D1HwndRenderTarget* renderer = (ID2D1HwndRenderTarget*)env->get_pointer(env, stack, obj_renderer);
   
-  D2D1_RECT_F box_rect = D2D1::RectF(layout_box->left, layout_box->top, layout_box->left + layout_box->width + 1, layout_box->top + layout_box->height + 1);
-  
+  // Draw box
   if (!(layout_box->background_color_alpha == 0)) {
     
     D2D1::ColorF background_color_f = {0};
@@ -604,13 +611,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     );
     assert(background_brush);
     
-    renderer->FillRectangle(&box_rect, background_brush);
+    renderer->FillRectangle(&layout_box_rect, background_brush);
     
     background_brush->Release();
   }
   
+  // Draw text
   const char* text = layout_box->text;
-  
   if (text) {
     
     const int16_t* text_utf16 = encode_utf16(env, stack, text);
@@ -619,10 +626,14 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     D2D1::ColorF color_f = {0};
     color_f = D2D1::ColorF(layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
     
-    HRESULT hresult;
+    HRESULT hresult = E_FAIL;
     
     IDWriteFactory* direct_write_factory = NULL;
     hresult = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
+    
+    if (FAILED(hresult)) {
+      return env->die(env, stack, "DWriteCreateFactory() failed.", __func__, FILE_NAME, __LINE__);
+    }
     
     IDWriteTextFormat* text_format = NULL;
     direct_write_factory->CreateTextFormat(
@@ -646,13 +657,17 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
         , &text_layout
     );
     
+    if (FAILED(hresult)) {
+      return env->die(env, stack, "IDWriteFactory#CreateTextLayout() failed.", __func__, FILE_NAME, __LINE__);
+    }
+    
     ID2D1SolidColorBrush* text_brush = NULL;
     renderer->CreateSolidColorBrush(
       color_f,
       &text_brush
     );
     
-    D2D1_POINT_2F point = {.x = (float)box_rect.left, .y = (float)box_rect.top};
+    D2D1_POINT_2F point = {.x = (float)layout_box_rect.left, .y = (float)layout_box_rect.top};
     renderer->DrawTextLayout(point, text_layout, text_brush);
   }
   
