@@ -25,8 +25,8 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
 static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message);
 
 struct Vertex {
-        float pos[ 3 ];
-        float col[ 4 ];
+  float pos[ 3 ];
+  float col[ 4 ];
 };
 
 int32_t SPVM__Eg__OS__Windows__API__App__open_main_window_native(SPVM_ENV* env, SPVM_VALUE* stack) {
@@ -451,7 +451,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__text_metrics_height(SPVM_ENV* env, SPVM
   return 0;
 }
 
-static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, int32_t* length) {
+static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, double* length) {
   
   int32_t success = 0;
   
@@ -480,29 +480,29 @@ static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const c
   std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
   int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
   
-  int32_t pixel = 0;
+  int32_t length_tmp = 0;
   
   if (match) {
     success = 1;
     
     *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
     
-    char* number_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
-    memcpy(number_string, submatch[1].data(), submatch[1].length());
+    char* length_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
+    memcpy(length_string, submatch[1].data(), submatch[1].length());
     char* end;
-    double number = strtod(number_string, &end);
+    double length_tmp = strtod(length_string, &end);
     
     char* unit = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
     memcpy(unit, submatch[2].data(), submatch[2].length());
     
     if (strcmp(unit, "px") == 0) {
-      pixel = (int32_t)number;
+      // Do nothing
     }
     
-    env->free_memory_block(env, stack, number_string);
+    env->free_memory_block(env, stack, length_string);
     env->free_memory_block(env, stack, unit);
     
-    *length = pixel;
+    *length =length_tmp;
   }
   
   return success;
@@ -799,8 +799,36 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
                 }
               }
               else {
-                layout_box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+                layout_box->color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
               }
+            }
+          }
+        }
+        
+        break;
+      }
+      case 'f' : {
+        
+        if (strcmp(style_name, "font-size") == 0) {
+          
+          if (style_value_type > 0) {
+            layout_box->font_size_value_type = style_value_type;
+          }
+          else {
+            int32_t style_value_type = -1;
+            double font_size;
+            
+            int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &font_size);
+            
+            if (success) {
+              layout_box->font_size_value_type = style_value_type;
+              
+              if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
+                layout_box->font_size = (float)font_size;
+              }
+            }
+            else {
+              layout_box->font_size_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
             }
           }
         }
@@ -818,13 +846,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
             }
             else {
-              int32_t left;
+              double left;
               int32_t style_value_type = 0;
               int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &left);
               
               if (success) {
                 layout_box->left_value_type = style_value_type;
-                layout_box->left = left;
+                layout_box->left = (int32_t)left;
               }
               else {
                 style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
@@ -846,13 +874,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
             }
             else {
-              int32_t top;
+              double top;
               int32_t style_value_type = 0;
               int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &top);
               
               if (success) {
                 layout_box->top_value_type = style_value_type;
-                layout_box->top = top;
+                layout_box->top = (int32_t)top;
               }
               else {
                 style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
@@ -874,13 +902,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
             }
             else {
-              int32_t width;
+              double width;
               int32_t style_value_type = 0;
               int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &width);
               
               if (success) {
                 layout_box->width_value_type = style_value_type;
-                layout_box->width = width;
+                layout_box->width = (int32_t)width;
               }
               else {
                 style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
@@ -902,13 +930,13 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_styles(SPVM_ENV* env, 
               style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
             }
             else {
-              int32_t height;
+              double height;
               int32_t style_value_type = 0;
               int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &height);
               
               if (success) {
                 layout_box->height_value_type = style_value_type;
-                layout_box->height = height;
+                layout_box->height = (int32_t)height;
               }
               else {
                 style_value_type = EG_STYLE_VALUE_TYPE_AUTO;

@@ -39,6 +39,7 @@ struct spvm__eg__layout__box {
   float background_color_green;
   float background_color_blue;
   float background_color_alpha;
+  float font_size;
   int8_t box_sizing;
   int8_t is_anon_box;
   int8_t left_value_type;
@@ -47,5 +48,5 @@ struct spvm__eg__layout__box {
   int8_t height_value_type;
   int8_t color_value_type;
   int8_t background_color_value_type;
-  int8_t has_background_color;
+  int8_t font_size_value_type;
 };
