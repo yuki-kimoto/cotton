@@ -408,14 +408,91 @@ int32_t SPVM__Eg__OS__Windows__API__App__text_metrics_height(SPVM_ENV* env, SPVM
     return env->die(env, stack, "DWriteCreateFactory() failed.", __func__, FILE_NAME, __LINE__);
   }
   
+  int32_t font_size = 40;
+  DWRITE_FONT_WEIGHT font_weight_native = DWRITE_FONT_WEIGHT_NORMAL;
+  DWRITE_FONT_STYLE font_style_native = DWRITE_FONT_STYLE_NORMAL;
+  
   IDWriteTextFormat* text_format = NULL;
   direct_write_factory->CreateTextFormat(
     L"Meiryo",
     NULL,
-    DWRITE_FONT_WEIGHT_NORMAL,
-    DWRITE_FONT_STYLE_NORMAL,
+    font_weight_native,
+    font_style_native,
     DWRITE_FONT_STRETCH_NORMAL,
-    40,
+    font_size,
+    L"",
+    &text_format
+  );
+  
+  IDWriteTextLayout* text_layout = NULL;
+  hresult = direct_write_factory->CreateTextLayout(
+    (const WCHAR*)text_utf16,
+    text_utf16_length,
+    text_format,
+    width,
+    0,
+    &text_layout
+  );
+  
+  if (FAILED(hresult)) {
+    return env->die(env, stack, "IDWriteFactory#CreateTextLayout() failed.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  // Get text metrics
+  DWRITE_TEXT_METRICS text_metrics;
+  text_layout->GetMetrics( &text_metrics );
+  
+  int32_t height = text_metrics.height;
+  
+  stack[0].ival = height;
+  
+  return 0;
+}
+
+int32_t SPVM__Eg__OS__Windows__API__App__text_metrics_height_v2(SPVM_ENV* env, SPVM_VALUE* stack) {
+  
+  int32_t error_id = 0;
+  
+  void* obj_self = stack[0].oval;
+  void* obj_text_node = stack[1].oval;
+  
+  if (!obj_text_node) {
+    return env->die(env, stack, "$text_node must be defined.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  void* obj_layout_box = env->get_field_object_by_name(env, stack, obj_text_node, "layout_box", &error_id, __func__, FILE_NAME, __LINE__);
+  if (error_id) { return error_id; }
+  
+  struct spvm__eg__layout__box* layout_box = (struct spvm__eg__layout__box*)env->get_pointer(env, stack, obj_layout_box);
+  
+  int32_t width = layout_box->width;
+  
+  const char* text = layout_box->text;
+  
+  int32_t font_size = 40;
+  DWRITE_FONT_WEIGHT font_weight_native = DWRITE_FONT_WEIGHT_NORMAL;
+  DWRITE_FONT_STYLE font_style_native = DWRITE_FONT_STYLE_NORMAL;
+  
+  const int16_t* text_utf16 = encode_utf16(env, stack, text);
+  int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
+  
+  HRESULT hresult = E_FAIL;
+  
+  IDWriteFactory* direct_write_factory = NULL;
+  hresult = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
+  
+  if (FAILED(hresult)) {
+    return env->die(env, stack, "DWriteCreateFactory() failed.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  IDWriteTextFormat* text_format = NULL;
+  direct_write_factory->CreateTextFormat(
+    L"Meiryo",
+    NULL,
+    font_weight_native,
+    font_style_native,
+    DWRITE_FONT_STRETCH_NORMAL,
+    font_size,
     L"",
     &text_format
   );
