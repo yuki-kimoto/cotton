@@ -10,4 +10,8 @@ class Eg::API::App : interface_t {
   method start_event_loop : void ();
   
   method text_metrics_height : int ($text_node : Eg::Text);
+  
+  method paint_node : void ($node : Eg::Node);
+  
+  
 }

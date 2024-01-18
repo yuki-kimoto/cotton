@@ -96,7 +96,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     
   }
   
-  private native method paint_node : void ($node : Eg::Node);
+  native method paint_node : void ($node : Eg::Node);
   
   private native static method CW_USEDEFAULT : int ();
   
