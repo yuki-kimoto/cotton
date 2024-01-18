@@ -19,7 +19,7 @@ class Eg::CSS::BoxBuilder {
     return $self;
   }
   
-  method build_box_tree : void () {
+  method build : void () {
     
     my $runtime = $self->{runtime};
     

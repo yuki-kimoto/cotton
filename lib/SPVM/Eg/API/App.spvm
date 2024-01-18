@@ -20,7 +20,7 @@ class Eg::API::App : interface_t {
     
     my $box_builder = Eg::CSS::BoxBuilder->new($runtime);
     
-    $box_builder->build_box_tree;
+    $box_builder->build;
     
     my $window = $runtime->window;
     
