@@ -43,7 +43,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   private precompile method paint_nodes : void () {
     
-    $self->build_layout_box_tree;
+    $self->build_box_tree;
     
     my $runtime = $self->{runtime};
     
@@ -93,7 +93,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     
   }
   
-  private method build_layout_box_tree : void () {
+  private method build_box_tree : void () {
     
     my $runtime = $self->{runtime};
     
@@ -117,18 +117,18 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
       warn "Pre:" . $node_cur->node_name;
       
       # [START]Preorder traversal position
-      my $layout_box = Eg::CSS::Box->new;
+      my $box = Eg::CSS::Box->new;
       
-      $node_cur->set_layout_box($layout_box);
+      $node_cur->set_box($box);
       
       if ($node_cur is_type Eg::Element) {
        $node_cur->(Eg::Element)->set_merged_styles_h($node_cur->(Eg::Element)->styles_h);
-       $self->build_layout_box_styles($node_cur);
+       $self->build_box_styles($node_cur);
       }
       
-      $self->build_layout_box_set_default_values($node_cur);
+      $self->build_box_set_default_values($node_cur);
       
-      $self->build_layout_box_descendant($node_cur);
+      $self->build_box_descendant($node_cur);
       
       if ($node_cur->first_child) {
         $node_cur = (Eg::Node)$node_cur->first_child;
@@ -138,7 +138,7 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
           # [START]Postorder traversal position
           warn "Post:" . $node_cur->node_name;
       
-          $self->build_layout_box_ascendant($node_cur);
+          $self->build_box_ascendant($node_cur);
           
           if ($node_cur == $node_root) {
             
@@ -164,13 +164,13 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
     }
   }
   
-  private native method build_layout_box_styles : void ($node : Eg::Node);
+  private native method build_box_styles : void ($node : Eg::Node);
   
-  private native method build_layout_box_set_default_values : void ($node : Eg::Node);
+  private native method build_box_set_default_values : void ($node : Eg::Node);
   
-  private native method build_layout_box_descendant : void ($node : Eg::Node);
+  private native method build_box_descendant : void ($node : Eg::Node);
   
-  private native method build_layout_box_ascendant : void ($node : Eg::Node);
+  private native method build_box_ascendant : void ($node : Eg::Node);
   
   private native method paint_node : void ($node : Eg::Node);
   
