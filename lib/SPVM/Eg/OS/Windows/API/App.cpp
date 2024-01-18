@@ -56,7 +56,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__open_main_window_native(SPVM_ENV* env, 
   winc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
   winc.lpszMenuName = NULL;
   winc.lpszClassName = TEXT("Window");
-  if (!RegisterClass(&winc)) { return env->die(env, stack, "Can't register the window class"); };
+  
+  if (!RegisterClass(&winc)) {
+    return env->die(env, stack, "RegisterClass() failed.", __func__, FILE_NAME, __LINE__);
+  };
   
   // Create Main Window
   const int16_t* window_class_name = (const int16_t*)TEXT("Window");
@@ -304,12 +307,12 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     HDC hdc = BeginPaint(window_handle, &ps);
     
     // Result for COM. Direct 2D is COM.
-    HRESULT com_result = S_OK;
+    HRESULT hresult = E_FAIL;
     
     // Create Direct2D factory
     ID2D1Factory* renderer_factory = NULL;
-    com_result = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &renderer_factory);
-    if (FAILED(com_result)) {
+    hresult = ::D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &renderer_factory);
+    if (FAILED(hresult)) {
       fprintf(stderr, "Fail D2D1CreateFactory\n");
       return 1;
     }
@@ -323,12 +326,12 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     
     // Renderer
     ID2D1HwndRenderTarget* renderer = NULL;
-    com_result = renderer_factory->CreateHwndRenderTarget(
+    hresult = renderer_factory->CreateHwndRenderTarget(
       D2D1::RenderTargetProperties(),
       D2D1::HwndRenderTargetProperties(window_handle, viewport_size),
       &renderer
     );
-    if (FAILED(com_result) ) {
+    if (FAILED(hresult) ) {
       fprintf(stderr, "Fail CreateHwndRenderTarget\n");
       return 1;
     }
@@ -381,70 +384,63 @@ int32_t SPVM__Eg__OS__Windows__API__App__text_metrics_height(SPVM_ENV* env, SPVM
   
   void* obj_self = stack[0].oval;
   void* obj_text = stack[1].oval;
-  int32_t draw_width = stack[2].ival;
-  void* obj_font_styles = stack[3].oval;
+  int32_t width = stack[2].ival;
   
-  int32_t draw_height = 0;
-  if (obj_text) {
-    // Render block which has text
-    const char* text = env->get_chars(env, stack, obj_text);
-    
-    const int16_t* text_utf16 = encode_utf16(env, stack, text);
-    int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
-    
-    RECT parent_rect = {.left = 0, .top = 0, .right = draw_width};
-    
-    // Get parent width and heigth
-    // Plus 1 becuase Windows don't contain right and bottom pixcel
-    int32_t parent_width = parent_rect.right + 1;
-    int32_t parent_height = parent_rect.bottom + 1;
-    
-    int32_t color = RGB(0xFF, 0x00, 0x00);
-    int32_t background_color = RGB(0x00, 0xAA, 0x77);
-    
-    // draw width
-    int32_t draw_width = parent_width;
-    
-    // Culcurate text height
-    RECT culc_node_rect = {.left = parent_rect.left, .top = parent_rect.top, .right = parent_rect.right, .bottom = parent_rect.bottom};
-    
-    HRESULT com_result;
-    
-    IDWriteFactory* direct_write_factory = NULL;
-    com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
-    
-    // Create text format
-    IDWriteTextFormat* text_format = NULL;
-    direct_write_factory->CreateTextFormat(
-      L"Meiryo",
-      NULL,
-      DWRITE_FONT_WEIGHT_NORMAL,
-      DWRITE_FONT_STYLE_NORMAL,
-      DWRITE_FONT_STRETCH_NORMAL,
-      40,
-      L"",
-      &text_format
-    );
-    
-    // 
-    IDWriteTextLayout* text_layout = NULL;
-    com_result = direct_write_factory->CreateTextLayout(
-      (const WCHAR*)text_utf16,
-      text_utf16_length,
-      text_format,
-      draw_width,
-      0,
-      &text_layout
-    );
-    
-    // Get text metrics
-    DWRITE_TEXT_METRICS text_metrics;
-    text_layout->GetMetrics( &text_metrics );
-    
-    draw_height = text_metrics.height;
+  if (!obj_text) {
+    return env->die(env, stack, "$text must be defined.", __func__, FILE_NAME, __LINE__);
   }
   
-  stack[0].ival = draw_height;
+  if (!(width >= 0)) {
+    return env->die(env, stack, "$width must be greater than or equal to 0.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  const char* text = env->get_chars(env, stack, obj_text);
+  
+  const int16_t* text_utf16 = encode_utf16(env, stack, text);
+  int32_t text_utf16_length = strlen((char*)text_utf16) / 2;
+  
+  HRESULT hresult = E_FAIL;
+  
+  IDWriteFactory* direct_write_factory = NULL;
+  hresult = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
+  
+  if (FAILED(hresult)) {
+    return env->die(env, stack, "DWriteCreateFactory() failed.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  IDWriteTextFormat* text_format = NULL;
+  direct_write_factory->CreateTextFormat(
+    L"Meiryo",
+    NULL,
+    DWRITE_FONT_WEIGHT_NORMAL,
+    DWRITE_FONT_STYLE_NORMAL,
+    DWRITE_FONT_STRETCH_NORMAL,
+    40,
+    L"",
+    &text_format
+  );
+  
+  IDWriteTextLayout* text_layout = NULL;
+  hresult = direct_write_factory->CreateTextLayout(
+    (const WCHAR*)text_utf16,
+    text_utf16_length,
+    text_format,
+    width,
+    0,
+    &text_layout
+  );
+  
+  if (FAILED(hresult)) {
+    return env->die(env, stack, "IDWriteFactory#CreateTextLayout() failed.", __func__, FILE_NAME, __LINE__);
+  }
+  
+  // Get text metrics
+  DWRITE_TEXT_METRICS text_metrics;
+  text_layout->GetMetrics( &text_metrics );
+  
+  int32_t height = text_metrics.height;
+  
+  stack[0].ival = height;
   
   return 0;
 }
@@ -623,10 +619,10 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     D2D1::ColorF color_f = {0};
     color_f = D2D1::ColorF(layout_box->color_red, layout_box->color_green, layout_box->color_blue, layout_box->color_alpha);
     
-    HRESULT com_result;
+    HRESULT hresult;
     
     IDWriteFactory* direct_write_factory = NULL;
-    com_result = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
+    hresult = DWriteCreateFactory( DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>( &direct_write_factory ) );
     
     IDWriteTextFormat* text_format = NULL;
     direct_write_factory->CreateTextFormat(
@@ -641,7 +637,7 @@ int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* s
     );
     
     IDWriteTextLayout* text_layout = NULL;
-    com_result = direct_write_factory->CreateTextLayout(
+    hresult = direct_write_factory->CreateTextLayout(
           (const WCHAR*)text_utf16
         , text_utf16_length
         ,text_format
