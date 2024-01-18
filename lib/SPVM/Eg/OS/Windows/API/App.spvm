@@ -176,8 +176,6 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   
   private native static method CW_USEDEFAULT : int ();
   
-  private native method text_metrics_height : int ($text : string, $width :int);
-  
   private native method text_metrics_height_v2 : int ($text_node : Eg::Text);
   
   private method inner_width : int () {
