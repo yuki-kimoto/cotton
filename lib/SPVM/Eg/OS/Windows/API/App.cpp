@@ -266,10 +266,6 @@ static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
   MessageBoxW(NULL, (LPCWSTR)message_utf8_to_utf16, TEXT("Alert"), MB_OK);
 }
 
-struct COTTON_RUNTIME_PAINT_INFO {
-  ID2D1HwndRenderTarget* renderer;
-};
-
 static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   int32_t error_id = 0;
   
@@ -451,125 +447,6 @@ int32_t SPVM__Eg__OS__Windows__API__App__text_metrics_height(SPVM_ENV* env, SPVM
   stack[0].ival = height;
   
   return 0;
-}
-
-static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, double* length) {
-  
-  int32_t success = 0;
-  
-  const char* css_length_pattern = "^(\\d+)(px)$";
-  
-  int32_t css_length_pattern_length = strlen(css_length_pattern);
-  
-  RE2::Options options;
-  options.set_log_errors(false);
-  re2::StringPiece stp_css_length_pattern(css_length_pattern, css_length_pattern_length);
-  
-  std::unique_ptr<RE2> re2(new RE2(stp_css_length_pattern, options));
-  
-  std::string error = re2->error();
-  std::string error_arg = re2->error_arg();
-  
-  if (!re2->ok()) {
-    return success;
-  }
-  
-  int32_t captures_length = re2->NumberOfCapturingGroups();
-  int32_t doller0_and_captures_length = captures_length + 1;
-  
-  int32_t offset = 0;
-  
-  std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
-  int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
-  
-  int32_t length_tmp = 0;
-  
-  if (match) {
-    success = 1;
-    
-    *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
-    
-    char* length_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
-    memcpy(length_string, submatch[1].data(), submatch[1].length());
-    char* end;
-    double length_tmp = strtod(length_string, &end);
-    
-    char* unit = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
-    memcpy(unit, submatch[2].data(), submatch[2].length());
-    
-    if (strcmp(unit, "px") == 0) {
-      // Do nothing
-    }
-    
-    env->free_memory_block(env, stack, length_string);
-    env->free_memory_block(env, stack, unit);
-    
-    *length =length_tmp;
-  }
-  
-  return success;
-}
-
-static int32_t parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, float* red, float* green, float* blue, float* alpha) {
-  
-  int32_t success = 0;
-  
-  const char* css_color_pattern = "^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$";
-  
-  int32_t css_color_pattern_length = strlen(css_color_pattern);
-  
-  RE2::Options options;
-  options.set_log_errors(false);
-  re2::StringPiece stp_css_color_pattern(css_color_pattern, css_color_pattern_length);
-  
-  std::unique_ptr<RE2> re2(new RE2(stp_css_color_pattern, options));
-  
-  std::string error = re2->error();
-  std::string error_arg = re2->error_arg();
-  
-  if (!re2->ok()) {
-    abort();
-  }
-  
-  int32_t captures_length = re2->NumberOfCapturingGroups();
-  int32_t doller0_and_captures_length = captures_length + 1;
-  
-  int32_t offset = 0;
-  
-  std::vector<re2::StringPiece> submatch(doller0_and_captures_length);
-  int32_t match = re2->Match(style_value, offset, offset + style_value_length, re2::RE2::Anchor::UNANCHORED, submatch.data(), doller0_and_captures_length);
-  
-  if (match) {
-    
-    success = 1;
-    
-    *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
-    
-    char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
-    memcpy(red_string, submatch[1].data(), submatch[1].length());
-    char* red_end;
-    *red = strtol(red_string, &red_end, 16);
-    *red /= UINT8_MAX;
-    env->free_memory_block(env, stack, red_string);
-    
-    char* green_string = (char*)env->new_memory_block(env, stack, submatch[2].length() + 1);
-    memcpy(green_string, submatch[2].data(), submatch[2].length());
-    char* green_end;
-    *green = strtol(green_string, &green_end, 16);
-    *green /= UINT8_MAX;
-    env->free_memory_block(env, stack, green_string);
-    
-    char* blue_string = (char*)env->new_memory_block(env, stack, submatch[3].length() + 1);
-    memcpy(blue_string, submatch[3].data(), submatch[3].length());
-    char* blue_end;
-    *blue = strtol(blue_string, &blue_end, 16);
-    *blue /= UINT8_MAX;
-    env->free_memory_block(env, stack, blue_string);
-    
-    *alpha = 1;
-  }
-  
-  return success;
 }
 
 int32_t SPVM__Eg__OS__Windows__API__App__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) {
