@@ -1194,9 +1194,8 @@ int32_t SPVM__Eg__OS__Windows__API__App__build_layout_box_ascendant(SPVM_ENV* en
     
     if (layout_box->text) {
       stack[0].oval = obj_self;
-      stack[1].oval = obj_text;
-      stack[2].ival = layout_box->width;
-      env->call_instance_method_by_name(env, stack, "text_metrics_height", 3, &error_id, __func__, FILE_NAME, __LINE__);
+      stack[1].oval = obj_node;
+      env->call_instance_method_by_name(env, stack, "text_metrics_height_v2", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       layout_box->height = stack[0].ival;
       spvm_warn("LINE %d %d %d", __LINE__, layout_box->width, layout_box->height);
