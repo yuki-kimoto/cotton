@@ -86,13 +86,13 @@ class Eg::CSS::BoxBuilder {
     }
   }
   
-  native method build_box_styles : void ($node : Eg::Node);
+  private native method build_box_styles : void ($node : Eg::Node);
   
-  native method build_box_set_default_values : void ($node : Eg::Node);
+  private native method build_box_set_default_values : void ($node : Eg::Node);
   
-  native method build_box_descendant : void ($node : Eg::Node);
+  private native method build_box_descendant : void ($node : Eg::Node);
   
-  native method build_box_ascendant : void ($node : Eg::Node);
+  private native method build_box_ascendant : void ($node : Eg::Node);
   
   private method text_metrics_height : int ($text_node : Eg::Text) {
     return $self->{runtime}->api->app->text_metrics_height($text_node);
