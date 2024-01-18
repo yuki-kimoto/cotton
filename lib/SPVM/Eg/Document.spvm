@@ -3,8 +3,13 @@
 
 class Eg::Document extends Eg::Node {
   allow Eg;
+  allow Eg::Node;
+  
+  use Hash;
   
   has title : rw string;
+  
+  has nodes_h : Hash;
   
   # Class Methods
   static method new : Eg::Document ($root_node : Eg::Element) {
@@ -12,6 +17,8 @@ class Eg::Document extends Eg::Node {
     my $self = new Eg::Document;
     
     $self->init(Eg::Node->TYPE_DOCUMENT_NODE, [$root_node]);
+    
+    $self->{nodes_h} = Hash->new;
     
     return $self;
   }
