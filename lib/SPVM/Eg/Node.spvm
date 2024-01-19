@@ -281,6 +281,10 @@ class Eg::Node {
     
     my $parent_node = $child_node->{parent_node};
     
+    if ($self isa Eg::CharacterData) {
+      die "The node of Eg::CharacterData cannot have its child.";
+    }
+    
     if ($parent_node) {
       unless ($parent_node is_type Eg::Document || $parent_node is_type Eg::Element) {
         die "The type of the parent of \$child_node must be the Eg::Document or Eg::Element classes.";
@@ -307,6 +311,8 @@ class Eg::Node {
         }
       }
     }
+    
+    $child_node->{next_sibling} = undef;
     
     my $last_child = $self->{last_child};
     
