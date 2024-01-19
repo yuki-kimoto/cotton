@@ -272,6 +272,12 @@ class Eg::Node {
     
     my $parent_node = $child_node->{parent_node};
     
+    if ($parent_node) {
+      unless ($parent_node is_type Eg::Document || $parent_node is_type Eg::Element) {
+        die "The type of the parent of \$child_node must be the Eg::Document or Eg::Element classes.";
+      }
+    }
+    
     if ($self is_type Eg::Document) {
       if ($self->{first_child}) {
         die "The document node already has a child node.";
