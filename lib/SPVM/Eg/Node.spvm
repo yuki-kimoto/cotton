@@ -270,9 +270,28 @@ class Eg::Node {
       die "Append the node of DocumentFragment is not supported.";
     }
     
-    my $parent_node = $child_node->{parent};
+    my $parent_node = $child_node->{parent_node};
     
+    if ($self is_type Eg::Document) {
+      if ($self->{first_child}) {
+        die "The document node already has a child node.";
+      }
+    }
     
+    {
+      my $parent_node = $self;
+      while (1) {
+        if ($parent_node == $child_node) {
+          die "\$child_node cannot be the ansester.";
+        }
+        
+        $parent_node = $parent_node->{parent_node};
+        
+        unless ($parent_node) {
+          last;
+        }
+      }
+    }
     
     my $last_child = $self->{last_child};
     
