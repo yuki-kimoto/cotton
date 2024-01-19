@@ -285,8 +285,8 @@ class Eg::Node {
     
     my $parent_node = $child_node->{parent_node};
     
-    if ($self isa Eg::CharacterData) {
-      die "The node of Eg::CharacterData cannot have its child.";
+    if ($child_node isa Eg::CharacterData && $self is_type Eg::Document) {
+      die "The Eg::CharacterData \$child_node cannot be the child of the Eg::Document class.";
     }
     
     if ($parent_node) {
