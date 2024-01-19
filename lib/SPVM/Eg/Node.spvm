@@ -39,7 +39,7 @@ class Eg::Node {
   
   has box : Eg::CSS::Box;
   
-  # Class Methods
+  # Private Class Methods
   private static method copy_object_with_proto : object[] ($array : object[], $proto : object[], $cloner : Cloner = undef, $offset : int = 0, $length : int = -1) {
     
     unless ($array) {
@@ -262,4 +262,26 @@ class Eg::Node {
     
     return $document_node;
   }
+  
+  method append_child : Eg::Node ($child_node : Eg::Node) {
+    my $node_type = $self->{node_type};
+    
+    if ($node_type == &TYPE_DOCUMENT_FRAGMENT_NODE) {
+      die "Append the node of DocumentFragment is not supported.";
+    }
+    
+    my $last_child = $self->{last_child};
+    
+    $last_child->{next_sibling} = $child_node;
+    
+    $child_node->{previous_sibling} = $last_child;
+    weaken $child_node->{previous_sibling};
+    
+    $self->{last_child} = $child_node;
+    
+    $last_child->{parent_node} = $self;
+    weaken $child_node->{parent_node};
+    
+  }
+  
 }
