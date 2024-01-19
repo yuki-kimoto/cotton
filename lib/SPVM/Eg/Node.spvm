@@ -167,16 +167,12 @@ class Eg::Node {
     while (1) {
       my $parent_node = $current_node->{parent_node};
       
-      unless ($parent_node) {
-        die "Cannot find the root node.";
-      }
-      
-      if ($parent_node is_type Eg::Document) {
-        $root_node = $current_node;
-        last;
+      if ($parent_node) {
+        $current_node = $parent_node;
       }
       else {
-        $current_node = $parent_node;
+        $root_node = $current_node;
+        last;
       }
     }
     
