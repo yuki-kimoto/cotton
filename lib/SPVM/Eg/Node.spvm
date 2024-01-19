@@ -357,27 +357,14 @@ class Eg::Node {
       die "\$new_node must be defined.";
     }
     
+    my $parent_node = $new_node->{parent_node};
+    
+    if ($parent_node) {
+      die "\$new_node cannot have its parent.";
+    }
+    
     unless ($self is_type Eg::Document || $self is_type Eg::DocumentFragment || $self is_type Eg::Element) {
       die "The type of this instance must be the Eg::Document class or the Eg::DocumentFragment class or the Eg::Element class";
-    }
-    
-    unless ($new_node is_type Eg::Element || $new_node is_type Eg::Text || $new_node is_type Eg::Comment) {
-      die "The type of \$new_node must be the Eg::Element class or is the Eg::Text class or the Eg::Comment.";
-    }
-    
-    {
-      my $parent_node = $self;
-      while (1) {
-        if ($parent_node == $new_node) {
-          die "\$new_node or the ansester of \$new_node cannot be this instance.";
-        }
-        
-        $parent_node = $parent_node->{parent_node};
-        
-        unless ($parent_node) {
-          last;
-        }
-      }
     }
     
     my $new_nodes = (Eg::Node[])undef;
@@ -389,6 +376,69 @@ class Eg::Node {
       $new_nodes = [$new_node];
     }
     
+    unless (@$new_nodes) {
+      die "\$new_node must be defined.";
+    }
+    
+    for my $new_node (@$new_nodes ) {
+      unless ($new_node is_type Eg::Element || $new_node is_type Eg::Text || $new_node is_type Eg::Comment) {
+        die "The type of \$new_node(or each child of DocumentFragment) must be the Eg::Element class or is the Eg::Text class or the Eg::Comment.";
+      }
+    }
+    
+    my $found_reference_node = 0;
+    {
+      my $node_root = (Eg::Node)$self;
+      my $node_cur = $node_root;
+      my $finish = 0;
+      while ($node_cur) {
+        
+        # [START]Preorder traversal position
+        
+        if ($node_cur->first_child) {
+          $node_cur = (Eg::Node)$node_cur->{first_child};
+        }
+        else {
+          while (1) {
+            # [START]Postorder traversal position
+            for my $new_node (@$new_nodes ) {
+              if ($new_node == $node_cur) {
+                die "\$new_node(or each child of DocumentFragment) cannot be this instance or the children of this instance or the grand children of this instance.";
+              }
+            }
+            
+            if ($reference_node && $node_cur == $reference_node) {
+              $found_reference_node = 1;
+            }
+            
+            if ($node_cur == $node_root) {
+              
+              $finish = 1;
+              
+              last;
+            }
+            
+            # Next sibling
+            if ($node_cur->next_sibling) {
+              $node_cur = $node_cur->{next_sibling};
+              last;
+            }
+            # Next is parent
+            else {
+              $node_cur = $node_cur->{parent_node};
+            }
+          }
+          if ($finish) {
+            last;
+          }
+        }
+      }
+    }
+    
+    if ($reference_node && !$found_reference_node) {
+      die "\$reference_node cannot be found.";
+    }
+    
     my $new_nodes_length = @$new_nodes;
     
     my $self_child_nodes = $self->child_nodes;
@@ -398,46 +448,91 @@ class Eg::Node {
       unless (@$self_child_nodes == 0) {
         die "If the type of this instance is Eg::Document, the length of its children must be 0.";
       }
+      
+      unless ($new_nodes_length == 1) {
+        die "If the type of this instance is Eg::Document, the length of the children of \$new_node(this is Eg::DocumentFragment).";
+      }
+      
+      my $new_node = $new_nodes->[0];
+      
+      if ($new_node is_type Eg::Element) {
+        die "If the type of this instance is Eg::Document, the type of \$new_node must be the Eg::Element.";
+      }
     }
     
-    my $parent_node = $new_node->{parent_node};
-    
-    if ($parent_node == $self
-      && ($self is_type Eg::Document)
-      && ($new_node is_type Eg::Text || $new_node is_type Eg::Comment))
     {
-      die "If the type of \$new_node is the Eg::Text class or the Eg::Comment class, the parent cannot be the Eg::Document class.";
-    }
-    
-    if ($new_node isa Eg::CharacterData && $self is_type Eg::Document) {
-      die "The Eg::CharacterData \$new_node cannot be the child of the Eg::Document class.";
-    }
-    
-    if ($parent_node) {
-      unless ($parent_node is_type Eg::Document || $parent_node is_type Eg::Element) {
-        die "The type of the parent of \$new_node must be the Eg::Document or Eg::Element classes.";
+      my $node_root = (Eg::Node)$self;
+      my $node_cur = $node_root;
+      my $finish = 0;
+      while ($node_cur) {
+        
+        # [START]Preorder traversal position
+        
+        if ($node_cur->first_child) {
+          $node_cur = (Eg::Node)$node_cur->{first_child};
+        }
+        else {
+          while (1) {
+            # [START]Postorder traversal position
+            if (!$reference_node || $node_cur == $reference_node) {
+              my $reference_node_parent = (Eg::Node)undef;
+              if ($reference_node) {
+                $reference_node_parent = $reference_node->{parent_node};
+              }
+              else {
+                $reference_node_parent = $self;
+              }
+              
+              my $first_insert_node = $new_nodes->[0];
+              
+              my $last_insert_node = $new_nodes->[$new_nodes_length - 1];
+              
+              $last_insert_node->{next_sibling} = $reference_node;
+              if ($reference_node) {
+                $reference_node->{previous_sibling} = $last_insert_node;
+                weaken $reference_node->{previous_sibling};
+              }
+              
+              if ($reference_node) {
+                $first_insert_node->{previous_sibling} = $reference_node->{previous_sibling};
+                weaken $first_insert_node->{previous_sibling};
+              }
+              else {
+                $first_insert_node->{previous_sibling} = $self->{last_child};
+                weaken $first_insert_node->{previous_sibling};
+              }
+              
+              for my $new_node (@$new_nodes) {
+                $new_node->{parent_node} = $reference_node_parent;
+                weaken $new_node->{parent_node};
+              }
+              
+              last;
+            }
+            
+            if ($node_cur == $node_root) {
+              
+              $finish = 1;
+              
+              last;
+            }
+            
+            # Next sibling
+            if ($node_cur->next_sibling) {
+              $node_cur = $node_cur->{next_sibling};
+              last;
+            }
+            # Next is parent
+            else {
+              $node_cur = $node_cur->{parent_node};
+            }
+          }
+          if ($finish) {
+            last;
+          }
+        }
       }
     }
-    
-    if ($self is_type Eg::Document) {
-      if ($self->{first_child}) {
-        die "The document node already has a child node.";
-      }
-    }
-    
-    $new_node->{next_sibling} = undef;
-    
-    my $last_child = $self->{last_child};
-    
-    $last_child->{next_sibling} = $new_node;
-    
-    $new_node->{previous_sibling} = $last_child;
-    weaken $new_node->{previous_sibling};
-    
-    $self->{last_child} = $new_node;
-    
-    $last_child->{parent_node} = $self;
-    weaken $new_node->{parent_node};
     
     return $new_node;
   }
