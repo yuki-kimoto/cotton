@@ -33,7 +33,7 @@ class Eg::Node {
   
   has first_child : ro Eg::Node;
   
-  has last_child : rw Eg::Node;
+  has last_child : ro Eg::Node;
   
   has node_value_buffer : ro StringBuffer;
   

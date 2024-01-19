@@ -264,7 +264,7 @@ class Eg::Element extends Eg::Node {
       
       $self->{first_child} = $text_node;
       
-      $self->set_last_child($text_node);
+      $self->{last_child } = $text_node;
     }
     
   }
