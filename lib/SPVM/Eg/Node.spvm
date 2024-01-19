@@ -27,7 +27,7 @@ class Eg::Node {
   
   has parent_node : ro Eg::Node;
   
-  has next_sibling : rw Eg::Node;
+  has next_sibling : ro Eg::Node;
   
   has previous_sibling : rw Eg::Node;
   
