@@ -270,6 +270,10 @@ class Eg::Node {
       die "Append the node of DocumentFragment is not supported.";
     }
     
+    my $parent_node = $child_node->{parent};
+    
+    
+    
     my $last_child = $self->{last_child};
     
     $last_child->{next_sibling} = $child_node;
@@ -282,6 +286,7 @@ class Eg::Node {
     $last_child->{parent_node} = $self;
     weaken $child_node->{parent_node};
     
+    return $child_node;
   }
   
 }
