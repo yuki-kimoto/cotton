@@ -41,10 +41,6 @@ class Eg::CSS::BoxBuilder {
       }
       
       # [START]Preorder traversal position
-      my $box = Eg::CSS::Box->new;
-      
-      $node_cur->set_box($box);
-      
       if ($node_cur is_type Eg::Element) {
        $node_cur->(Eg::Element)->set_merged_styles_h($node_cur->(Eg::Element)->styles_h);
        $self->build_box_styles($node_cur);

@@ -37,7 +37,7 @@ class Eg::Node {
   
   has node_value_buffer : ro StringBuffer;
   
-  has box : rw Eg::CSS::Box;
+  has box : Eg::CSS::Box;
   
   # Class Methods
   private static method copy_object_with_proto : object[] ($array : object[], $proto : object[], $cloner : Cloner = undef, $offset : int = 0, $length : int = -1) {
@@ -124,6 +124,10 @@ class Eg::Node {
         }
       }
     }
+    
+    my $box = Eg::CSS::Box->new;
+    
+    $self->{box} = $box;
   }
   
   method child_nodes : Eg::Node[] () {
