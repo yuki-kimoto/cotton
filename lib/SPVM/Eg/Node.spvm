@@ -117,6 +117,7 @@ class Eg::Node {
           if ($i - 1 >= 0) {
             my $previous_sibling_node = $child_nodes->[$i - 1];
             $child_node->{previous_sibling} = $previous_sibling_node;
+            weaken $child_node->{previous_sibling};
           }
           
           $child_node->{parent_node} = $self;
