@@ -265,6 +265,10 @@ class Eg::Node {
   
   method append_child : Eg::Node ($child_node : Eg::Node) {
     
+    unless ($self is_type Eg::Document || $self is_type Eg::Element) {
+      die "The type of this instance must be the Eg::Document class or the Eg::Element class.";
+    }
+    
     unless ($child_node) {
       die "\$child_node must be defined.";
     }
