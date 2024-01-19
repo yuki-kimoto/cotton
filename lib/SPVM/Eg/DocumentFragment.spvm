@@ -1,0 +1,3 @@
+class Eg::DocumentFragment extedns Eg::Node {
+
+}
