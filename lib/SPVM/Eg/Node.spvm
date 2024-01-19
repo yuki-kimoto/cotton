@@ -31,7 +31,7 @@ class Eg::Node {
   
   has previous_sibling : ro Eg::Node;
   
-  has first_child : rw Eg::Node;
+  has first_child : ro Eg::Node;
   
   has last_child : rw Eg::Node;
   
