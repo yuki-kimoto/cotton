@@ -264,6 +264,15 @@ class Eg::Node {
   }
   
   method append_child : Eg::Node ($child_node : Eg::Node) {
+    
+    unless ($child_node) {
+      die "\$child_node must be defined.";
+    }
+    
+    unless ($child_node is_type Eg::Element || $child_node isa Eg::CharacterData) {
+      die "The type of \$child_node must be the Eg::Element class or inherits the Eg::CharacterData class.";
+    }
+    
     my $node_type = $self->{node_type};
     
     if ($node_type == &TYPE_DOCUMENT_FRAGMENT_NODE) {
