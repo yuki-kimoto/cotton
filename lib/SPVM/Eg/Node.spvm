@@ -152,11 +152,35 @@ class Eg::Node {
   
   method node_value : string () {
     
-    my $node_value_buffer = $self->{node_value_buffer};
+    my $node_type = $self->{node_type};
     
     my $node_value = (string)undef;
-    if ($node_value_buffer) {
-      $node_value = $node_value_buffer->to_string;
+    
+    switch ($node_type) {
+      case &TYPE_CDATA_SECTION_NODE :
+      case &TYPE_COMMENT_NODE :
+      case &TYPE_TEXT_NODE :
+      {
+        my $node_value_buffer = $self->{node_value_buffer};
+        
+        if ($node_value_buffer) {
+          $node_value = $node_value_buffer->to_string;
+        }
+      }
+      case &TYPE_ELEMENT_NODE :
+      case &TYPE_ATTRIBUTE_NODE :
+      case &TYPE_DOCUMENT_NODE :
+      case &TYPE_DOCUMENT_TYPE_NODE :
+      case &TYPE_DOCUMENT_FRAGMENT_NODE :
+      {
+        # undef
+      }
+      case &TYPE_PROCESSING_INSTRUCTION_NODE : {
+        die "ProcessingInstruction is not supported.";
+      }
+      default : {
+        die "The type of the node is unexpected type";
+      }
     }
     
     return $node_value;
