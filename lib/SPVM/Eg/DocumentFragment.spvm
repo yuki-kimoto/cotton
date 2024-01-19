@@ -1,3 +1,4 @@
-class Eg::DocumentFragment extedns Eg::Element {
-
+class Eg::DocumentFragment extends Eg::Element {
+  
+  # Instance Methods
 }
