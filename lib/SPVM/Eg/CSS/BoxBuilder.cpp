@@ -276,7 +276,6 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
       case 'f' : {
         
         if (strcmp(style_name, "font-size") == 0) {
-                spvm_warn("LINE %d", __LINE__);
           if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->font_size_value_type = style_value_type;
           }
@@ -291,9 +290,25 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
               
               if (style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_VALUE) {
                 box->font_size = (float)font_size;
-                spvm_warn("LINE %d %f", __LINE__, box->font_size);
               }
             }
+          }
+        }
+        else if (strcmp(style_name, "font-weight") == 0) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
+            box->font_weight_value_type = style_value_type;
+          }
+          else {
+            int32_t style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN;
+            
+            if (strcmp(style_value, "normal") == 0) {
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_FONT_WEIGHT_NORMAL;
+            }
+            else if (strcmp(style_value, "bold") == 0) {
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_FONT_WEIGHT_BOLD;
+            }
+            
+            box->font_weight_value_type = style_value_type;
           }
         }
         
@@ -455,6 +470,10 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_set_default_values(SPVM_ENV* env, S
     if (box->font_size_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
       box->font_size_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
+    
+    if (box->font_weight_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->font_weight_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
+    }
   }
   else {
     if (box->background_color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
@@ -484,6 +503,10 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_set_default_values(SPVM_ENV* env, S
     if (box->font_size_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
       box->font_size_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_VALUE;
       box->font_size = 16;
+    }
+    
+    if (box->font_weight_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->font_weight_value_type = EG_CSS_BOX_C_VALUE_TYPE_FONT_WEIGHT_BOLD;
     }
   }
   
@@ -578,6 +601,10 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
     
     if (box->font_size_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       box->font_size = parent_box->font_size;
+    }
+    
+    if (box->font_weight_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
+      box->font_weight_value_type = parent_box->font_weight_value_type;
     }
   }
   
