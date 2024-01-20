@@ -12,7 +12,7 @@
 
 #include "re2/re2.h"
 
-#include "spvm__eg__css__box.h"
+#include "eg_css_box.h"
 
 static const char* FILE_NAME = "Eg/CSS/BoxBuilder.cpp";
 
@@ -70,7 +70,7 @@ static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const c
   if (match) {
     success = 1;
     
-    *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
+    *style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_VALUE;
     
     char* length_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
     memcpy(length_string, submatch[1].data(), submatch[1].length());
@@ -126,7 +126,7 @@ static int32_t parse_css_color_value (SPVM_ENV* env, SPVM_VALUE* stack, const ch
     
     success = 1;
     
-    *style_value_type = EG_STYLE_VALUE_TYPE_VALUE;
+    *style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_VALUE;
     
     char* red_string = (char*)env->new_memory_block(env, stack, submatch[1].length() + 1);
     memcpy(red_string, submatch[1].data(), submatch[1].length());
@@ -174,7 +174,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__paint_node(SPVM_ENV* env, SPVM_VALUE* stack) 
     return 0;
   }
   
-  struct spvm__eg__css__box* box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_box);
+  struct eg_css_box* box = (struct eg_css_box*)env->get_pointer(env, stack, obj_box);
   
   D2D1_RECT_F box_rect = D2D1::RectF(box->left, box->top, box->left + box->width + 1, box->top + box->height + 1);
   
@@ -281,7 +281,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
   
   assert(obj_box);
   
-  struct spvm__eg__css__box* box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_box);
+  struct eg_css_box* box = (struct eg_css_box*)env->get_pointer(env, stack, obj_box);
   
   assert(box);
   
@@ -300,18 +300,18 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
     const char* style_value = env->get_chars(env, stack, obj_style_value);
     int32_t style_value_length = env->length(env, stack, obj_style_value);
     
-    int32_t style_value_type = EG_STYLE_VALUE_TYPE_UNKNOWN;
+    int32_t style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN;
     if (strcmp(style_value, "inherit") == 0) {
-      style_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+      style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     else if (strcmp(style_value, "initial") == 0) {
-      style_value_type = EG_STYLE_VALUE_TYPE_INITIAL;
+      style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INITIAL;
     }
     else if (strcmp(style_value, "revert") == 0) {
-      style_value_type = EG_STYLE_VALUE_TYPE_REVERT;
+      style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_REVERT;
     }
     else if (strcmp(style_value, "unset") == 0) {
-      style_value_type = EG_STYLE_VALUE_TYPE_UNSET;
+      style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNSET;
     }
     
     switch (style_name[0]) {
@@ -319,18 +319,18 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
         
         if (strcmp(style_name, "background-color") == 0) {
           
-          if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->background_color_value_type = style_value_type;
           }
           else {
             if (strcmp(style_value, "currentcolor") == 0) {
-              style_value_type = EG_STYLE_VALUE_TYPE_CURRENTCOLOR;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_CURRENTCOLOR;
             }
             else if (strcmp(style_value, "transparent") == 0) {
-              style_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_TRANSPARENT;
             }
             else {
-              int32_t style_value_type = EG_STYLE_VALUE_TYPE_UNKNOWN;
+              int32_t style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN;
               float background_color_red;
               float background_color_green;
               float background_color_blue;
@@ -355,15 +355,15 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
         
         if (strcmp(style_name, "color") == 0) {
           
-          if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->color_value_type = style_value_type;
           }
           else {
             if (strcmp(style_value, "currentcolor") == 0) {
-              style_value_type = EG_STYLE_VALUE_TYPE_CURRENTCOLOR;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_CURRENTCOLOR;
             }
             else {
-              int32_t style_value_type = EG_STYLE_VALUE_TYPE_UNKNOWN;
+              int32_t style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN;
               float color_red;
               float color_green;
               float color_blue;
@@ -374,7 +374,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
               if (success) {
                 box->color_value_type = style_value_type;
                 
-                if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
+                if (style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_VALUE) {
                   box->color_red = color_red;
                   box->color_green = color_green;
                   box->color_blue = color_blue;
@@ -391,11 +391,11 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
         
         if (strcmp(style_name, "font-size") == 0) {
                 spvm_warn("LINE %d", __LINE__);
-          if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->font_size_value_type = style_value_type;
           }
           else {
-            int32_t style_value_type = EG_STYLE_VALUE_TYPE_UNKNOWN;
+            int32_t style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN;
             double font_size;
             
             int32_t success = parse_css_length_value(env, stack, style_value, style_value_length, &style_value_type, &font_size);
@@ -403,7 +403,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
             if (success) {
               box->font_size_value_type = style_value_type;
               
-              if (style_value_type == EG_STYLE_VALUE_TYPE_VALUE) {
+              if (style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_VALUE) {
                 box->font_size = (float)font_size;
                 spvm_warn("LINE %d %f", __LINE__, box->font_size);
               }
@@ -416,12 +416,12 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
       case 'l' : {
         
         if (strcmp(style_name, "left") == 0) {
-          if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->left_value_type = style_value_type;
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
             }
             else {
               double left;
@@ -441,12 +441,12 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
       case 't' : {
         
         if (strcmp(style_name, "top") == 0) {
-          if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->top_value_type = style_value_type;
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
             }
             else {
               double top;
@@ -466,12 +466,12 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
       case 'w' : {
         
         if (strcmp(style_name, "width") == 0) {
-          if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->width_value_type = style_value_type;
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
             }
             else {
               double width;
@@ -491,12 +491,12 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
       case 'h' : {
         
         if (strcmp(style_name, "height") == 0) {
-          if (!(style_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN)) {
+          if (!(style_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN)) {
             box->height_value_type = style_value_type;
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
             }
             else {
               double height;
@@ -531,7 +531,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_set_default_values(SPVM_ENV* env, S
   
   assert(obj_box);
   
-  struct spvm__eg__css__box* box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_box);
+  struct eg_css_box* box = (struct eg_css_box*)env->get_pointer(env, stack, obj_box);
   
   assert(box);
   
@@ -542,61 +542,61 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_set_default_values(SPVM_ENV* env, S
   
   // Initial value
   if (is_anon_box) {
-    if (box->background_color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->background_color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->background_color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->background_color_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     
-    if (box->color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->color_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     
-    if (box->top_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->top_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->top_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->top_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     
-    if (box->left_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->left_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->left_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->left_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     
-    if (box->width_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->width_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->width_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     
-    if (box->height_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->height_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->height_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     
-    if (box->font_size_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->font_size_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->font_size_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->font_size_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
   }
   else {
-    if (box->background_color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->background_color_value_type = EG_STYLE_VALUE_TYPE_TRANSPARENT;
+    if (box->background_color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->background_color_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_TRANSPARENT;
     }
     
-    if (box->color_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->color_value_type = EG_STYLE_VALUE_TYPE_INHERIT;
+    if (box->color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->color_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT;
     }
     
-    if (box->top_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->top_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+    if (box->top_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->top_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
     }
     
-    if (box->left_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->left_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+    if (box->left_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->left_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
     }
     
-    if (box->width_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->width_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+    if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->width_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
     }
     
-    if (box->height_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->height_value_type = EG_STYLE_VALUE_TYPE_AUTO;
+    if (box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->height_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
     }
     
-    if (box->font_size_value_type == EG_STYLE_VALUE_TYPE_UNKNOWN) {
-      box->font_size_value_type = EG_STYLE_VALUE_TYPE_VALUE;
+    if (box->font_size_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
+      box->font_size_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_VALUE;
       box->font_size = 16;
     }
   }
@@ -614,7 +614,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
   void* obj_box = env->get_field_object_by_name(env, stack, obj_node, "box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
-  struct spvm__eg__css__box* box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_box);
+  struct eg_css_box* box = (struct eg_css_box*)env->get_pointer(env, stack, obj_box);
   
   void* obj_parent_node = env->get_field_object_by_name(env, stack, obj_node, "parent_node", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
@@ -627,9 +627,9 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
     
     obj_parent_box = env->get_field_object_by_name(env, stack, obj_parent_node, "box", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    struct spvm__eg__css__box* parent_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_parent_box);
+    struct eg_css_box* parent_box = (struct eg_css_box*)env->get_pointer(env, stack, obj_parent_box);
     
-    if (box->color_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+    if (box->color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       if (is_root_node) {
         box->color_red = 0;
         box->color_green = 0;
@@ -646,7 +646,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
     }
     spvm_warn("LINE %d %d %d %d", __LINE__, box->color_red, box->color_green, box->color_blue, box->color_alpha);
     
-    if (box->background_color_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+    if (box->background_color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       if (is_root_node) {
         box->color_red = 1;
         box->color_green = 1;
@@ -661,18 +661,18 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
       }
     }
     
-    if (box->left_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+    if (box->left_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       box->left = parent_box->left;
     }
     
-    if (box->top_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+    if (box->top_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       box->top = parent_box->top;
     }
     
-    if (box->width_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+    if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       box->width = parent_box->width;
     }
-    else if (box->width_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
+    else if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO) {
       if (is_root_node) {
         stack[0].oval = obj_self;
         env->call_instance_method_by_name(env, stack, "inner_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
@@ -686,11 +686,11 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
       }
     }
     
-    if (box->height_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+    if (box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       box->height = parent_box->height;
     }
     
-    if (box->font_size_value_type == EG_STYLE_VALUE_TYPE_INHERIT) {
+    if (box->font_size_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       box->font_size = parent_box->font_size;
     }
   }
@@ -713,11 +713,11 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_ascendant(SPVM_ENV* env, SPVM_VALUE
     
   // Not document node
   if (obj_parent_node) {
-    struct spvm__eg__css__box* box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_box);
+    struct eg_css_box* box = (struct eg_css_box*)env->get_pointer(env, stack, obj_box);
     
     void* obj_parent_box = env->get_field_object_by_name(env, stack, obj_parent_node, "box", &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
-    struct spvm__eg__css__box* parent_box = (struct spvm__eg__css__box*)env->get_pointer(env, stack, obj_parent_box);
+    struct eg_css_box* parent_box = (struct eg_css_box*)env->get_pointer(env, stack, obj_parent_box);
     
     stack[0].oval = obj_node;
     env->call_instance_method_by_name(env, stack, "node_value", 1, &error_id, __func__, FILE_NAME, __LINE__);
@@ -737,7 +737,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_ascendant(SPVM_ENV* env, SPVM_VALUE
       spvm_warn("LINE %d %d %d", __LINE__, box->width, box->height);
     }
     
-    if (parent_box->height_value_type == EG_STYLE_VALUE_TYPE_AUTO) {
+    if (parent_box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO) {
       parent_box->height = box->height;
     }
   }
