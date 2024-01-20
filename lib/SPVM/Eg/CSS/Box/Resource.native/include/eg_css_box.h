@@ -52,6 +52,11 @@ enum {
   EG_CSS_BOX_C_VALUE_TYPE_HEIGHT_AUTO = 16,
 };
 
+enum {
+  EG_CSS_BOX_C_VALUE_TYPE_FONT_WEIGHT_NORMAL = 16,
+  EG_CSS_BOX_C_VALUE_TYPE_FONT_WEIGHT_BOLD = 16,
+};
+
 struct eg_css_box {
   struct eg_css_box* first_child;
   struct eg_css_box* last_child;
@@ -80,4 +85,5 @@ struct eg_css_box {
   int8_t color_value_type;
   int8_t background_color_value_type;
   int8_t font_size_value_type;
+  int8_t font_weight_value_type;
 };
