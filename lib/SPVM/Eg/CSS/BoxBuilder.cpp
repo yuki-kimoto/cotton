@@ -324,10 +324,10 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
           }
           else {
             if (strcmp(style_value, "currentcolor") == 0) {
-              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_CURRENTCOLOR;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_BACKGROUND_COLOR_CURRENTCOLOR;
             }
             else if (strcmp(style_value, "transparent") == 0) {
-              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_TRANSPARENT;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_BACKGROUND_COLOR_TRANSPARENT;
             }
             else {
               int32_t style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN;
@@ -360,7 +360,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
           }
           else {
             if (strcmp(style_value, "currentcolor") == 0) {
-              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_CURRENTCOLOR;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_COLOR_CURRENTCOLOR;
             }
             else {
               int32_t style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN;
@@ -421,7 +421,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_LEFT_AUTO;
             }
             else {
               double left;
@@ -446,7 +446,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_TOP_AUTO;
             }
             else {
               double top;
@@ -471,7 +471,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_WIDTH_AUTO;
             }
             else {
               double width;
@@ -496,7 +496,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
           }
           else {
             if (strcmp(style_value, "auto") == 0) {
-              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+              style_value_type = EG_CSS_BOX_C_VALUE_TYPE_HEIGHT_AUTO;
             }
             else {
               double height;
@@ -572,7 +572,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_set_default_values(SPVM_ENV* env, S
   }
   else {
     if (box->background_color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
-      box->background_color_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_TRANSPARENT;
+      box->background_color_value_type = EG_CSS_BOX_C_VALUE_TYPE_BACKGROUND_COLOR_TRANSPARENT;
     }
     
     if (box->color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
@@ -580,19 +580,19 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_set_default_values(SPVM_ENV* env, S
     }
     
     if (box->top_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
-      box->top_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+      box->top_value_type = EG_CSS_BOX_C_VALUE_TYPE_TOP_AUTO;
     }
     
     if (box->left_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
-      box->left_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+      box->left_value_type = EG_CSS_BOX_C_VALUE_TYPE_LEFT_AUTO;
     }
     
     if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
-      box->width_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+      box->width_value_type = EG_CSS_BOX_C_VALUE_TYPE_WIDTH_AUTO;
     }
     
     if (box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
-      box->height_value_type = EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO;
+      box->height_value_type = EG_CSS_BOX_C_VALUE_TYPE_HEIGHT_AUTO;
     }
     
     if (box->font_size_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_UNKNOWN) {
@@ -672,7 +672,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
     if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       box->width = parent_box->width;
     }
-    else if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO) {
+    else if (box->width_value_type == EG_CSS_BOX_C_VALUE_TYPE_WIDTH_AUTO) {
       if (is_root_node) {
         stack[0].oval = obj_self;
         env->call_instance_method_by_name(env, stack, "inner_width", 0, &error_id, __func__, FILE_NAME, __LINE__);
@@ -737,7 +737,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_ascendant(SPVM_ENV* env, SPVM_VALUE
       spvm_warn("LINE %d %d %d", __LINE__, box->width, box->height);
     }
     
-    if (parent_box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_AUTO) {
+    if (parent_box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_HEIGHT_AUTO) {
       parent_box->height = box->height;
     }
   }
