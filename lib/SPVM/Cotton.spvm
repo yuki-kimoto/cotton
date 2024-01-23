@@ -5,6 +5,44 @@ class Cotton {
   use Sys::OS;
   use Eg::CSS::Box;
   
+  static method tag : Eg::Element ($tag_name : string, $child_nodes_or_text : object of Eg::Node[]|string = undef) {
+    
+    my $child_nodes = (Eg::Node[])undef;
+    if ($child_nodes_or_text) {
+      if ($child_nodes_or_text is_type string) {
+        $child_nodes = [Eg::Text->new((string)$child_nodes_or_text)];
+      }
+      elsif ($child_nodes_or_text isa Eg::Node[]) {
+        $child_nodes = (Eg::Node[])$child_nodes_or_text;
+      }
+      else {
+        die "The type of \$child_nodes_or_text must inherit Eg::Element or must be string.";
+      }
+    }
+    
+    my $new_element_node = Eg::Element->new($tag_name, undef, $child_nodes);
+    
+    return $new_element_node;
+  }
+  
+  static method tag_ : Eg::Element ($tag_name : string, $attributes : object[] = undef, $child_nodes_or_text : object of Eg::Node[]|string = undef) {    
+    my $child_nodes = (Eg::Node[])undef;
+    if ($child_nodes_or_text) {
+      if ($child_nodes_or_text is_type string) {
+        $child_nodes = [Eg::Text->new((string)$child_nodes_or_text)];
+      }
+      elsif ($child_nodes_or_text isa Eg::Node[]) {
+        $child_nodes = (Eg::Node[])$child_nodes_or_text;
+      }
+      else {
+        die "The type of \$child_nodes_or_text must inherit Eg::Node or must be string.";
+      }
+    }
+    
+    my $new_element_node = Eg::Element->new($tag_name, $attributes, $child_nodes);
+    
+    return $new_element_node;
+  }
   
   # Class Methods
   static method main : int ($start_file : string, $args : string[]) {
@@ -57,25 +95,25 @@ class Cotton {
   
   static method document : Eg::Document () {
     
-    my $div1 = Eg->div_(
+    my $div1 = &tag_("div",
       {style => {"background-color" => "#00FF00", "color" => "#0000FF", "font-size" => "60px", "font-weight" => "bold"}},
       "あああああ"
     );
     
-    my $body = Eg->body_({},[
+    my $body = &tag_("body", {},[
       $div1,
-      Eg->div_({style => {left => "300px", top => "400px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
-      Eg->div_({style => {left => "400px", top => "500px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
-      Eg->div_({style => {left => "100px", top => "100px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
-      Eg->div_({style => {left => "200px", top => "200px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
+      &tag_("div",{style => {left => "300px", top => "400px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
+      &tag_("div",{style => {left => "400px", top => "500px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
+      &tag_("div",{style => {left => "100px", top => "100px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
+      &tag_("div",{style => {left => "200px", top => "200px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
     ]);
     
     my $title = "コットン";
     
-    my $html = Eg->html(
+    my $html = &tag("html", 
       [
-        Eg->head([
-          Eg->title($title)
+        &tag("head", [
+          &tag("title", $title)
         ]),
         $body
       ]
