@@ -7,6 +7,7 @@ class Eg::Element extends Eg::Node {
   allow Eg::DOMImplementation;
   
   use Eg::DOMImplementation;
+  use Fn;
   
   has attributes_h : ro Hash of string;
   
@@ -14,7 +15,7 @@ class Eg::Element extends Eg::Node {
   
   has computed_styles_h : rw Hash of string;
   
-  has tag_name : ro string;
+  has tag_name : string;
   
   # Class Methods
   static method new : Eg::Element ($tag_name : string, $attribute_pairs : object[] = undef, $child_nodes : Eg::Node[] = undef) {
@@ -60,7 +61,7 @@ class Eg::Element extends Eg::Node {
     
     my $owner_document = $self->owner_document;
     
-    if ($owner_document && $owner_document is_type Eg::Document::HTML && $self isa Eg::Element::HTML) {
+    if ($owner_document && $owner_document is_type Eg::Document && $self isa Eg::Element::HTML) {
       $name = Fn->lc($name);
     }
     
@@ -87,7 +88,7 @@ class Eg::Element extends Eg::Node {
     
     my $owner_document = $self->owner_document;
     
-    if ($owner_document && $owner_document is_type Eg::Document::HTML && $self isa Eg::Element::HTML) {
+    if ($owner_document && $owner_document is_type Eg::Document && $self isa Eg::Element::HTML) {
       $name = Fn->lc($name);
     }
     
@@ -321,6 +322,18 @@ class Eg::Element extends Eg::Node {
   method remove_attr : void ($name : string) {
     
     $self->remove_attribute($name);
+  }
+  
+  method tag_name : string () {
+    
+    my $tag_name = $self->{tag_name};
+    
+    # HTML
+    if ($self isa Eg::Element::HTML) {
+      $tag_name = Fn->uc($tag_name);
+    }
+    
+    return $tag_name;
   }
   
 }

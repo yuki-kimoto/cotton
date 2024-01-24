@@ -3,7 +3,7 @@
 
 class Eg::DOMImplementation {
   
-  use Eg::Document::HTML;
+  use Eg::Document;
   use Eg::Document::XML;
   use Eg::Element::HTML::Html;
   
@@ -28,25 +28,40 @@ class Eg::DOMImplementation {
     
     my $root_element = new Eg::Element;
     
-    $root_element->{tag_name} = $qualified_name_str;;
+    $root_element->{tag_name} = $qualified_name_str;
     
     $document->append_child($root_element);
     
     return $document;
   }
   
-  method create_html_document : Eg::Document::HTML ($title : string = undef) {
+  method create_html_document : Eg::Document ($title : string = undef) {
     
-    my $document = new Eg::Document::HTML;
+    my $document = new Eg::Document;
     
     $document->{namespace_uri} = "http://www.w3.org/1999/xhtml";
     
-    my $root_element = new Eg::Element::HTML::Html;
+    my $html_element = $document->create_element("html");
     
-    $root_element->{tag_name} = "html";
+    $document->append_child($html_element);
     
-    $document->append_child($root_element);
+    my $head_element = $document->create_element("head");
+    
+    if ($title) {
+      my $text_node = $document->create_text_node($title);
+      
+      my $title_element = $document->create_element("title");
+      
+      $title_element->append_child($text_node);
+    }
+    
+    $html_element->append_child($head_element);
+    
+    my $body_element = $document->create_element("body");
+    
+    $html_element->append_child($body_element);
     
     return $document;
   }
+  
 }

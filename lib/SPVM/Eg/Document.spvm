@@ -10,7 +10,7 @@ class Eg::Document extends Eg::Node {
   
   use Hash;
   use Regex;
-  use Eg::Document::HTML;
+  use Eg::Document;
   use StringBuffer;
   
   use Eg::Element::HTML;
@@ -129,11 +129,9 @@ class Eg::Document extends Eg::Node {
       die "\$tag_name cannot contains \":\"";
     }
     
-    $tag_name = Fn->lc($tag_name);
-    
     my $element = (Eg::Element)undef;
     
-    if ($self is_type Eg::Document::HTML) {
+    if ($self is_type Eg::Document) {
       $element = new Eg::Element::HTML;
       
       unless (Regex->new("^[a-zA-Z_]\w+$")->match($tag_name)) {
@@ -323,18 +321,16 @@ class Eg::Document extends Eg::Node {
       else {
         $element = new Eg::Element::HTML::Unknown;
       }
+      
+      $element->{tag_name} = Fn->lc($tag_name);
     }
     else {
       $element = new Eg::Element;
+      
+      $element->{tag_name} = $tag_name;
     }
     
-    $element->{tag_name} = $tag_name;
-    
     $element->{node_type} = Eg::Node->TYPE_ELEMENT_NODE;
-    
-    my $box = Eg::CSS::Box->new;
-    
-    $element->{box} = $box;
     
     return $element;
   }

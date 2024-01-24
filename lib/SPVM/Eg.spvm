@@ -2,12 +2,13 @@
 # MIT License
 
 class Eg {
-  version "0.008";
+  version "0.012";
   
   use Eg::Node;
   use Eg::Document;
   use Eg::Element;
   use Eg::Text;
+  use Eg::Runtime;
   
   use Hash;
   use List;
@@ -15,23 +16,13 @@ class Eg {
   
   our $RUNTIME : rw Eg::Runtime;
   
-  static method new_document : Eg::Document ($root_node : Eg::Element) {
-    
-    unless ($root_node) {
-      die "\$root_node must be defined.";
-    }
-    
-    unless ($root_node is_type Eg::Element && $root_node->(Eg::Element)->tag_name && $root_node->(Eg::Element)->tag_name eq "html") {
-      die "The tag name of \$root_node must be \"html\".";
-    }
-    
-    my $new_document = Eg::Document->new($root_node);
-    
-    return $new_document;
-  }
-  
+  # Class Methods
   static method window : Eg::Window () {
     return $RUNTIME->window;
+  }
+  
+  static method document : Eg::Document () {
+    return &window->document;
   }
   
 }

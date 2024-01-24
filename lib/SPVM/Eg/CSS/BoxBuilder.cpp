@@ -407,6 +407,10 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_set_default_values(SPVM_ENV* env, S
   void* obj_box = env->get_field_object_by_name(env, stack, obj_node, "box", &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   
+  if (!obj_box) {
+    return env->die(env, stack, "Unexpected Error", __func__, FILE_NAME, __LINE__);
+  }
+  
   assert(obj_box);
   
   struct eg_css_box* box = (struct eg_css_box*)env->get_pointer(env, stack, obj_box);

@@ -43,10 +43,12 @@ class Eg::OS::Windows::API::App extends Eg::OS::API {
   native method paint_node : void ($node : Eg::Node);
   
   method reflow : void () {
+    warn;
     $self->Eg::API::App::reflow;
   }
   
   method repaint : void () {
+    warn;
     $self->Eg::API::App::repaint;
   }
   

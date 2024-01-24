@@ -269,6 +269,8 @@ static void alert(SPVM_ENV* env, SPVM_VALUE* stack, const char* message) {
 static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_self) {
   int32_t error_id = 0;
   
+  spvm_warn("LINE %d", __LINE__);
+  
   stack[0].oval = obj_self;
   stack[1].oval = env->new_string_nolen(env, stack, "window_handle");
   env->call_instance_method_by_name(env, stack, "get_data", 2, &error_id, __func__, FILE_NAME, __LINE__);
@@ -277,13 +279,16 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
   
   HWND window_handle = (HWND)env->get_pointer(env, stack, obj_window_handle);
   
+  spvm_warn("LINE %d", __LINE__);
+  
   // Set window text
   {
     stack[0].oval = obj_self;
     env->call_instance_method_by_name(env, stack, "document_title", 1, &error_id, __func__, FILE_NAME, __LINE__);
     if (error_id) { return error_id; }
     void* obj_document_title = stack[0].oval;
-    
+  spvm_warn("LINE %d", __LINE__);
+  
     void* obj_document_title_utf8_to_utf16 = NULL;
     {
       stack[0].oval = obj_document_title;
@@ -295,6 +300,8 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     
     SetWindowTextW(window_handle, (LPCWSTR)document_title_utf8_to_utf16);
   }
+  
+  spvm_warn("LINE %d", __LINE__);
   
   // Paint nodes
   {
@@ -334,6 +341,8 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     
     void* obj_renderer = env->new_pointer_object_by_name(env, stack, "Eg::OS::Windows::ID2D1HwndRenderTarget", renderer, &error_id, __func__, FILE_NAME, __LINE__);
     
+  spvm_warn("LINE %d", __LINE__);
+  
     stack[0].oval = obj_self;
     stack[1].oval = env->new_string_nolen(env, stack, "renderer");
     stack[2].oval = obj_renderer;
@@ -347,6 +356,8 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
     D2D1_COLOR_F viewport_init_background_color = { 1.0f, 1.0f, 1.0f, 1.0f };
     renderer->Clear(viewport_init_background_color);
     
+  spvm_warn("LINE %d", __LINE__);
+  
     {
       int32_t scope = env->enter_scope(env, stack);
       
@@ -358,6 +369,8 @@ static int32_t paint_event_handler(SPVM_ENV* env, SPVM_VALUE* stack, void* obj_s
       env->leave_scope(env, stack, scope);
     }
     
+  spvm_warn("LINE %d", __LINE__);
+  
     {
       int32_t scope = env->enter_scope(env, stack);
       

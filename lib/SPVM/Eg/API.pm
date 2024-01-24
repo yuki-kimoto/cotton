@@ -1,4 +1,4 @@
-package SPVM::Eg::Document::HTML;
+package SPVM::Eg::API;
 
 
 
@@ -6,15 +6,15 @@ package SPVM::Eg::Document::HTML;
 
 =head1 Name
 
-SPVM::Eg::Document::HTML - Short Description
+SPVM::Eg::API - Short Description
 
 =head1 Description
 
-The Eg::Document::HTML class in L<SPVM> has methods to do someting.
+The Eg::API class in L<SPVM> has methods to do someting.
 
 =head1 Usage
 
-  use Eg::Document::HTML;
+  use Eg::API;
 
 =head1 Details
 

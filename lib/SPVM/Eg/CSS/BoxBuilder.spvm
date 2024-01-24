@@ -40,6 +40,10 @@ class Eg::CSS::BoxBuilder {
       }
       
       # [START]Preorder traversal position
+      unless ($node_cur->{box}) {
+        $node_cur->{box} = Eg::CSS::Box->new;
+      }
+      
       if ($node_cur is_type Eg::Element) {
        $node_cur->(Eg::Element)->set_computed_styles_h($node_cur->(Eg::Element)->styles_h);
        $self->build_box_styles($node_cur);

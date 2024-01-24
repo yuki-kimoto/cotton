@@ -5,6 +5,7 @@ class Eg::API::App : interface_t {
   
   use Eg::Text;
   use Eg::Runtime;
+  use Eg::CSS::BoxBuilder;
   
   method runtime : Eg::Runtime ();
   

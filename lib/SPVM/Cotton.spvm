@@ -4,6 +4,7 @@ class Cotton {
   use Eg::OS;
   use Sys::OS;
   use Eg::CSS::Box;
+  use Eg::DOMImplementation;
   
   static method tag : Eg::Element ($tag_name : string, $child_nodes_or_text : object of Eg::Node[]|string = undef) {
     
@@ -100,26 +101,23 @@ class Cotton {
       "あああああ"
     );
     
-    my $body = &tag_("body", {},[
+    my $elements = [
       $div1,
       &tag_("div",{style => {left => "300px", top => "400px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
       &tag_("div",{style => {left => "400px", top => "500px", width => "100px", height => "100px", "background-color" => "#FF0000"}}),
       &tag_("div",{style => {left => "100px", top => "100px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
       &tag_("div",{style => {left => "200px", top => "200px", width => "100px", height => "100px", "background-color" => "#FFFF00"}}),
-    ]);
+    ];
     
     my $title = "コットン";
     
-    my $html = &tag("html", 
-      [
-        &tag("head", [
-          &tag("title", $title)
-        ]),
-        $body
-      ]
-    );
+    my $dom_impl = Eg::DOMImplementation->new;
     
-    my $document = Eg->new_document($html);
+    my $document = $dom_impl->create_html_document($title);
+    
+    for my $element (@$elements) {
+      $document->body->append_child($element);
+    }
     
     $document->set_title($title);
     
