@@ -3,6 +3,7 @@
 
 class Eg::Text extends Eg::CharacterData {
   allow Eg;
+  allow Eg::Document;
   
   # Class Methods
   static method new : Eg::Text ($text : string) {

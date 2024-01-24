@@ -1,13 +1,8 @@
 #include <spvm_native.h>
 
-#include <windows.h>
-#include <d2d1.h>
-#include <dwrite.h>
 #include <assert.h>
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include<memory>
 
+#include<memory>
 #include <iostream>
 
 #include "re2/re2.h"
@@ -17,24 +12,6 @@
 static const char* FILE_NAME = "Eg/CSS/BoxBuilder.cpp";
 
 extern "C" {
-
-static int16_t* encode_utf16(SPVM_ENV* env, SPVM_VALUE* stack, const char* string) {
-  int32_t error_id = 0;
-  
-  void* obj_string =  env->new_string_nolen(env, stack, string);
-  
-  void* obj_string_utf8_to_utf16 = NULL;
-  {
-    stack[0].oval = obj_string;
-    env->call_class_method_by_name(env, stack, "Encode", "encode_utf16", 1, &error_id, __func__, FILE_NAME, __LINE__);
-    if (error_id) { return NULL; }
-    obj_string_utf8_to_utf16 = stack[0].oval;
-  }
-  
-  int16_t* string_utf8_to_utf16 = env->get_elems_short(env, stack, obj_string_utf8_to_utf16);
-  
-  return string_utf8_to_utf16;
-}
 
 static int32_t parse_css_length_value (SPVM_ENV* env, SPVM_VALUE* stack, const char* style_value, int32_t style_value_length, int32_t* style_value_type, double* length) {
   
@@ -172,7 +149,7 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_styles(SPVM_ENV* env, SPVM_VALUE* s
   assert(box);
   
   stack[0].oval = obj_node;
-  env->call_instance_method_by_name(env, stack, "merged_style_pairs", 1, &error_id, __func__, FILE_NAME, __LINE__);
+  env->call_instance_method_by_name(env, stack, "computed_style_pairs", 1, &error_id, __func__, FILE_NAME, __LINE__);
   if (error_id) { return error_id; }
   void* obj_style_pairs = stack[0].oval;
   
@@ -550,10 +527,8 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_descendant(SPVM_ENV* env, SPVM_VALU
         box->color_green = parent_box->color_green;
         box->color_blue = parent_box->color_blue;
         box->color_alpha = parent_box->color_alpha;
-        spvm_warn("LINE %d %d %d %d", __LINE__, box->color_red, box->color_green, box->color_blue, box->color_alpha);
       }
     }
-    spvm_warn("LINE %d %d %d %d", __LINE__, box->color_red, box->color_green, box->color_blue, box->color_alpha);
     
     if (box->background_color_value_type == EG_CSS_BOX_C_VALUE_TYPE_GLOBAL_INHERIT) {
       if (is_root_node) {
@@ -647,7 +622,6 @@ int32_t SPVM__Eg__CSS__BoxBuilder__build_box_ascendant(SPVM_ENV* env, SPVM_VALUE
       env->call_instance_method_by_name(env, stack, "text_metrics_height", 2, &error_id, __func__, FILE_NAME, __LINE__);
       if (error_id) { return error_id; }
       box->height = stack[0].ival;
-      spvm_warn("LINE %d %d %d", __LINE__, box->width, box->height);
     }
     
     if (parent_box->height_value_type == EG_CSS_BOX_C_VALUE_TYPE_HEIGHT_AUTO) {

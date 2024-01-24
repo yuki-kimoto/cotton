@@ -1,0 +1,52 @@
+# Copyright (c) 2024 Yuki Kimoto
+# MIT License
+
+class Eg::DOMImplementation {
+  
+  use Eg::Document::HTML;
+  use Eg::Document::XML;
+  use Eg::Element::HTML::Html;
+  
+  # Class Methods
+  static method new : Eg::DOMImplementation () {
+    
+    my $self = new Eg::DOMImplementation;
+    
+    return $self;
+  }
+  
+  # Instance Methods
+  method create_document : Eg::Document::XML ($namespace_uri : string, $qualified_name_str : string) {
+    
+    unless ($qualified_name_str) {
+      die "\$qualified_name_str must be defined.";
+    }
+    
+    my $document = new Eg::Document::XML;
+    
+    $document->{namespace_uri} = $namespace_uri;
+    
+    my $root_element = new Eg::Element;
+    
+    $root_element->{tag_name} = $qualified_name_str;;
+    
+    $document->append_child($root_element);
+    
+    return $document;
+  }
+  
+  method create_html_document : Eg::Document::HTML ($title : string = undef) {
+    
+    my $document = new Eg::Document::HTML;
+    
+    $document->{namespace_uri} = "http://www.w3.org/1999/xhtml";
+    
+    my $root_element = new Eg::Element::HTML::Html;
+    
+    $root_element->{tag_name} = "html";
+    
+    $document->append_child($root_element);
+    
+    return $document;
+  }
+}
