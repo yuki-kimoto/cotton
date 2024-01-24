@@ -35,11 +35,11 @@ class Eg::Node {
   
   has previous_sibling : ro Eg::Node;
   
-  has first_child : ro Eg::Node;
+  has first_child : ro protected Eg::Node;
   
-  has last_child : ro Eg::Node;
+  has last_child : ro protected Eg::Node;
   
-  has node_value_buffer : ro StringBuffer;
+  has node_value_buffer : ro protected StringBuffer;
   
   has box : Eg::CSS::Box;
   
